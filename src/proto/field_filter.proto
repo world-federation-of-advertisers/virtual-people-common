@@ -1,0 +1,71 @@
+// Copyright 2021 The Cross-Media Measurement Authors
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+syntax = "proto3";
+
+package virtual_people;
+
+// Represents a true/false check (may be composed of multiple sub-checks), which
+// is applied to a message.
+message FieldFilterProto {
+  // The type of comparison operator.
+  enum Op {
+    // Op should never be set to this value.
+    INVALID = 0;
+    // The given field name has a value that is set or a repeated field is not
+    // empty.
+    HAS = 1;
+    // Tests for equality with the value.
+    EQUAL = 2;
+    // Greater than.
+    GT = 3;
+    // Less than.
+    LT = 4;
+    // The given field value is in a set, specified as comma-separated list in
+    // value.
+    IN = 5;
+    // Regular expression match.
+    REGEXP = 6;
+    // Use the sub_filters to filter the union of multiple expressions.
+    OR = 7;
+    // Use the sub_filters to filter the intersection.
+    AND = 8;
+    // Filter the negation of the sub_filters filters.
+    // (Subfilters treated using AND.)
+    NOT = 9;
+    // The field name should refer to a submessage. And the sub_filters are
+    // applied to that submessage.
+    PARTIAL = 10;
+    // Condition always passes.
+    TRUE = 11;
+    // Checks that any (at least one) of the values in repeated field is in a
+    // set described as a comma-separated list in value.
+    // Returns false for empty repeated field.
+    ANY_IN = 12;
+  }
+
+  // Name of the field that the filter applies to.
+  optional string name = 1;
+
+  optional Op op = 2;
+
+  // The string encoding of the operand.
+  // For integers this is the base10 human-readable value.
+  // For messages this is a text encoding.
+  // For repeated values use commas to separate values.
+  optional string value = 3;
+
+  // For non-leaf statements, this specifies the sub expression.
+  repeated FieldFilterProto sub_filters = 4;
+}

@@ -1,0 +1,39 @@
+load("@rules_cc//cc:defs.bzl", "cc_proto_library")
+load("@rules_proto//proto:defs.bzl", "proto_library")
+
+package(default_visibility = ["//visibility:public"])
+
+proto_library(
+    name = "model_proto",
+    srcs = ["model.proto"],
+    deps = [
+        ":event_proto",
+        ":field_filter_proto",
+        "@com_google_protobuf//:field_mask_proto",
+    ],
+)
+
+cc_proto_library(
+    name = "model_cc_proto",
+    deps = [":model_proto"],
+)
+
+proto_library(
+    name = "event_proto",
+    srcs = ["event.proto"],
+)
+
+cc_proto_library(
+    name = "event_cc_proto",
+    deps = [":event_proto"],
+)
+
+proto_library(
+    name = "field_filter_proto",
+    srcs = ["field_filter.proto"],
+)
+
+cc_proto_library(
+    name = "field_filter_cc_proto",
+    deps = [":field_filter_proto"],
+)

@@ -1,0 +1,265 @@
+// Copyright 2021 The Cross-Media Measurement Authors
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+syntax = "proto3";
+
+package virtual_people;
+
+import "google/protobuf/field_mask.proto";
+import "src/proto/event.proto";
+import "src/proto/field_filter.proto";
+
+// The node of the VID model tree.
+message CompiledNode {
+  optional string name = 1;
+
+  // The index of this node in a traversal when initializing the model.
+  optional uint32 index = 2;
+
+  oneof type {
+    // BranchNode has single or multiple child nodes.
+    BranchNode branch_node = 3;
+
+     // StopNode and PopulationNode have no child node.
+    StopNode stop_node = 4;
+    PopulationNode population_node = 5;
+  }
+
+  message DebugInfo {
+    // Used for debugging.
+    // If true, this node is coming directly from the input config of VID Model
+    // builder.
+    // Otherwise, it is a descendant of such a node.
+    optional bool directly_from_model_builder_config = 1;
+  }
+
+  optional DebugInfo debug_info = 100;
+}
+
+
+// Represents the pools to choose the VID from.
+message PopulationNode {
+  // A pool of VIDs, with the range
+  // [ population_offset, population_offset + total_population - 1 ]
+  //
+  // For example, if the pool is
+  //   population_offset = 1000
+  //   total_population = 100
+  // The pool covers from 1000 to 1099.
+  message VirtualPersonPool {
+    optional uint64 population_offset = 1;
+    optional uint64 total_population = 2;
+  }
+
+  repeated VirtualPersonPool pools = 1;
+
+  optional string random_seed = 2;
+}
+
+
+// BranchNode contains
+// * A list of child nodes, one of the which will be selected to be the next
+//   node to apply.
+// * Optional attributes updaters, which can update the attributes of the input
+//   events.
+// * Optional multiplicity settings, which allows to assign multiple VIDs for a
+//   single input event.
+//
+// The steps when applying BranchNode is ordered as
+// 1. Apply attributes updaters or multiplicity (at most one of these could be
+//    present).
+// 2. Choose one of the child nodes.
+message BranchNode {
+  // Contains the reference to a child node, and the condition or probability to
+  // choose the child node.
+  message Branch {
+    oneof child_node {
+      uint32 node_index = 1;
+      CompiledNode node = 2;
+    }
+
+    // Indicates how this node is selected. All branches should have same type
+    // of select_by.
+    oneof select_by {
+      // Weight to use when randomly sampling this node among all siblings.
+      // Should sum to 1 from all branches.
+      double chance = 3;
+      // This node will be selected among siblings based on this filter.
+      FieldFilterProto condition = 4;
+    }
+  }
+
+  repeated Branch branches = 1;
+
+  // Required if chance is defined. Used to select a branch.
+  optional string random_seed = 2;
+
+  message AttributesUpdater {
+    oneof update {
+      UpdateMatrix update_matrix = 1;
+      SparseUpdateMatrix sparse_update_matrix = 2;
+      ConditionalMerge conditional_merge = 3;
+      UpdateTree update_tree = 4;
+    }
+    // The random seed used for the updater.
+    optional string random_seed = 5;
+  }
+
+  message AttributesUpdaters {
+    repeated AttributesUpdater updates = 2;
+  }
+
+  oneof action {
+    // Represents operations to update some fields of the input event.
+    // The updates are applied in order.
+    AttributesUpdaters updates = 3;
+    // Indicates how to assign multiple VIDs to a single event.
+    Multiplicity multiplicity = 4;
+  }
+}
+
+// Can only exist in the embedded model tree of an UpdateTree. Indicates the end
+// of the embedded model tree.
+message StopNode {}
+
+// Represents a matrix for updating the attributes of input events.
+// Attributes are matched to columns, and rows are selected according to their
+// probabilities.
+// The row definition (attributes, label_set) are applied to the event being
+// considered.
+message UpdateMatrix {
+  // Columns definitions, used to match attributes.
+  repeated LabelerEvent columns = 1;
+
+  // One of the rows will be selected to be applied to the input event.
+  repeated LabelerEvent rows = 2;
+
+  // Coefficients of the matrix. Stored in row-major order.
+  // For each column, the values are the relative weights, which are converted
+  // to the probability of updating attributes and label sets with values from
+  // the corresponding row.
+  // The probabilities of each column sum to 1.
+  repeated float probabilities = 3;
+
+  // If present, defines the set of fields used to compute hash values for
+  // column lookup.
+  optional google.protobuf.FieldMask hash_field_mask = 4;
+
+  // Set to true if we allow events to pass through without matching a column.
+  optional bool pass_through_non_matches = 5;
+}
+
+
+// Sparse representation of an UpdateMatrix.
+// Repeated columns hold only the non-zero probabilities and row descriptions.
+message SparseUpdateMatrix {
+  message Column {
+    // Attributes of the column, that events can match.
+    optional LabelerEvent column_attrs = 1;
+    // If an event matches the column_attrs, it will be updated with the row
+    // according to the corresponding probability.
+    repeated LabelerEvent rows = 2;
+    // The order is aligned with the rows.
+    repeated float probabilities = 3;
+  }
+  repeated Column columns = 1;
+
+  // If present, defines the set of fields used to compute hash values for
+  // column lookup.
+  optional google.protobuf.FieldMask hash_field_mask = 2;
+  // Set to true if we allow events to pass through without matching a column.
+  optional bool pass_through_non_matches = 3;
+}
+
+
+// Represents a diagonal matrix for updating event attributes.
+// We run the conditions in order, and once a condition matches, the update is
+// merged into the input event attributes, and we exit the run.
+message ConditionalMerge {
+  message ConditionalMergeNode {
+    // All conditions will be scanned sequentially until the first match is
+    // found.
+    optional FieldFilterProto condition = 1;
+
+    // What to update if the condition matches.
+    optional LabelerEvent update = 2;
+  }
+  // A list of conditions to go through.
+  repeated ConditionalMergeNode nodes = 1;
+  // Set to true if we allow events to not match any of the conditions.
+  optional bool pass_through_non_matches = 2;
+}
+
+
+// A matrix represented in a tree structure to reduce the column search space.
+// Implemented as an embedded model tree, represented by the root node.
+message UpdateTree {
+  optional CompiledNode root = 1;
+}
+
+
+message Multiplicity {
+  oneof multiplicity_ref {
+    // The constant expected multiplicity.
+    double expected_multiplicity = 1;
+    // The name of a field in LabelerEvent. Can be a nested field.
+    // Must be a singular signed numeric type.
+    // This is the reference to the field that contains the expected
+    // multiplicity value.
+    string expected_multiplicity_field = 2;
+  }
+  // The maximum allowed value stored in expected_multiplicity_field.
+  optional double max_value = 3;
+  // If true, cap the multiplicity value at max_value.
+  // Otherwise, return error if the value exceeds max_value.
+  optional bool cap_at_max = 4;
+  // The name of a field in LabelerEvent.
+  // Must be a singular signed int type field.
+  // This field is used as virtual person index at this multiplicity node.
+  optional string person_index_field = 5;
+}
+
+
+// Event and attributes produced by labeler. @labeler_input is the original
+// input event. @virtual_person_activity is the output label. All other entries
+// are inferred properties of the virtual people being generated, and are used
+// internally in the model.
+message LabelerEvent {
+  // Original input event.
+  optional LabelerInput labeler_input = 1;
+
+  // Labeler virtual person output. Including the VID, the demo of the virtual
+  // person, and other associated attributes.
+  // This is repeated because we allow multiple VIDs for single input event.
+  // For each event, there will always be 1 or more "virtual_person_activity"s.
+  // For each "virtual_person_activity", if virtual_person_id is not set, it is
+  // only for counting impressions by labels, and there is no virtual person for
+  // reach purpose.
+  repeated VirtualPersonActivity virtual_person_activities = 2;
+
+  // Sets to true if no user id is set for this event.
+  optional bool is_user_id_free_person = 3;
+
+  // Country the person is from.
+  optional string person_country_code = 4;
+
+  // Region within a country the person is from.
+  optional string person_region_code = 5;
+
+  // Acting demographic attributes.
+  optional DemoBucket acting_demo = 6;
+  optional string acting_demo_id_space = 7;
+
+  optional DemoBucket corrected_demo = 8;
+}
