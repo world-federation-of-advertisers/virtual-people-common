@@ -117,7 +117,7 @@ message BranchNode {
   }
 
   message AttributesUpdaters {
-    repeated AttributesUpdater updates = 2;
+    repeated AttributesUpdater updates = 1;
   }
 
   oneof action {
