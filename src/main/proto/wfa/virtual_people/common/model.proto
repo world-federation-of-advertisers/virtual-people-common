@@ -14,11 +14,11 @@
 
 syntax = "proto3";
 
-package virtual_people;
+package wfa.virtual_people.common;
 
 import "google/protobuf/field_mask.proto";
-import "src/proto/event.proto";
-import "src/proto/field_filter.proto";
+import "src/main/proto/wfa/virtual_people/common/event.proto";
+import "src/main/proto/wfa/virtual_people/common/field_filter.proto";
 
 // The node of the VID model tree.
 message CompiledNode {

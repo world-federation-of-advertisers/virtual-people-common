@@ -14,7 +14,7 @@
 
 syntax = "proto3";
 
-package virtual_people;
+package wfa.virtual_people.common;
 
 // Represents a true/false check (may be composed of multiple sub-checks), which
 // is applied to a message.
