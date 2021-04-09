@@ -241,6 +241,8 @@ message LabelerEvent {
 
   // Labeler virtual person output. Including the VID, the demo of the virtual
   // person, and other associated attributes.
+  // The phrase "virtual person" represents a single "virtual person", while
+  // "virtual people" refers to a set of "virtual person"s.
   // This is repeated because we allow multiple VIDs for single input event.
   // For each event, there will always be 1 or more "virtual_person_activity"s.
   // For each "virtual_person_activity", if virtual_person_id is not set, it is
