@@ -14,7 +14,7 @@
 
 syntax = "proto3";
 
-package virtual_people;
+package wfa.virtual_people;
 
 // Placeholder for DemoBucket message.
 message DemoBucket {}
