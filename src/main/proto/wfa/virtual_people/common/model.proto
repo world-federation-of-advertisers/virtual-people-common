@@ -14,7 +14,7 @@
 
 syntax = "proto3";
 
-package wfa.virtual_people;
+package wfa_virtual_people;
 
 import "google/protobuf/field_mask.proto";
 import "src/main/proto/wfa/virtual_people/common/event.proto";
