@@ -14,7 +14,7 @@
 
 syntax = "proto3";
 
-package wfa.virtual_people;
+package wfa_virtual_people;
 
 import "google/protobuf/field_mask.proto";
 import "src/main/proto/wfa/virtual_people/common/event.proto";
@@ -264,4 +264,11 @@ message LabelerEvent {
   optional string acting_demo_id_space = 7;
 
   optional DemoBucket corrected_demo = 8;
+
+  // The fingerprint to be used as part of the random seed.
+  //
+  // This is computed from the user ids of the event, or event_id if there is no
+  // user id. If there are multiple user ids, the model has embedded logic to
+  // choose which id to use.
+  optional uint64 acting_fingerprint = 9;
 }
