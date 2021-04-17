@@ -23,4 +23,8 @@ message DemoBucket {}
 message LabelerInput {}
 
 // Placeholder for VirtualPersonActivity message.
-message VirtualPersonActivity {}
+message VirtualPersonActivity {
+  // If virtual_person_id is not set, then this is only for counting impressions
+  // by labels, and can be ignored for reach purpose.
+  optional int64 virtual_person_id = 1;
+}
