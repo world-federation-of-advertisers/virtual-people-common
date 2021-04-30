@@ -10,3 +10,10 @@ http_archive(
 load("@com_google_protobuf//:protobuf_deps.bzl", "protobuf_deps")
 
 protobuf_deps()
+
+http_archive(
+    name = "com_google_absl",
+    sha256 = "dd7db6815204c2a62a2160e32c55e97113b0a0178b2f090d6bab5ce36111db4b",
+    strip_prefix = "abseil-cpp-20210324.0",
+    urls = ["https://github.com/abseil/abseil-cpp/archive/refs/tags/20210324.0.tar.gz"],
+)

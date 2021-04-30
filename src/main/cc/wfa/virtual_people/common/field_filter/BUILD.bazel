@@ -1,0 +1,21 @@
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
+package(default_visibility = ["//visibility:public"])
+
+_INCLUDE_PREFIX = "/src/main/cc"
+
+cc_library(
+    name = "field_filter",
+    srcs = [
+        "field_filter.cc",
+    ],
+    hdrs = [
+        "field_filter.h",
+    ],
+    strip_include_prefix = _INCLUDE_PREFIX,
+    deps = [
+        "@com_google_absl//absl/status:statusor",
+        "@com_google_protobuf//:protobuf",
+        "//src/main/proto/wfa/virtual_people/common:field_filter_cc_proto",
+    ],
+)
