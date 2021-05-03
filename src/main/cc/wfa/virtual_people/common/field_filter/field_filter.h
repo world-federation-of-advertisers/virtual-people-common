@@ -31,13 +31,15 @@ namespace wfa_virtual_people {
 class FieldFilter {
  public:
   // Always use FieldFilter::New to get a FieldFilter object.
+  // Users should never call the factory functions or the constructors of the
+  // derived classes.
   static absl::StatusOr<std::unique_ptr<FieldFilter>> New(
       const google::protobuf::Descriptor* descriptor,
       const FieldFilterProto& config);
 
   virtual ~FieldFilter() = default;
 
-  // Return true if the @message satisfies the condition given by the @config.
+  // Returns true if the @message satisfies the condition given by the @config.
   // The type of @message must match the corresponding message type of
   // @descriptor.
   virtual bool IsMatch(const google::protobuf::Message& message) const = 0;

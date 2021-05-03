@@ -17,17 +17,18 @@
 #include "absl/status/statusor.h"
 #include "google/protobuf/descriptor.h"
 #include "src/main/proto/wfa/virtual_people/common/field_filter.pb.h"
+#include "wfa/virtual_people/common/field_filter/equal_filter.h"
 
 namespace wfa_virtual_people {
 
 absl::StatusOr<std::unique_ptr<FieldFilter>> FieldFilter::New(
     const google::protobuf::Descriptor* descriptor,
     const FieldFilterProto& config) {
-  switch(config.op()) {
+  switch (config.op()) {
     case FieldFilterProto::HAS:
       return absl::UnimplementedError("HAS field filter is not implemented.");
     case FieldFilterProto::EQUAL:
-      return absl::UnimplementedError("EQUAL field filter is not implemented.");
+      return EqualFilter::New(descriptor, config);
     case FieldFilterProto::GT:
       return absl::UnimplementedError("GT field filter is not implemented.");
     case FieldFilterProto::LT:
