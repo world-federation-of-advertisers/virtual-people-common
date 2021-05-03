@@ -17,6 +17,7 @@
 #include "absl/status/statusor.h"
 #include "google/protobuf/descriptor.h"
 #include "src/main/proto/wfa/virtual_people/common/field_filter.pb.h"
+#include "wfa/virtual_people/common/field_filter/and_filter.h"
 #include "wfa/virtual_people/common/field_filter/equal_filter.h"
 
 namespace wfa_virtual_people {
@@ -41,7 +42,7 @@ absl::StatusOr<std::unique_ptr<FieldFilter>> FieldFilter::New(
     case FieldFilterProto::OR:
       return absl::UnimplementedError("OR field filter is not implemented.");
     case FieldFilterProto::AND:
-      return absl::UnimplementedError("AND field filter is not implemented.");
+      return AndFilter::New(descriptor, config);
     case FieldFilterProto::NOT:
       return absl::UnimplementedError("NOT field filter is not implemented.");
     case FieldFilterProto::PARTIAL:

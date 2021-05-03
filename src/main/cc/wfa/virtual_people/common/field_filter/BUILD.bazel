@@ -7,10 +7,12 @@ _INCLUDE_PREFIX = "/src/main/cc"
 cc_library(
     name = "field_filter",
     srcs = [
+        "and_filter.cc",
         "equal_filter.cc",
         "field_filter.cc",
     ],
     hdrs = [
+        "and_filter.h",
         "equal_filter.h",
         "field_filter.h",
     ],
@@ -29,6 +31,20 @@ cc_library(
 cc_test(
     name = "equal_filter_test",
     srcs = ["equal_filter_test.cc"],
+    deps = [
+        ":field_filter",
+        "//src/main/cc/wfa/virtual_people/common/field_filter/test:test_cc_proto",
+        "//src/main/proto/wfa/virtual_people/common:field_filter_cc_proto",
+        "@com_google_absl//absl/status",
+        "@com_google_absl//absl/status:statusor",
+        "@com_google_googletest//:gtest_main",
+        "@com_google_protobuf//:protobuf",
+    ],
+)
+
+cc_test(
+    name = "and_filter_test",
+    srcs = ["and_filter_test.cc"],
     deps = [
         ":field_filter",
         "//src/main/cc/wfa/virtual_people/common/field_filter/test:test_cc_proto",
