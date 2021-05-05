@@ -24,3 +24,12 @@ http_archive(
     strip_prefix = "abseil-cpp-20210324.0",
     urls = ["https://github.com/abseil/abseil-cpp/archive/refs/tags/20210324.0.tar.gz"],
 )
+
+load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
+
+git_repository(
+    name = "cross_media_measurement",
+    remote = "https://github.com/world-federation-of-advertisers/cross-media-measurement",
+    commit = "9f3596dd4224b4dc6510de3f67a568de6f9220f1",
+    repo_mapping = {"@googletest": "@com_google_googletest"}
+)

@@ -119,4 +119,12 @@ const std::string& GetImmediateValueFromProto<const std::string&>(
       message, field_descriptor, &scratch);
 }
 
+template <>
+const google::protobuf::Message&
+GetImmediateValueFromProto<const google::protobuf::Message&>(
+    const google::protobuf::Message& message,
+    const google::protobuf::FieldDescriptor* field_descriptor) {
+  return message.GetReflection()->GetMessage(message, field_descriptor);
+}
+
 }  // namespace wfa_virtual_people

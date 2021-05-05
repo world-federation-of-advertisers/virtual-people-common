@@ -21,6 +21,7 @@
 #include "google/protobuf/text_format.h"
 #include "gtest/gtest.h"
 #include "src/main/cc/wfa/virtual_people/common/field_filter/test/test.pb.h"
+#include "src/test/cc/testutil/matchers.h"
 
 namespace wfa_virtual_people {
 namespace {
@@ -120,6 +121,15 @@ TEST(GetFieldFromProtoTest, GetFieldAndValue) {
   EXPECT_EQ(
       GetValueFromProto<const std::string&>(test_proto_2, field_descriptors),
       "string2");
+  // Test Message.
+  EXPECT_TRUE(
+      GetFieldFromProto(
+          test_proto_1.GetDescriptor(), "a.b", &field_descriptors
+      ).ok());
+  EXPECT_THAT(
+      GetValueFromProto<const google::protobuf::Message&>(
+          test_proto_2, field_descriptors),
+      wfa::EqualsProto(test_proto_2.a().b()));
 }
 
 TEST(GetFieldFromProtoTest, InvalidFieldName) {

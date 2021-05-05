@@ -10,12 +10,14 @@ cc_library(
         "and_filter.cc",
         "equal_filter.cc",
         "field_filter.cc",
+        "partial_filter.cc",
         "true_filter.cc",
     ],
     hdrs = [
         "and_filter.h",
         "equal_filter.h",
         "field_filter.h",
+        "partial_filter.h",
         "true_filter.h",
     ],
     strip_include_prefix = _INCLUDE_PREFIX,
@@ -67,5 +69,19 @@ cc_test(
         "//src/main/proto/wfa/virtual_people/common:field_filter_cc_proto",
         "@com_google_absl//absl/status:statusor",
         "@com_google_googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "partial_filter_test",
+    srcs = ["partial_filter_test.cc"],
+    deps = [
+        ":field_filter",
+        "//src/main/cc/wfa/virtual_people/common/field_filter/test:test_cc_proto",
+        "//src/main/proto/wfa/virtual_people/common:field_filter_cc_proto",
+        "@com_google_absl//absl/status",
+        "@com_google_absl//absl/status:statusor",
+        "@com_google_googletest//:gtest_main",
+        "@com_google_protobuf//:protobuf",
     ],
 )
