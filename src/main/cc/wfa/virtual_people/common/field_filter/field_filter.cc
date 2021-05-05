@@ -19,6 +19,7 @@
 #include "src/main/proto/wfa/virtual_people/common/field_filter.pb.h"
 #include "wfa/virtual_people/common/field_filter/and_filter.h"
 #include "wfa/virtual_people/common/field_filter/equal_filter.h"
+#include "wfa/virtual_people/common/field_filter/true_filter.h"
 
 namespace wfa_virtual_people {
 
@@ -49,7 +50,7 @@ absl::StatusOr<std::unique_ptr<FieldFilter>> FieldFilter::New(
       return absl::UnimplementedError(
           "PARTIAL field filter is not implemented.");
     case FieldFilterProto::TRUE:
-      return absl::UnimplementedError("TRUE field filter is not implemented.");
+      return TrueFilter::New(config);
     case FieldFilterProto::ANY_IN:
       return absl::UnimplementedError(
           "ANY_IN field filter is not implemented.");
