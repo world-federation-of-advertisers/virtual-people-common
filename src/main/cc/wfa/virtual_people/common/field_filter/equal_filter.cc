@@ -34,7 +34,7 @@ namespace wfa_virtual_people {
 //   uint64_t
 //   bool
 //   const google::protobuf::EnumValueDescriptor*
-//   const string&
+//   std::string
 template <typename ValueType>
 class EqualFilterImpl : public EqualFilter {
  public:
@@ -51,6 +51,22 @@ class EqualFilterImpl : public EqualFilter {
   ValueType value_;
 };
 
+template <>
+class EqualFilterImpl<std::string> : public EqualFilter {
+ public:
+  explicit EqualFilterImpl(
+      std::vector<const google::protobuf::FieldDescriptor*>&& field_descriptors,
+      const std::string& value):
+      field_descriptors_(std::move(field_descriptors)),
+      value_(value) {}
+
+  bool IsMatch(const google::protobuf::Message& message) const override;
+
+ private:
+  std::vector<const google::protobuf::FieldDescriptor*> field_descriptors_;
+  std::string value_;
+};
+
 template <typename ValueType>
 bool EqualFilterImpl<ValueType>::IsMatch(
     const google::protobuf::Message& message) const {
@@ -64,6 +80,13 @@ bool EqualFilterImpl<const google::protobuf::EnumValueDescriptor*>::IsMatch(
       value_->number() ==
       GetValueFromProto<const google::protobuf::EnumValueDescriptor*>(
           message, field_descriptors_)->number());
+}
+
+bool EqualFilterImpl<std::string>::IsMatch(
+    const google::protobuf::Message& message) const {
+  return (
+      value_ ==
+      GetValueFromProto<const std::string&>(message, field_descriptors_));
 }
 
 absl::StatusOr<std::unique_ptr<EqualFilter>> EqualFilter::New(
@@ -164,7 +187,10 @@ absl::StatusOr<std::unique_ptr<EqualFilter>> EqualFilter::New(
       }
     case google::protobuf::FieldDescriptor::CppType::CPPTYPE_STRING:
       {
-        return absl::make_unique<EqualFilterImpl<const std::string&>>(
+        // ValueType must be "std::string" rather than "const std::string&".
+        // Otherwise, value_ would be a reference to config.value(), and when
+        // config is out of scope, value_ would refer to nothing.
+        return absl::make_unique<EqualFilterImpl<std::string>>(
             std::move(field_descriptors), config.value());
       }
     default:
