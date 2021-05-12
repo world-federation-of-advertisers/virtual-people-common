@@ -23,11 +23,25 @@ cc_library(
     strip_include_prefix = _INCLUDE_PREFIX,
     deps = [
         "//src/main/cc/wfa/virtual_people/common/field_filter/utils:field_util",
+        "//src/main/cc/wfa/virtual_people/common/field_filter/utils:message_filter_util",
         "//src/main/cc/wfa/virtual_people/common/field_filter/utils:type_convert_util",
         "//src/main/proto/wfa/virtual_people/common:field_filter_cc_proto",
         "@com_google_absl//absl/memory",
+        "@com_google_absl//absl/status",
         "@com_google_absl//absl/status:statusor",
         "@com_google_absl//absl/strings",
+        "@com_google_protobuf//:protobuf",
+    ],
+)
+
+cc_test(
+    name = "field_filter_test",
+    srcs = ["field_filter_test.cc"],
+    deps = [
+        ":field_filter",
+        "//src/main/cc/wfa/virtual_people/common/field_filter/test:test_cc_proto",
+        "@com_google_absl//absl/status",
+        "@com_google_googletest//:gtest_main",
         "@com_google_protobuf//:protobuf",
     ],
 )

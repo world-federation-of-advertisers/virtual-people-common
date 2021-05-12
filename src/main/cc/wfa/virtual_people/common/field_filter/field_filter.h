@@ -37,6 +37,14 @@ class FieldFilter {
       const google::protobuf::Descriptor* descriptor,
       const FieldFilterProto& config);
 
+  // Creates a FieldFilter, which checks the equality of all the fields set in
+  // the input @message, including nested fields.
+  //
+  // Float and double fields are not supported.
+  // Any repeated field is not supported.
+  static absl::StatusOr<std::unique_ptr<FieldFilter>> New(
+      const google::protobuf::Message& message);
+
   virtual ~FieldFilter() = default;
 
   // Returns true if the @message satisfies the condition given by the @config.

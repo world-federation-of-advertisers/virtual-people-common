@@ -14,6 +14,7 @@
 
 #include "wfa/virtual_people/common/field_filter/field_filter.h"
 
+#include "absl/status/status.h"
 #include "absl/status/statusor.h"
 #include "google/protobuf/descriptor.h"
 #include "src/main/proto/wfa/virtual_people/common/field_filter.pb.h"
@@ -21,6 +22,7 @@
 #include "wfa/virtual_people/common/field_filter/equal_filter.h"
 #include "wfa/virtual_people/common/field_filter/partial_filter.h"
 #include "wfa/virtual_people/common/field_filter/true_filter.h"
+#include "wfa/virtual_people/common/field_filter/utils/message_filter_util.h"
 
 namespace wfa_virtual_people {
 
@@ -57,6 +59,16 @@ absl::StatusOr<std::unique_ptr<FieldFilter>> FieldFilter::New(
     default:
       return absl::InvalidArgumentError("Invalid op in field filter.");
   }
+}
+
+absl::StatusOr<std::unique_ptr<FieldFilter>> FieldFilter::New(
+    const google::protobuf::Message& message) {
+  FieldFilterProto config;
+  absl::Status status = ConvertMessageToFilter(message, &config);
+  if (!status.ok()) {
+    return status;
+  }
+  return FieldFilter::New(message.GetDescriptor(), config);
 }
 
 }  // namespace wfa_virtual_people
