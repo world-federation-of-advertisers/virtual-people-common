@@ -37,6 +37,24 @@ TEST(TrueFilterTest, TestIsMatch) {
   EXPECT_TRUE(field_filter->IsMatch(test_proto));
 }
 
+TEST(TrueFilterTest, TestIsMatchNotEmptyEvent) {
+  FieldFilterProto field_filter_proto;
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"PROTO(
+      op: TRUE
+  )PROTO", &field_filter_proto));
+  auto field_filter_or =
+      FieldFilter::New(TestProto().GetDescriptor(), field_filter_proto);
+  EXPECT_TRUE(field_filter_or.ok());
+  std::unique_ptr<FieldFilter> field_filter =
+      std::move(field_filter_or.value());
+
+  TestProto test_proto;
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"PROTO(
+      person_country_code: "COUNTRY_1"
+  )PROTO", &test_proto));
+  EXPECT_TRUE(field_filter->IsMatch(test_proto));
+}
+
 TEST(TrueFilterTest, TestWithName) {
   FieldFilterProto field_filter_proto;
   ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"PROTO(

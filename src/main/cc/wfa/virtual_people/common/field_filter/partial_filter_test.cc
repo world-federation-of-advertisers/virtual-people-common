@@ -59,7 +59,7 @@ TEST(PartialFilterTest, TestNoSubFilters) {
             absl::StatusCode::kInvalidArgument);
 }
 
-TEST(PartialFilterTest, TestPass) {
+TEST(PartialFilterTest, TestMatch) {
   FieldFilterProto field_filter_proto;
   ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"PROTO(
       name: "a.b"
@@ -93,7 +93,7 @@ TEST(PartialFilterTest, TestPass) {
   EXPECT_TRUE(field_filter->IsMatch(test_proto));
 }
 
-TEST(PartialFilterTest, TestNotPass) {
+TEST(PartialFilterTest, TestNotMatch) {
   FieldFilterProto field_filter_proto;
   ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"PROTO(
       name: "a.b"

@@ -37,7 +37,7 @@ TEST(AndFilterTest, TestNoSubFilters) {
             absl::StatusCode::kInvalidArgument);
 }
 
-TEST(AndFilterTest, TestPass) {
+TEST(AndFilterTest, TestMatch) {
   FieldFilterProto field_filter_proto;
   ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"PROTO(
       op: AND
@@ -70,7 +70,7 @@ TEST(AndFilterTest, TestPass) {
   EXPECT_TRUE(field_filter->IsMatch(test_proto));
 }
 
-TEST(AndFilterTest, TestNotPass) {
+TEST(AndFilterTest, TestNotMatch) {
   FieldFilterProto field_filter_proto;
   ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"PROTO(
       op: AND
