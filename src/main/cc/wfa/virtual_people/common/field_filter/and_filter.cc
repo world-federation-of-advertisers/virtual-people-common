@@ -51,8 +51,8 @@ absl::StatusOr<std::unique_ptr<AndFilter>> AndFilter::New(
 }
 
 bool AndFilter::IsMatch(const google::protobuf::Message& message) const {
-  for (auto it = sub_filters_->begin(); it != sub_filters_->end(); ++it) {
-    if (!(*it)->IsMatch(message)) {
+  for (auto& filter : *sub_filters_) {
+    if (!filter->IsMatch(message)) {
       return false;
     }
   }

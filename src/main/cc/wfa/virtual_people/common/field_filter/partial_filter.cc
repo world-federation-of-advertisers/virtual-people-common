@@ -74,8 +74,8 @@ bool PartialFilter::IsMatch(const google::protobuf::Message& message) const {
   const google::protobuf::Message& sub_message =
       GetValueFromProto<const google::protobuf::Message&>(
           message, field_descriptors_);
-  for (auto it = sub_filters_->begin(); it != sub_filters_->end(); ++it) {
-    if (!(*it)->IsMatch(sub_message)) {
+  for (auto& filter : *sub_filters_) {
+    if (!filter->IsMatch(sub_message)) {
       return false;
     }
   }
