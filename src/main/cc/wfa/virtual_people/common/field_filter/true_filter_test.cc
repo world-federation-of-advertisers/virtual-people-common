@@ -25,9 +25,7 @@ namespace {
 
 TEST(TrueFilterTest, TestIsMatch) {
   FieldFilterProto field_filter_proto;
-  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
-      op: TRUE
-  )pb", &field_filter_proto));
+  field_filter_proto.set_op(FieldFilterProto::TRUE);
   ASSERT_OK_AND_ASSIGN(
       std::unique_ptr<FieldFilter> field_filter,
       FieldFilter::New(TestProto().GetDescriptor(), field_filter_proto));
@@ -38,17 +36,13 @@ TEST(TrueFilterTest, TestIsMatch) {
 
 TEST(TrueFilterTest, TestIsMatchNotEmptyEvent) {
   FieldFilterProto field_filter_proto;
-  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
-      op: TRUE
-  )pb", &field_filter_proto));
+  field_filter_proto.set_op(FieldFilterProto::TRUE);
   ASSERT_OK_AND_ASSIGN(
       std::unique_ptr<FieldFilter> field_filter,
       FieldFilter::New(TestProto().GetDescriptor(), field_filter_proto));
 
   TestProto test_proto;
-  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
-      person_country_code: "COUNTRY_1"
-  )pb", &test_proto));
+  test_proto.set_person_country_code("COUNTRY_1");
   EXPECT_TRUE(field_filter->IsMatch(test_proto));
 }
 

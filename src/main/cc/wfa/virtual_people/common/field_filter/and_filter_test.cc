@@ -29,9 +29,7 @@ using ::wfa_virtual_people::test::TestProto;
 
 TEST(AndFilterTest, TestNoSubFilters) {
   FieldFilterProto field_filter_proto;
-  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
-      op: AND
-  )pb", &field_filter_proto));
+  field_filter_proto.set_op(FieldFilterProto::AND);
   auto field_filter =
       FieldFilter::New(TestProto().GetDescriptor(), field_filter_proto);
   EXPECT_EQ(field_filter.status().code(),
