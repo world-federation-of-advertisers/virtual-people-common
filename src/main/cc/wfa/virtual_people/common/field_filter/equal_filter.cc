@@ -107,7 +107,7 @@ absl::StatusOr<std::unique_ptr<EqualFilterImpl<NumericType>>> CreateFilter(
         config.DebugString()));
   }
   return absl::make_unique<EqualFilterImpl<NumericType>>(
-      std::move(field_descriptors), value.value());
+      std::move(field_descriptors), *value);
 }
 
 absl::StatusOr<std::unique_ptr<EqualFilter>> EqualFilter::New(
@@ -164,7 +164,7 @@ absl::StatusOr<std::unique_ptr<EqualFilter>> EqualFilter::New(
         }
         return absl::make_unique<EqualFilterImpl<
             const google::protobuf::EnumValueDescriptor*>>(
-                std::move(field_descriptors), value.value());
+                std::move(field_descriptors), *value);
       }
     case google::protobuf::FieldDescriptor::CppType::CPPTYPE_STRING:
       {
