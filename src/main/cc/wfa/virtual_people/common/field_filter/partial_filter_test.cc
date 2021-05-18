@@ -29,7 +29,7 @@ using ::wfa_virtual_people::test::TestProto;
 
 TEST(PartialFilterTest, TestNoName) {
   FieldFilterProto field_filter_proto;
-  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"PROTO(
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
       op: PARTIAL
       sub_filters {
         name: "int32_value"
@@ -41,7 +41,7 @@ TEST(PartialFilterTest, TestNoName) {
         op: EQUAL
         value: "1"
       }
-  )PROTO", &field_filter_proto));
+  )pb", &field_filter_proto));
   auto field_filter =
       FieldFilter::New(TestProto().GetDescriptor(), field_filter_proto);
   EXPECT_EQ(field_filter.status().code(),
@@ -50,10 +50,10 @@ TEST(PartialFilterTest, TestNoName) {
 
 TEST(PartialFilterTest, TestNoSubFilters) {
   FieldFilterProto field_filter_proto;
-  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"PROTO(
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
       name: "a.b"
       op: PARTIAL
-  )PROTO", &field_filter_proto));
+  )pb", &field_filter_proto));
   auto field_filter =
       FieldFilter::New(TestProto().GetDescriptor(), field_filter_proto);
   EXPECT_EQ(field_filter.status().code(),
@@ -62,7 +62,7 @@ TEST(PartialFilterTest, TestNoSubFilters) {
 
 TEST(PartialFilterTest, TestMatch) {
   FieldFilterProto field_filter_proto;
-  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"PROTO(
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
       name: "a.b"
       op: PARTIAL
       sub_filters {
@@ -75,26 +75,26 @@ TEST(PartialFilterTest, TestMatch) {
         op: EQUAL
         value: "1"
       }
-  )PROTO", &field_filter_proto));
+  )pb", &field_filter_proto));
   ASSERT_OK_AND_ASSIGN(
       std::unique_ptr<FieldFilter> field_filter,
       FieldFilter::New(TestProto().GetDescriptor(), field_filter_proto));
 
   TestProto test_proto;
-  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"PROTO(
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
       a {
         b {
           int32_value: 1
           int64_value: 1
         }
       }
-  )PROTO", &test_proto));
+  )pb", &test_proto));
   EXPECT_TRUE(field_filter->IsMatch(test_proto));
 }
 
 TEST(PartialFilterTest, TestNotMatch) {
   FieldFilterProto field_filter_proto;
-  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"PROTO(
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
       name: "a.b"
       op: PARTIAL
       sub_filters {
@@ -107,20 +107,20 @@ TEST(PartialFilterTest, TestNotMatch) {
         op: EQUAL
         value: "1"
       }
-  )PROTO", &field_filter_proto));
+  )pb", &field_filter_proto));
   ASSERT_OK_AND_ASSIGN(
       std::unique_ptr<FieldFilter> field_filter,
       FieldFilter::New(TestProto().GetDescriptor(), field_filter_proto));
 
   TestProto test_proto;
-  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"PROTO(
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
       a {
         b {
           int32_value: 1
           int64_value: 2
         }
       }
-  )PROTO", &test_proto));
+  )pb", &test_proto));
   EXPECT_FALSE(field_filter->IsMatch(test_proto));
 }
 

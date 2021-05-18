@@ -32,7 +32,7 @@ using ::wfa_virtual_people::test::TestProto;
 
 TEST(GetFieldFromProtoTest, GetFieldAndValue) {
   TestProto test_proto_1, test_proto_2;
-  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"PROTO(
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
       a {
         b {
           int32_value: 1
@@ -46,8 +46,8 @@ TEST(GetFieldFromProtoTest, GetFieldAndValue) {
           string_value: "string1"
         }
       }
-  )PROTO", &test_proto_1));
-  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"PROTO(
+  )pb", &test_proto_1));
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
       a {
         b {
           int32_value: 2
@@ -61,7 +61,7 @@ TEST(GetFieldFromProtoTest, GetFieldAndValue) {
           string_value: "string2"
         }
       }
-  )PROTO", &test_proto_2));
+  )pb", &test_proto_2));
   std::vector<const google::protobuf::FieldDescriptor*> field_descriptors;
   // Test int32.
   EXPECT_TRUE(
@@ -134,13 +134,13 @@ TEST(GetFieldFromProtoTest, GetFieldAndValue) {
 
 TEST(GetFieldFromProtoTest, InvalidFieldName) {
   TestProto test_proto;
-  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"PROTO(
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
       a {
         b {
           int64_value: 1
         }
       }
-  )PROTO", &test_proto));
+  )pb", &test_proto));
   std::vector<const google::protobuf::FieldDescriptor*> field_descriptors;
   absl::Status status =
       GetFieldFromProto(test_proto.GetDescriptor(), "a.c", &field_descriptors);
@@ -149,13 +149,13 @@ TEST(GetFieldFromProtoTest, InvalidFieldName) {
 
 TEST(GetFieldFromProtoTest, InvalidSubmessageName) {
   TestProto test_proto;
-  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"PROTO(
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
       a {
         b {
           int64_value: 1
         }
       }
-  )PROTO", &test_proto));
+  )pb", &test_proto));
   std::vector<const google::protobuf::FieldDescriptor*> field_descriptors;
   absl::Status status =
       GetFieldFromProto(test_proto.GetDescriptor(), "a.b.int64_value.c",
