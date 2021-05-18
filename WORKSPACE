@@ -30,6 +30,6 @@ load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 git_repository(
     name = "cross_media_measurement",
     remote = "https://github.com/world-federation-of-advertisers/cross-media-measurement",
-    commit = "6db0c7f29414399b91fc53e9dadcf3496cc29540",
-    repo_mapping = {"@googletest": "@com_google_googletest"}
+    commit = "a4863588aa84c965e6ec0d0b1d6e535b0d86d388",
+    repo_mapping = {"@googletest": "@com_google_googletest"},
 )

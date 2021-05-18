@@ -21,6 +21,7 @@
 #include "google/protobuf/message.h"
 #include "gtest/gtest.h"
 #include "src/main/cc/wfa/virtual_people/common/field_filter/test/test.pb.h"
+#include "src/test/cc/testutil/matchers.h"
 
 namespace wfa_virtual_people {
 namespace {
@@ -28,113 +29,105 @@ namespace {
 using ::wfa_virtual_people::test::TestProtoB;
 
 TEST(ConvertToNumericTest, TestInt32) {
-  auto output = ConvertToNumeric<int32_t>("1");
-  EXPECT_TRUE(output.ok());
-  EXPECT_EQ(output.value(), 1);
+  EXPECT_THAT(ConvertToNumeric<int32_t>("1"), wfa::IsOkAndHolds(1));
 }
 
 TEST(ConvertToNumericTest, TestInt32Invalid) {
-  auto output = ConvertToNumeric<int32_t>("a");
-  EXPECT_EQ(output.status().code(), absl::StatusCode::kInvalidArgument);
+  EXPECT_THAT(
+      ConvertToNumeric<int32_t>("a").status(),
+      wfa::StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 TEST(ConvertToNumericTest, TestInt64) {
-  auto output = ConvertToNumeric<int64_t>("1");
-  EXPECT_TRUE(output.ok());
-  EXPECT_EQ(output.value(), 1);
+  EXPECT_THAT(ConvertToNumeric<int64_t>("1"), wfa::IsOkAndHolds(1));
 }
 
 TEST(ConvertToNumericTest, TestInt64Invalid) {
-  auto output = ConvertToNumeric<int64_t>("a");
-  EXPECT_EQ(output.status().code(), absl::StatusCode::kInvalidArgument);
+  EXPECT_THAT(
+      ConvertToNumeric<int64_t>("a").status(),
+      wfa::StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 TEST(ConvertToNumericTest, TestUInt32) {
-  auto output = ConvertToNumeric<uint32_t>("1");
-  EXPECT_TRUE(output.ok());
-  EXPECT_EQ(output.value(), 1);
+  EXPECT_THAT(ConvertToNumeric<uint32_t>("1"), wfa::IsOkAndHolds(1));
 }
 
 TEST(ConvertToNumericTest, TestUInt32Invalid) {
-  auto output = ConvertToNumeric<uint32_t>("a");
-  EXPECT_EQ(output.status().code(), absl::StatusCode::kInvalidArgument);
+  EXPECT_THAT(
+      ConvertToNumeric<uint32_t>("a").status(),
+      wfa::StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 TEST(ConvertToNumericTest, TestUInt64) {
-  auto output = ConvertToNumeric<uint64_t>("1");
-  EXPECT_TRUE(output.ok());
-  EXPECT_EQ(output.value(), 1);
+  EXPECT_THAT(ConvertToNumeric<uint64_t>("1"), wfa::IsOkAndHolds(1));
 }
 
 TEST(ConvertToNumericTest, TestUInt64Invalid) {
-  auto output = ConvertToNumeric<uint64_t>("a");
-  EXPECT_EQ(output.status().code(), absl::StatusCode::kInvalidArgument);
+  EXPECT_THAT(
+      ConvertToNumeric<uint64_t>("a").status(),
+      wfa::StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 TEST(ConvertToNumericTest, TestFloat) {
-  auto output = ConvertToNumeric<float>("1.1");
-  EXPECT_TRUE(output.ok());
-  EXPECT_EQ(output.value(), 1.1f);
+  EXPECT_THAT(ConvertToNumeric<float>("1.1"), wfa::IsOkAndHolds(1.1f));
 }
 
 TEST(ConvertToNumericTest, TestFloatInvalid) {
-  auto output = ConvertToNumeric<float>("a");
-  EXPECT_EQ(output.status().code(), absl::StatusCode::kInvalidArgument);
+  EXPECT_THAT(
+      ConvertToNumeric<float>("a").status(),
+      wfa::StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 TEST(ConvertToNumericTest, TestDouble) {
-  auto output = ConvertToNumeric<double>("1.1");
-  EXPECT_TRUE(output.ok());
-  EXPECT_EQ(output.value(), 1.1);
+  EXPECT_THAT(ConvertToNumeric<double>("1.1"), wfa::IsOkAndHolds(1.1));
 }
 
 TEST(ConvertToNumericTest, TestDoubleInvalid) {
-  auto output = ConvertToNumeric<double>("a");
-  EXPECT_EQ(output.status().code(), absl::StatusCode::kInvalidArgument);
+  EXPECT_THAT(
+      ConvertToNumeric<double>("a").status(),
+      wfa::StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 TEST(ConvertToNumericTest, TestBool) {
   std::vector<std::string> true_strings = {"true", "t", "yes", "y", "1"};
   for (const std::string& s : true_strings) {
-    auto output = ConvertToNumeric<bool>(s);
-    EXPECT_TRUE(output.ok());
-    EXPECT_TRUE(output.value());
+    EXPECT_THAT(ConvertToNumeric<bool>(s), wfa::IsOkAndHolds(true));
   }
 
   std::vector<std::string> false_strings = {"false", "f", "no", "n", "0"};
   for (const std::string& s : false_strings) {
-    auto output = ConvertToNumeric<bool>(s);
-    EXPECT_TRUE(output.ok());
-    EXPECT_FALSE(output.value());
+    EXPECT_THAT(ConvertToNumeric<bool>(s), wfa::IsOkAndHolds(false));
   }
 }
 
 TEST(ConvertToNumericTest, TestBoolInvalid) {
-  auto output = ConvertToNumeric<bool>("a");
-  EXPECT_EQ(output.status().code(), absl::StatusCode::kInvalidArgument);
+  EXPECT_THAT(
+      ConvertToNumeric<bool>("a").status(),
+      wfa::StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 TEST(ConvertToEnumTest, TestEnumName) {
   const google::protobuf::FieldDescriptor* field_descriptor =
       TestProtoB().GetDescriptor()->FindFieldByName("enum_value");
   auto output = ConvertToEnum(field_descriptor, "TEST_ENUM_1");
-  EXPECT_TRUE(output.ok());
-  EXPECT_EQ(output.value()->number(), 1);
+  EXPECT_THAT(output, wfa::IsOk());
+  EXPECT_EQ((*output)->number(), 1);
 }
 
 TEST(ConvertToEnumTest, TestEnumNumber) {
   const google::protobuf::FieldDescriptor* field_descriptor =
       TestProtoB().GetDescriptor()->FindFieldByName("enum_value");
   auto output = ConvertToEnum(field_descriptor, "1");
-  EXPECT_TRUE(output.ok());
-  EXPECT_EQ(output.value()->number(), 1);
+  EXPECT_THAT(output, wfa::IsOk());
+  EXPECT_EQ((*output)->number(), 1);
 }
 
 TEST(ConvertToEnumTest, TestEnumInvalid) {
   const google::protobuf::FieldDescriptor* field_descriptor =
       TestProtoB().GetDescriptor()->FindFieldByName("enum_value");
-  auto output = ConvertToEnum(field_descriptor, "a");
-  EXPECT_EQ(output.status().code(), absl::StatusCode::kInvalidArgument);
+  EXPECT_THAT(
+      ConvertToEnum(field_descriptor, "a").status(),
+      wfa::StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 }  // namespace

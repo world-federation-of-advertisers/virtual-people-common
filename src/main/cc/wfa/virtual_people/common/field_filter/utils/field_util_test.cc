@@ -64,68 +64,68 @@ TEST(GetFieldFromProtoTest, GetFieldAndValue) {
   )pb", &test_proto_2));
   std::vector<const google::protobuf::FieldDescriptor*> field_descriptors;
   // Test int32.
-  EXPECT_TRUE(
+  EXPECT_THAT(
       GetFieldFromProto(
-          test_proto_1.GetDescriptor(), "a.b.int32_value", &field_descriptors
-      ).ok());
+          test_proto_1.GetDescriptor(), "a.b.int32_value", &field_descriptors),
+      wfa::IsOk());
   EXPECT_EQ(GetValueFromProto<int32_t>(test_proto_2, field_descriptors), 2);
   // Test int64.
-  EXPECT_TRUE(
+  EXPECT_THAT(
       GetFieldFromProto(
-          test_proto_1.GetDescriptor(), "a.b.int64_value", &field_descriptors
-      ).ok());
+          test_proto_1.GetDescriptor(), "a.b.int64_value", &field_descriptors),
+      wfa::IsOk());
   EXPECT_EQ(GetValueFromProto<int64_t>(test_proto_2, field_descriptors), 2);
   // Test uint32.
-  EXPECT_TRUE(
+  EXPECT_THAT(
       GetFieldFromProto(
-          test_proto_1.GetDescriptor(), "a.b.uint32_value", &field_descriptors
-      ).ok());
+          test_proto_1.GetDescriptor(), "a.b.uint32_value", &field_descriptors),
+      wfa::IsOk());
   EXPECT_EQ(GetValueFromProto<uint32_t>(test_proto_2, field_descriptors), 2);
   // Test int64.
-  EXPECT_TRUE(
+  EXPECT_THAT(
       GetFieldFromProto(
-          test_proto_1.GetDescriptor(), "a.b.uint64_value", &field_descriptors
-      ).ok());
+          test_proto_1.GetDescriptor(), "a.b.uint64_value", &field_descriptors),
+      wfa::IsOk());
   EXPECT_EQ(GetValueFromProto<uint64_t>(test_proto_2, field_descriptors), 2);
   // Test float.
-  EXPECT_TRUE(
+  EXPECT_THAT(
       GetFieldFromProto(
-          test_proto_1.GetDescriptor(), "a.b.float_value", &field_descriptors
-      ).ok());
+          test_proto_1.GetDescriptor(), "a.b.float_value", &field_descriptors),
+      wfa::IsOk());
   EXPECT_EQ(GetValueFromProto<float>(test_proto_2, field_descriptors), 2.0);
   // Test double.
-  EXPECT_TRUE(
+  EXPECT_THAT(
       GetFieldFromProto(
-          test_proto_1.GetDescriptor(), "a.b.double_value", &field_descriptors
-      ).ok());
+          test_proto_1.GetDescriptor(), "a.b.double_value", &field_descriptors),
+      wfa::IsOk());
   EXPECT_EQ(GetValueFromProto<double>(test_proto_2, field_descriptors), 2.0);
   // Test bool.
-  EXPECT_TRUE(
+  EXPECT_THAT(
       GetFieldFromProto(
-          test_proto_1.GetDescriptor(), "a.b.bool_value", &field_descriptors
-      ).ok());
+          test_proto_1.GetDescriptor(), "a.b.bool_value", &field_descriptors),
+      wfa::IsOk());
   EXPECT_FALSE(GetValueFromProto<bool>(test_proto_2, field_descriptors));
   // Test enum.
-  EXPECT_TRUE(
+  EXPECT_THAT(
       GetFieldFromProto(
-          test_proto_1.GetDescriptor(), "a.b.enum_value", &field_descriptors
-      ).ok());
+          test_proto_1.GetDescriptor(), "a.b.enum_value", &field_descriptors),
+      wfa::IsOk());
   EXPECT_EQ(
       GetValueFromProto<const google::protobuf::EnumValueDescriptor*>(
           test_proto_2, field_descriptors)->number(), 2);
   // Test string.
-  EXPECT_TRUE(
+  EXPECT_THAT(
       GetFieldFromProto(
-          test_proto_1.GetDescriptor(), "a.b.string_value", &field_descriptors
-      ).ok());
+          test_proto_1.GetDescriptor(), "a.b.string_value", &field_descriptors),
+      wfa::IsOk());
   EXPECT_EQ(
       GetValueFromProto<const std::string&>(test_proto_2, field_descriptors),
       "string2");
   // Test Message.
-  EXPECT_TRUE(
+  EXPECT_THAT(
       GetFieldFromProto(
-          test_proto_1.GetDescriptor(), "a.b", &field_descriptors
-      ).ok());
+          test_proto_1.GetDescriptor(), "a.b", &field_descriptors),
+      wfa::IsOk());
   EXPECT_THAT(
       GetValueFromProto<const google::protobuf::Message&>(
           test_proto_2, field_descriptors),
@@ -142,9 +142,9 @@ TEST(GetFieldFromProtoTest, InvalidFieldName) {
       }
   )pb", &test_proto));
   std::vector<const google::protobuf::FieldDescriptor*> field_descriptors;
-  absl::Status status =
-      GetFieldFromProto(test_proto.GetDescriptor(), "a.c", &field_descriptors);
-  EXPECT_EQ(status.code(), absl::StatusCode::kInvalidArgument);
+  EXPECT_THAT(
+      GetFieldFromProto(test_proto.GetDescriptor(), "a.c", &field_descriptors),
+      wfa::StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 TEST(GetFieldFromProtoTest, InvalidSubmessageName) {
@@ -157,10 +157,10 @@ TEST(GetFieldFromProtoTest, InvalidSubmessageName) {
       }
   )pb", &test_proto));
   std::vector<const google::protobuf::FieldDescriptor*> field_descriptors;
-  absl::Status status =
+  EXPECT_THAT(
       GetFieldFromProto(test_proto.GetDescriptor(), "a.b.int64_value.c",
-                        &field_descriptors);
-  EXPECT_EQ(status.code(), absl::StatusCode::kInvalidArgument);
+                        &field_descriptors),
+      wfa::StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 }  // namespace

@@ -19,6 +19,7 @@
 #include "gtest/gtest.h"
 #include "src/main/cc/wfa/virtual_people/common/field_filter/test/test.pb.h"
 #include "src/main/proto/wfa/virtual_people/common/field_filter.pb.h"
+#include "src/test/cc/testutil/matchers.h"
 #include "src/test/cc/testutil/status_macros.h"
 #include "wfa/virtual_people/common/field_filter/field_filter.h"
 
@@ -43,10 +44,10 @@ TEST(EqualFilterTest, TestNoName) {
       op: EQUAL
       value: "1"
   )pb", &field_filter_proto));
-  auto field_filter =
-      FieldFilter::New(TestProto().GetDescriptor(), field_filter_proto);
-  EXPECT_EQ(field_filter.status().code(),
-            absl::StatusCode::kInvalidArgument);
+  EXPECT_THAT(
+      FieldFilter::New(TestProto().GetDescriptor(),
+                       field_filter_proto).status(),
+      wfa::StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 TEST(EqualFilterTest, TestNoValue) {
@@ -55,10 +56,10 @@ TEST(EqualFilterTest, TestNoValue) {
       name: "a.b.int32_value"
       op: EQUAL
   )pb", &field_filter_proto));
-  auto field_filter =
-      FieldFilter::New(TestProto().GetDescriptor(), field_filter_proto);
-  EXPECT_EQ(field_filter.status().code(),
-            absl::StatusCode::kInvalidArgument);
+  EXPECT_THAT(
+      FieldFilter::New(TestProto().GetDescriptor(),
+                       field_filter_proto).status(),
+      wfa::StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 TEST(EqualFilterTest, TestInt32) {

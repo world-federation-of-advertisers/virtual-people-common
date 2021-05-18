@@ -19,6 +19,7 @@
 #include "gtest/gtest.h"
 #include "src/main/cc/wfa/virtual_people/common/field_filter/test/test.pb.h"
 #include "src/main/proto/wfa/virtual_people/common/field_filter.pb.h"
+#include "src/test/cc/testutil/matchers.h"
 #include "src/test/cc/testutil/status_macros.h"
 #include "wfa/virtual_people/common/field_filter/field_filter.h"
 
@@ -30,10 +31,10 @@ using ::wfa_virtual_people::test::TestProto;
 TEST(AndFilterTest, TestNoSubFilters) {
   FieldFilterProto field_filter_proto;
   field_filter_proto.set_op(FieldFilterProto::AND);
-  auto field_filter =
-      FieldFilter::New(TestProto().GetDescriptor(), field_filter_proto);
-  EXPECT_EQ(field_filter.status().code(),
-            absl::StatusCode::kInvalidArgument);
+  EXPECT_THAT(
+      FieldFilter::New(TestProto().GetDescriptor(),
+                       field_filter_proto).status(),
+      wfa::StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 TEST(AndFilterTest, TestMatch) {

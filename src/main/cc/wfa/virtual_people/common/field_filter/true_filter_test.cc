@@ -17,6 +17,7 @@
 #include "gtest/gtest.h"
 #include "src/main/cc/wfa/virtual_people/common/field_filter/test/test.pb.h"
 #include "src/main/proto/wfa/virtual_people/common/field_filter.pb.h"
+#include "src/test/cc/testutil/matchers.h"
 #include "src/test/cc/testutil/status_macros.h"
 #include "wfa/virtual_people/common/field_filter/field_filter.h"
 
@@ -52,10 +53,10 @@ TEST(TrueFilterTest, TestWithName) {
       op: TRUE
       name: "a"
   )pb", &field_filter_proto));
-  auto field_filter =
-      FieldFilter::New(TestProto().GetDescriptor(), field_filter_proto);
-  EXPECT_EQ(field_filter.status().code(),
-            absl::StatusCode::kInvalidArgument);
+  EXPECT_THAT(
+      FieldFilter::New(TestProto().GetDescriptor(),
+                       field_filter_proto).status(),
+      wfa::StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 TEST(TrueFilterTest, TestWithValue) {
@@ -64,10 +65,10 @@ TEST(TrueFilterTest, TestWithValue) {
       op: TRUE
       value: "1"
   )pb", &field_filter_proto));
-  auto field_filter =
-      FieldFilter::New(TestProto().GetDescriptor(), field_filter_proto);
-  EXPECT_EQ(field_filter.status().code(),
-            absl::StatusCode::kInvalidArgument);
+  EXPECT_THAT(
+      FieldFilter::New(TestProto().GetDescriptor(),
+                       field_filter_proto).status(),
+      wfa::StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 TEST(TrueFilterTest, TestWithSubFilters) {
@@ -80,10 +81,10 @@ TEST(TrueFilterTest, TestWithSubFilters) {
         value: "1"
       }
   )pb", &field_filter_proto));
-  auto field_filter =
-      FieldFilter::New(TestProto().GetDescriptor(), field_filter_proto);
-  EXPECT_EQ(field_filter.status().code(),
-            absl::StatusCode::kInvalidArgument);
+  EXPECT_THAT(
+      FieldFilter::New(TestProto().GetDescriptor(),
+                       field_filter_proto).status(),
+      wfa::StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 }  // namespace
