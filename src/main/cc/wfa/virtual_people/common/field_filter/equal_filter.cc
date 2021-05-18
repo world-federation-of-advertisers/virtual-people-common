@@ -89,6 +89,27 @@ bool EqualFilterImpl<std::string>::IsMatch(
       GetValueFromProto<const std::string&>(message, field_descriptors_));
 }
 
+// NumericType can be
+//   int32_t
+//   int64_t
+//   uint32_t
+//   uint64_t
+//   bool
+template <typename NumericType>
+absl::StatusOr<std::unique_ptr<EqualFilterImpl<NumericType>>> CreateFilter(
+    const FieldFilterProto& config,
+    std::vector<const google::protobuf::FieldDescriptor*>&& field_descriptors) {
+  absl::StatusOr<NumericType> value =
+      ConvertToNumeric<NumericType>(config.value());
+  if (!value.ok()) {
+    return absl::InvalidArgumentError(absl::StrCat(
+        "Value type does not match name. Input FieldFilterProto: ",
+        config.DebugString()));
+  }
+  return absl::make_unique<EqualFilterImpl<NumericType>>(
+      std::move(field_descriptors), value.value());
+}
+
 absl::StatusOr<std::unique_ptr<EqualFilter>> EqualFilter::New(
     const google::protobuf::Descriptor* descriptor,
     const FieldFilterProto& config) {
@@ -114,63 +135,23 @@ absl::StatusOr<std::unique_ptr<EqualFilter>> EqualFilter::New(
   switch (field_descriptors.back()->cpp_type()) {
     case google::protobuf::FieldDescriptor::CppType::CPPTYPE_INT32:
       {
-        absl::StatusOr<int32_t> value =
-            ConvertToNumeric<int32_t>(config.value());
-        if (!value.ok()) {
-          return absl::InvalidArgumentError(absl::StrCat(
-              "Value is not int32_t. Input FieldFilterProto: ",
-              config.DebugString()));
-        }
-        return absl::make_unique<EqualFilterImpl<int32_t>>(
-            std::move(field_descriptors), value.value());
+        return CreateFilter<int32_t>(config, std::move(field_descriptors));
       }
     case google::protobuf::FieldDescriptor::CppType::CPPTYPE_INT64:
       {
-        absl::StatusOr<int64_t> value =
-            ConvertToNumeric<int64_t>(config.value());
-        if (!value.ok()) {
-          return absl::InvalidArgumentError(absl::StrCat(
-              "Value is not int64_t. Input FieldFilterProto: ",
-              config.DebugString()));
-        }
-        return absl::make_unique<EqualFilterImpl<int64_t>>(
-            std::move(field_descriptors), value.value());
+        return CreateFilter<int64_t>(config, std::move(field_descriptors));
       }
     case google::protobuf::FieldDescriptor::CppType::CPPTYPE_UINT32:
       {
-        absl::StatusOr<uint32_t> value =
-            ConvertToNumeric<uint32_t>(config.value());
-        if (!value.ok()) {
-          return absl::InvalidArgumentError(absl::StrCat(
-              "Value is not uint32_t. Input FieldFilterProto: ",
-              config.DebugString()));
-        }
-        return absl::make_unique<EqualFilterImpl<uint32_t>>(
-            std::move(field_descriptors), value.value());
+        return CreateFilter<uint32_t>(config, std::move(field_descriptors));
       }
     case google::protobuf::FieldDescriptor::CppType::CPPTYPE_UINT64:
       {
-        absl::StatusOr<uint64_t> value =
-            ConvertToNumeric<uint64_t>(config.value());
-        if (!value.ok()) {
-          return absl::InvalidArgumentError(absl::StrCat(
-              "Value is not uint64_t. Input FieldFilterProto: ",
-              config.DebugString()));
-        }
-        return absl::make_unique<EqualFilterImpl<uint64_t>>(
-            std::move(field_descriptors), value.value());
+        return CreateFilter<uint64_t>(config, std::move(field_descriptors));
       }
     case google::protobuf::FieldDescriptor::CppType::CPPTYPE_BOOL:
       {
-        absl::StatusOr<bool> value =
-            ConvertToNumeric<bool>(config.value());
-        if (!value.ok()) {
-          return absl::InvalidArgumentError(absl::StrCat(
-              "Value is not bool. Input FieldFilterProto: ",
-              config.DebugString()));
-        }
-        return absl::make_unique<EqualFilterImpl<bool>>(
-            std::move(field_descriptors), value.value());
+        return CreateFilter<bool>(config, std::move(field_descriptors));
       }
     case google::protobuf::FieldDescriptor::CppType::CPPTYPE_ENUM:
       {
@@ -178,7 +159,7 @@ absl::StatusOr<std::unique_ptr<EqualFilter>> EqualFilter::New(
             ConvertToEnum(field_descriptors.back(), config.value());
         if (!value.ok()) {
           return absl::InvalidArgumentError(absl::StrCat(
-              "Value is not enum. Input FieldFilterProto: ",
+              "Value type does not match name. Input FieldFilterProto: ",
               config.DebugString()));
         }
         return absl::make_unique<EqualFilterImpl<
