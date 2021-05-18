@@ -19,6 +19,7 @@
 #include "google/protobuf/descriptor.h"
 #include "google/protobuf/message.h"
 #include "src/main/proto/wfa/virtual_people/common/field_filter.pb.h"
+#include "wfa/measurement/common/macros.h"
 #include "wfa/virtual_people/common/field_filter/field_filter.h"
 
 namespace wfa_virtual_people {
@@ -40,11 +41,10 @@ absl::StatusOr<std::unique_ptr<AndFilter>> AndFilter::New(
   std::unique_ptr<std::vector<std::unique_ptr<FieldFilter>>> sub_filters =
       absl::make_unique<std::vector<std::unique_ptr<FieldFilter>>>();
   for (const FieldFilterProto& sub_filter_proto : config.sub_filters()) {
-    auto sub_filter_or = FieldFilter::New(descriptor, sub_filter_proto);
-    if (!sub_filter_or.ok()) {
-      return sub_filter_or.status();
-    }
-    sub_filters->emplace_back(std::move(sub_filter_or.value()));
+    sub_filters->emplace_back();
+    ASSIGN_OR_RETURN(
+        sub_filters->back(),
+        FieldFilter::New(descriptor, sub_filter_proto));
   }
 
   return absl::make_unique<AndFilter>(std::move(sub_filters));

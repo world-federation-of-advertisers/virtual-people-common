@@ -19,6 +19,7 @@
 #include "gtest/gtest.h"
 #include "src/main/cc/wfa/virtual_people/common/field_filter/test/test.pb.h"
 #include "src/main/proto/wfa/virtual_people/common/field_filter.pb.h"
+#include "src/test/cc/testutil/status_macros.h"
 #include "wfa/virtual_people/common/field_filter/field_filter.h"
 
 namespace wfa_virtual_people {
@@ -41,9 +42,9 @@ TEST(PartialFilterTest, TestNoName) {
         value: "1"
       }
   )PROTO", &field_filter_proto));
-  auto field_filter_or =
+  auto field_filter =
       FieldFilter::New(TestProto().GetDescriptor(), field_filter_proto);
-  EXPECT_EQ(field_filter_or.status().code(),
+  EXPECT_EQ(field_filter.status().code(),
             absl::StatusCode::kInvalidArgument);
 }
 
@@ -53,9 +54,9 @@ TEST(PartialFilterTest, TestNoSubFilters) {
       name: "a.b"
       op: PARTIAL
   )PROTO", &field_filter_proto));
-  auto field_filter_or =
+  auto field_filter =
       FieldFilter::New(TestProto().GetDescriptor(), field_filter_proto);
-  EXPECT_EQ(field_filter_or.status().code(),
+  EXPECT_EQ(field_filter.status().code(),
             absl::StatusCode::kInvalidArgument);
 }
 
@@ -75,11 +76,9 @@ TEST(PartialFilterTest, TestMatch) {
         value: "1"
       }
   )PROTO", &field_filter_proto));
-  auto field_filter_or =
-      FieldFilter::New(TestProto().GetDescriptor(), field_filter_proto);
-  EXPECT_TRUE(field_filter_or.ok());
-  std::unique_ptr<FieldFilter> field_filter =
-      std::move(field_filter_or.value());
+  ASSERT_OK_AND_ASSIGN(
+      std::unique_ptr<FieldFilter> field_filter,
+      FieldFilter::New(TestProto().GetDescriptor(), field_filter_proto));
 
   TestProto test_proto;
   ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"PROTO(
@@ -109,11 +108,9 @@ TEST(PartialFilterTest, TestNotMatch) {
         value: "1"
       }
   )PROTO", &field_filter_proto));
-  auto field_filter_or =
-      FieldFilter::New(TestProto().GetDescriptor(), field_filter_proto);
-  EXPECT_TRUE(field_filter_or.ok());
-  std::unique_ptr<FieldFilter> field_filter =
-      std::move(field_filter_or.value());
+  ASSERT_OK_AND_ASSIGN(
+      std::unique_ptr<FieldFilter> field_filter,
+      FieldFilter::New(TestProto().GetDescriptor(), field_filter_proto));
 
   TestProto test_proto;
   ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"PROTO(
