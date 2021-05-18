@@ -38,7 +38,7 @@ absl::StatusOr<std::unique_ptr<AndFilter>> AndFilter::New(
         config.DebugString()));
   }
 
-  std::unique_ptr<std::vector<std::unique_ptr<FieldFilter>>> sub_filters =
+  auto sub_filters =
       absl::make_unique<std::vector<std::unique_ptr<FieldFilter>>>();
   for (const FieldFilterProto& sub_filter_proto : config.sub_filters()) {
     sub_filters->emplace_back();
