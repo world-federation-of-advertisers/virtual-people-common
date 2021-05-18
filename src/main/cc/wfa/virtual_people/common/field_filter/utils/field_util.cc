@@ -18,13 +18,14 @@
 #include "absl/status/status.h"
 #include "absl/strings/str_cat.h"
 #include "absl/strings/str_split.h"
+#include "absl/strings/string_view.h"
 #include "google/protobuf/descriptor.h"
 
 namespace wfa_virtual_people {
 
 absl::Status GetFieldFromProto(
     const google::protobuf::Descriptor* descriptor,
-    const std::string& full_field_name,
+    absl::string_view full_field_name,
     std::vector<const google::protobuf::FieldDescriptor*>* field_descriptors) {
   field_descriptors->clear();
   std::vector<std::string> field_names = absl::StrSplit(full_field_name, ".");

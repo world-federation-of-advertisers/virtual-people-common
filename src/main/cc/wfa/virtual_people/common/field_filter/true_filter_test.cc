@@ -17,6 +17,8 @@
 #include "gtest/gtest.h"
 #include "src/main/cc/wfa/virtual_people/common/field_filter/test/test.pb.h"
 #include "src/main/proto/wfa/virtual_people/common/field_filter.pb.h"
+#include "src/test/cc/testutil/matchers.h"
+#include "src/test/cc/testutil/status_macros.h"
 #include "wfa/virtual_people/common/field_filter/field_filter.h"
 
 namespace wfa_virtual_people {
@@ -24,57 +26,65 @@ namespace {
 
 TEST(TrueFilterTest, TestIsMatch) {
   FieldFilterProto field_filter_proto;
-  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"PROTO(
-      op: TRUE
-  )PROTO", &field_filter_proto));
-  auto field_filter_or =
-      FieldFilter::New(TestProto().GetDescriptor(), field_filter_proto);
-  EXPECT_TRUE(field_filter_or.ok());
-  std::unique_ptr<FieldFilter> field_filter =
-      std::move(field_filter_or.value());
+  field_filter_proto.set_op(FieldFilterProto::TRUE);
+  ASSERT_OK_AND_ASSIGN(
+      std::unique_ptr<FieldFilter> field_filter,
+      FieldFilter::New(TestProto().GetDescriptor(), field_filter_proto));
 
   TestProto test_proto;
   EXPECT_TRUE(field_filter->IsMatch(test_proto));
 }
 
+TEST(TrueFilterTest, TestIsMatchNotEmptyEvent) {
+  FieldFilterProto field_filter_proto;
+  field_filter_proto.set_op(FieldFilterProto::TRUE);
+  ASSERT_OK_AND_ASSIGN(
+      std::unique_ptr<FieldFilter> field_filter,
+      FieldFilter::New(TestProto().GetDescriptor(), field_filter_proto));
+
+  TestProto test_proto;
+  test_proto.set_person_country_code("COUNTRY_1");
+  EXPECT_TRUE(field_filter->IsMatch(test_proto));
+}
+
 TEST(TrueFilterTest, TestWithName) {
   FieldFilterProto field_filter_proto;
-  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"PROTO(
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
       op: TRUE
       name: "a"
-  )PROTO", &field_filter_proto));
-  auto field_filter_or =
-      FieldFilter::New(TestProto().GetDescriptor(), field_filter_proto);
-  EXPECT_EQ(field_filter_or.status().code(),
-            absl::StatusCode::kInvalidArgument);
+  )pb", &field_filter_proto));
+  EXPECT_THAT(
+      FieldFilter::New(TestProto().GetDescriptor(),
+                       field_filter_proto).status(),
+      wfa::StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 TEST(TrueFilterTest, TestWithValue) {
   FieldFilterProto field_filter_proto;
-  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"PROTO(
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
       op: TRUE
       value: "1"
-  )PROTO", &field_filter_proto));
-  auto field_filter_or =
-      FieldFilter::New(TestProto().GetDescriptor(), field_filter_proto);
-  EXPECT_EQ(field_filter_or.status().code(),
-            absl::StatusCode::kInvalidArgument);
+  )pb", &field_filter_proto));
+  EXPECT_THAT(
+      FieldFilter::New(TestProto().GetDescriptor(),
+                       field_filter_proto).status(),
+      wfa::StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 TEST(TrueFilterTest, TestWithSubFilters) {
   FieldFilterProto field_filter_proto;
-  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"PROTO(
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
       op: TRUE
       sub_filters {
         op: EQUAL
         name: "a"
         value: "1"
       }
-  )PROTO", &field_filter_proto));
-  auto field_filter_or =
-      FieldFilter::New(TestProto().GetDescriptor(), field_filter_proto);
-  EXPECT_EQ(field_filter_or.status().code(),
-            absl::StatusCode::kInvalidArgument);
+  )pb", &field_filter_proto));
+  EXPECT_THAT(
+      FieldFilter::New(TestProto().GetDescriptor(),
+                       field_filter_proto).status(),
+      wfa::StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 }  // namespace

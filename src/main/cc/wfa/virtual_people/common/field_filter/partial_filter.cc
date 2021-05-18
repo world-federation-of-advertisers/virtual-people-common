@@ -20,6 +20,7 @@
 #include "google/protobuf/descriptor.h"
 #include "google/protobuf/message.h"
 #include "src/main/proto/wfa/virtual_people/common/field_filter.pb.h"
+#include "wfa/measurement/common/macros.h"
 #include "wfa/virtual_people/common/field_filter/field_filter.h"
 #include "wfa/virtual_people/common/field_filter/utils/field_util.h"
 
@@ -44,11 +45,8 @@ absl::StatusOr<std::unique_ptr<PartialFilter>> PartialFilter::New(
 
   // Get the FieldDescriptors to the field represented by @config.name.
   std::vector<const google::protobuf::FieldDescriptor*> field_descriptors;
-  absl::Status status =
-      GetFieldFromProto(descriptor, config.name(), &field_descriptors);
-  if (!status.ok()) {
-    return status;
-  }
+  RETURN_IF_ERROR(
+      GetFieldFromProto(descriptor, config.name(), &field_descriptors));
   if (field_descriptors.back()->cpp_type() !=
       google::protobuf::FieldDescriptor::CppType::CPPTYPE_MESSAGE) {
     return absl::InvalidArgumentError(absl::StrCat(
@@ -59,14 +57,13 @@ absl::StatusOr<std::unique_ptr<PartialFilter>> PartialFilter::New(
   // Build all the sub filters.
   const google::protobuf::Descriptor* sub_descriptor =
       field_descriptors.back()->message_type();
-  std::unique_ptr<std::vector<std::unique_ptr<FieldFilter>>> sub_filters =
+  auto sub_filters =
       absl::make_unique<std::vector<std::unique_ptr<FieldFilter>>>();
   for (const FieldFilterProto& sub_filter_proto : config.sub_filters()) {
-    auto sub_filter_or = FieldFilter::New(sub_descriptor, sub_filter_proto);
-    if (!sub_filter_or.ok()) {
-      return sub_filter_or.status();
-    }
-    sub_filters->emplace_back(std::move(sub_filter_or.value()));
+    sub_filters->emplace_back();
+    ASSIGN_OR_RETURN(
+        sub_filters->back(),
+        FieldFilter::New(sub_descriptor, sub_filter_proto));
   }
 
   return absl::make_unique<PartialFilter>(
@@ -77,8 +74,8 @@ bool PartialFilter::IsMatch(const google::protobuf::Message& message) const {
   const google::protobuf::Message& sub_message =
       GetValueFromProto<const google::protobuf::Message&>(
           message, field_descriptors_);
-  for (auto it = sub_filters_->begin(); it != sub_filters_->end(); ++it) {
-    if (!(*it)->IsMatch(sub_message)) {
+  for (auto& filter : *sub_filters_) {
+    if (!filter->IsMatch(sub_message)) {
       return false;
     }
   }

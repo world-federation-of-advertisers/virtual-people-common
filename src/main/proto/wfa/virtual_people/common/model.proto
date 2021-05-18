@@ -112,8 +112,6 @@ message BranchNode {
       ConditionalMerge conditional_merge = 3;
       UpdateTree update_tree = 4;
     }
-    // The random seed used for the updater.
-    optional string random_seed = 5;
   }
 
   message AttributesUpdaters {
@@ -158,6 +156,9 @@ message UpdateMatrix {
 
   // Set to true if we allow events to pass through without matching a column.
   optional bool pass_through_non_matches = 5;
+
+  // The random seed used for row selection.
+  optional string random_seed = 6;
 }
 
 
@@ -180,6 +181,9 @@ message SparseUpdateMatrix {
   optional google.protobuf.FieldMask hash_field_mask = 2;
   // Set to true if we allow events to pass through without matching a column.
   optional bool pass_through_non_matches = 3;
+
+  // The random seed used for row selection.
+  optional string random_seed = 4;
 }
 
 

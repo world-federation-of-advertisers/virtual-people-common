@@ -19,6 +19,8 @@
 #include "gtest/gtest.h"
 #include "src/main/cc/wfa/virtual_people/common/field_filter/test/test.pb.h"
 #include "src/main/proto/wfa/virtual_people/common/field_filter.pb.h"
+#include "src/test/cc/testutil/matchers.h"
+#include "src/test/cc/testutil/status_macros.h"
 #include "wfa/virtual_people/common/field_filter/field_filter.h"
 
 namespace wfa_virtual_people {
@@ -28,220 +30,231 @@ using ::wfa_virtual_people::test::TestProto;
 
 // This function is required to test the FieldFilter still works when the
 // FieldFilterProto is out of scope.
-std::unique_ptr<FieldFilter> FilterFromProtoText(
-    const std::string& proto_text) {
+absl::StatusOr<std::unique_ptr<FieldFilter>> FilterFromProtoText(
+    absl::string_view proto_text) {
   FieldFilterProto field_filter_proto;
   EXPECT_TRUE(google::protobuf::TextFormat::ParseFromString(
-      proto_text, &field_filter_proto));
-  auto field_filter_or =
-      FieldFilter::New(TestProto().GetDescriptor(), field_filter_proto);
-  EXPECT_TRUE(field_filter_or.ok());
-  return std::move(field_filter_or.value());
+      std::string(proto_text), &field_filter_proto));
+  return FieldFilter::New(TestProto().GetDescriptor(), field_filter_proto);
 }
 
 TEST(EqualFilterTest, TestNoName) {
   FieldFilterProto field_filter_proto;
-  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"PROTO(
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
       op: EQUAL
       value: "1"
-  )PROTO", &field_filter_proto));
-  auto field_filter_or =
-      FieldFilter::New(TestProto().GetDescriptor(), field_filter_proto);
-  EXPECT_EQ(field_filter_or.status().code(),
-            absl::StatusCode::kInvalidArgument);
+  )pb", &field_filter_proto));
+  EXPECT_THAT(
+      FieldFilter::New(TestProto().GetDescriptor(),
+                       field_filter_proto).status(),
+      wfa::StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 TEST(EqualFilterTest, TestNoValue) {
   FieldFilterProto field_filter_proto;
-  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"PROTO(
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
       name: "a.b.int32_value"
       op: EQUAL
-  )PROTO", &field_filter_proto));
-  auto field_filter_or =
-      FieldFilter::New(TestProto().GetDescriptor(), field_filter_proto);
-  EXPECT_EQ(field_filter_or.status().code(),
-            absl::StatusCode::kInvalidArgument);
+  )pb", &field_filter_proto));
+  EXPECT_THAT(
+      FieldFilter::New(TestProto().GetDescriptor(),
+                       field_filter_proto).status(),
+      wfa::StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 TEST(EqualFilterTest, TestInt32) {
-  std::unique_ptr<FieldFilter> field_filter = FilterFromProtoText(R"PROTO(
-      name: "a.b.int32_value"
-      op: EQUAL
-      value: "1"
-  )PROTO");
+  ASSERT_OK_AND_ASSIGN(
+      std::unique_ptr<FieldFilter> field_filter,
+      FilterFromProtoText(R"pb(
+          name: "a.b.int32_value"
+          op: EQUAL
+          value: "1"
+      )pb"));
 
   TestProto test_proto_1, test_proto_2;
-  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"PROTO(
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
       a {
         b {
           int32_value: 1
         }
       }
-  )PROTO", &test_proto_1));
+  )pb", &test_proto_1));
   EXPECT_TRUE(field_filter->IsMatch(test_proto_1));
-  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"PROTO(
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
       a {
         b {
           int32_value: 2
         }
       }
-  )PROTO", &test_proto_2));
+  )pb", &test_proto_2));
   EXPECT_FALSE(field_filter->IsMatch(test_proto_2));
 }
 
 TEST(EqualFilterTest, TestInt64) {
-  std::unique_ptr<FieldFilter> field_filter = FilterFromProtoText(R"PROTO(
-      name: "a.b.int64_value"
-      op: EQUAL
-      value: "1"
-  )PROTO");
+  ASSERT_OK_AND_ASSIGN(
+      std::unique_ptr<FieldFilter> field_filter,
+      FilterFromProtoText(R"pb(
+          name: "a.b.int64_value"
+          op: EQUAL
+          value: "1"
+      )pb"));
 
   TestProto test_proto_1, test_proto_2;
-  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"PROTO(
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
       a {
         b {
           int64_value: 1
         }
       }
-  )PROTO", &test_proto_1));
+  )pb", &test_proto_1));
   EXPECT_TRUE(field_filter->IsMatch(test_proto_1));
-  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"PROTO(
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
       a {
         b {
           int64_value: 2
         }
       }
-  )PROTO", &test_proto_2));
+  )pb", &test_proto_2));
   EXPECT_FALSE(field_filter->IsMatch(test_proto_2));
 }
 
 TEST(EqualFilterTest, TestUInt32) {
-  std::unique_ptr<FieldFilter> field_filter = FilterFromProtoText(R"PROTO(
-      name: "a.b.uint32_value"
-      op: EQUAL
-      value: "1"
-  )PROTO");
+  ASSERT_OK_AND_ASSIGN(
+      std::unique_ptr<FieldFilter> field_filter,
+      FilterFromProtoText(R"pb(
+          name: "a.b.uint32_value"
+          op: EQUAL
+          value: "1"
+      )pb"));
 
   TestProto test_proto_1, test_proto_2;
-  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"PROTO(
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
       a {
         b {
           uint32_value: 1
         }
       }
-  )PROTO", &test_proto_1));
+  )pb", &test_proto_1));
   EXPECT_TRUE(field_filter->IsMatch(test_proto_1));
-  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"PROTO(
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
       a {
         b {
           uint32_value: 2
         }
       }
-  )PROTO", &test_proto_2));
+  )pb", &test_proto_2));
   EXPECT_FALSE(field_filter->IsMatch(test_proto_2));
 }
 
 TEST(EqualFilterTest, TestUInt64) {
-  std::unique_ptr<FieldFilter> field_filter = FilterFromProtoText(R"PROTO(
-      name: "a.b.uint64_value"
-      op: EQUAL
-      value: "1"
-  )PROTO");
+  ASSERT_OK_AND_ASSIGN(
+      std::unique_ptr<FieldFilter> field_filter,
+      FilterFromProtoText(R"pb(
+          name: "a.b.uint64_value"
+          op: EQUAL
+          value: "1"
+      )pb"));
 
   TestProto test_proto_1, test_proto_2;
-  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"PROTO(
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
       a {
         b {
           uint64_value: 1
         }
       }
-  )PROTO", &test_proto_1));
+  )pb", &test_proto_1));
   EXPECT_TRUE(field_filter->IsMatch(test_proto_1));
-  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"PROTO(
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
       a {
         b {
           uint64_value: 2
         }
       }
-  )PROTO", &test_proto_2));
+  )pb", &test_proto_2));
   EXPECT_FALSE(field_filter->IsMatch(test_proto_2));
 }
 
 TEST(EqualFilterTest, TestBool) {
-  std::unique_ptr<FieldFilter> field_filter = FilterFromProtoText(R"PROTO(
-      name: "a.b.bool_value"
-      op: EQUAL
-      value: "true"
-  )PROTO");
+  ASSERT_OK_AND_ASSIGN(
+      std::unique_ptr<FieldFilter> field_filter,
+      FilterFromProtoText(R"pb(
+          name: "a.b.bool_value"
+          op: EQUAL
+          value: "true"
+      )pb"));
 
   TestProto test_proto_1, test_proto_2;
-  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"PROTO(
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
       a {
         b {
           bool_value: true
         }
       }
-  )PROTO", &test_proto_1));
+  )pb", &test_proto_1));
   EXPECT_TRUE(field_filter->IsMatch(test_proto_1));
-  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"PROTO(
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
       a {
         b {
           bool_value: false
         }
       }
-  )PROTO", &test_proto_2));
+  )pb", &test_proto_2));
   EXPECT_FALSE(field_filter->IsMatch(test_proto_2));
 }
 
 TEST(EqualFilterTest, TestEnum) {
-  std::unique_ptr<FieldFilter> field_filter = FilterFromProtoText(R"PROTO(
-      name: "a.b.enum_value"
-      op: EQUAL
-      value: "TEST_ENUM_1"
-  )PROTO");
+  ASSERT_OK_AND_ASSIGN(
+      std::unique_ptr<FieldFilter> field_filter,
+      FilterFromProtoText(R"pb(
+          name: "a.b.enum_value"
+          op: EQUAL
+          value: "TEST_ENUM_1"
+      )pb"));
 
   TestProto test_proto_1, test_proto_2;
-  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"PROTO(
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
       a {
         b {
           enum_value: TEST_ENUM_1
         }
       }
-  )PROTO", &test_proto_1));
+  )pb", &test_proto_1));
   EXPECT_TRUE(field_filter->IsMatch(test_proto_1));
-  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"PROTO(
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
       a {
         b {
           enum_value: TEST_ENUM_2
         }
       }
-  )PROTO", &test_proto_2));
+  )pb", &test_proto_2));
   EXPECT_FALSE(field_filter->IsMatch(test_proto_2));
 }
 
 TEST(EqualFilterTest, TestString) {
-  std::unique_ptr<FieldFilter> field_filter = FilterFromProtoText(R"PROTO(
-      name: "a.b.string_value"
-      op: EQUAL
-      value: "string1"
-  )PROTO");
+  ASSERT_OK_AND_ASSIGN(
+      std::unique_ptr<FieldFilter> field_filter,
+      FilterFromProtoText(R"pb(
+          name: "a.b.string_value"
+          op: EQUAL
+          value: "string1"
+      )pb"));
 
   TestProto test_proto_1, test_proto_2;
-  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"PROTO(
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
       a {
         b {
           string_value: "string1"
         }
       }
-  )PROTO", &test_proto_1));
+  )pb", &test_proto_1));
   EXPECT_TRUE(field_filter->IsMatch(test_proto_1));
-  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"PROTO(
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
       a {
         b {
           string_value: "string2"
         }
       }
-  )PROTO", &test_proto_2));
+  )pb", &test_proto_2));
   EXPECT_FALSE(field_filter->IsMatch(test_proto_2));
 }
 
