@@ -30,10 +30,10 @@ using ::wfa_virtual_people::test::TestProto;
 // This function is required to test the FieldFilter still works when the
 // FieldFilterProto is out of scope.
 absl::StatusOr<std::unique_ptr<FieldFilter>> FilterFromProtoText(
-    const std::string& proto_text) {
+    absl::string_view proto_text) {
   FieldFilterProto field_filter_proto;
   EXPECT_TRUE(google::protobuf::TextFormat::ParseFromString(
-      proto_text, &field_filter_proto));
+      std::string(proto_text), &field_filter_proto));
   return FieldFilter::New(TestProto().GetDescriptor(), field_filter_proto);
 }
 

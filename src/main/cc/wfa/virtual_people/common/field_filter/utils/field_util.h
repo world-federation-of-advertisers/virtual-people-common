@@ -16,6 +16,7 @@
 #define WFA_VIRTUAL_PEOPLE_COMMON_FIELD_FILTER_UTILS_FIELD_UTIL_H_
 
 #include "absl/status/status.h"
+#include "absl/strings/string_view.h"
 #include "google/protobuf/descriptor.h"
 #include "google/protobuf/message.h"
 
@@ -30,7 +31,7 @@ namespace wfa_virtual_people {
 // field.
 absl::Status GetFieldFromProto(
     const google::protobuf::Descriptor* descriptor,
-    const std::string& full_field_name,
+    absl::string_view full_field_name,
     std::vector<const google::protobuf::FieldDescriptor*>* field_descriptors);
 
 // Get the value from the @message, with field name represented by

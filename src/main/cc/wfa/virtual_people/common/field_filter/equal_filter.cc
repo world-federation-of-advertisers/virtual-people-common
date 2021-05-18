@@ -56,7 +56,7 @@ class EqualFilterImpl<std::string> : public EqualFilter {
  public:
   explicit EqualFilterImpl(
       std::vector<const google::protobuf::FieldDescriptor*>&& field_descriptors,
-      const std::string& value):
+      absl::string_view value):
       field_descriptors_(std::move(field_descriptors)),
       value_(value) {}
 

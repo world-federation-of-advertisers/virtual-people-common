@@ -18,15 +18,16 @@
 #include "absl/status/statusor.h"
 #include "absl/strings/numbers.h"
 #include "absl/strings/str_cat.h"
+#include "absl/strings/string_view.h"
 #include "google/protobuf/descriptor.h"
 
 namespace wfa_virtual_people {
 
 template <typename ValueType>
-absl::StatusOr<ValueType> ConvertToNumeric(const std::string& input);
+absl::StatusOr<ValueType> ConvertToNumeric(absl::string_view input);
 
 template <>
-absl::StatusOr<int32_t> ConvertToNumeric<int32_t>(const std::string& input) {
+absl::StatusOr<int32_t> ConvertToNumeric<int32_t>(absl::string_view input) {
   int32_t output;
   if (absl::SimpleAtoi(input, &output)) {
     return output;
@@ -36,7 +37,7 @@ absl::StatusOr<int32_t> ConvertToNumeric<int32_t>(const std::string& input) {
 }
 
 template <>
-absl::StatusOr<int64_t> ConvertToNumeric<int64_t>(const std::string& input) {
+absl::StatusOr<int64_t> ConvertToNumeric<int64_t>(absl::string_view input) {
   int64_t output;
   if (absl::SimpleAtoi(input, &output)) {
     return output;
@@ -46,7 +47,7 @@ absl::StatusOr<int64_t> ConvertToNumeric<int64_t>(const std::string& input) {
 }
 
 template <>
-absl::StatusOr<uint32_t> ConvertToNumeric<uint32_t>(const std::string& input) {
+absl::StatusOr<uint32_t> ConvertToNumeric<uint32_t>(absl::string_view input) {
   uint32_t output;
   if (absl::SimpleAtoi(input, &output)) {
     return output;
@@ -56,7 +57,7 @@ absl::StatusOr<uint32_t> ConvertToNumeric<uint32_t>(const std::string& input) {
 }
 
 template <>
-absl::StatusOr<uint64_t> ConvertToNumeric<uint64_t>(const std::string& input) {
+absl::StatusOr<uint64_t> ConvertToNumeric<uint64_t>(absl::string_view input) {
   uint64_t output;
   if (absl::SimpleAtoi(input, &output)) {
     return output;
@@ -66,7 +67,7 @@ absl::StatusOr<uint64_t> ConvertToNumeric<uint64_t>(const std::string& input) {
 }
 
 template <>
-absl::StatusOr<float> ConvertToNumeric<float>(const std::string& input) {
+absl::StatusOr<float> ConvertToNumeric<float>(absl::string_view input) {
   float output;
   if (absl::SimpleAtof(input, &output)) {
     return output;
@@ -76,7 +77,7 @@ absl::StatusOr<float> ConvertToNumeric<float>(const std::string& input) {
 }
 
 template <>
-absl::StatusOr<double> ConvertToNumeric<double>(const std::string& input) {
+absl::StatusOr<double> ConvertToNumeric<double>(absl::string_view input) {
   double output;
   if (absl::SimpleAtod(input, &output)) {
     return output;
@@ -86,7 +87,7 @@ absl::StatusOr<double> ConvertToNumeric<double>(const std::string& input) {
 }
 
 template <>
-absl::StatusOr<bool> ConvertToNumeric<bool>(const std::string& input) {
+absl::StatusOr<bool> ConvertToNumeric<bool>(absl::string_view input) {
   bool output;
   if (absl::SimpleAtob(input, &output)) {
     return output;
@@ -97,10 +98,10 @@ absl::StatusOr<bool> ConvertToNumeric<bool>(const std::string& input) {
 
 absl::StatusOr<const google::protobuf::EnumValueDescriptor*> ConvertToEnum(
     const google::protobuf::FieldDescriptor* field_descriptor,
-    const std::string& input) {
+    absl::string_view input) {
   // Try to get the enum by enum name.
   const google::protobuf::EnumValueDescriptor* enum_value_descriptor =
-      field_descriptor->enum_type()->FindValueByName(input);
+      field_descriptor->enum_type()->FindValueByName(std::string(input));
 
   if (enum_value_descriptor == nullptr) {
     // Did not find the enum by enum name. Try to find the enum by enum number.

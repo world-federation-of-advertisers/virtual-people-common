@@ -18,6 +18,7 @@
 #include "absl/status/status.h"
 #include "absl/status/statusor.h"
 #include "absl/strings/numbers.h"
+#include "absl/strings/string_view.h"
 #include "google/protobuf/descriptor.h"
 
 namespace wfa_virtual_people {
@@ -31,13 +32,13 @@ namespace wfa_virtual_people {
 //   double
 //   bool
 template <typename ValueType>
-absl::StatusOr<ValueType> ConvertToNumeric(const std::string& input);
+absl::StatusOr<ValueType> ConvertToNumeric(absl::string_view input);
 
 // Convert the string @input to a enum type descriptor.
 // The enum is referred by @field_descriptor.
 absl::StatusOr<const google::protobuf::EnumValueDescriptor*> ConvertToEnum(
     const google::protobuf::FieldDescriptor* field_descriptor,
-    const std::string& input);
+    absl::string_view input);
 
 }  // namespace wfa_virtual_people
 
