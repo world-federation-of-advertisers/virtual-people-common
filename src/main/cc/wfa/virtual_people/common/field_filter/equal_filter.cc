@@ -126,11 +126,8 @@ absl::StatusOr<std::unique_ptr<EqualFilter>> EqualFilter::New(
         "Value must be set. Input FieldFilterProto: ", config.DebugString()));
   }
   std::vector<const google::protobuf::FieldDescriptor*> field_descriptors;
-  absl::Status status =
-      GetFieldFromProto(descriptor, config.name(), &field_descriptors);
-  if (!status.ok()) {
-    return status;
-  }
+  RETURN_IF_ERROR(
+      GetFieldFromProto(descriptor, config.name(), &field_descriptors));
 
   switch (field_descriptors.back()->cpp_type()) {
     case google::protobuf::FieldDescriptor::CppType::CPPTYPE_INT32:
