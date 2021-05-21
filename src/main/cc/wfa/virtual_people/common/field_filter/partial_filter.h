@@ -41,7 +41,7 @@ class PartialFilter : public FieldFilter {
 
   explicit PartialFilter(
       std::vector<const google::protobuf::FieldDescriptor*>&& field_descriptors,
-      std::unique_ptr<std::vector<std::unique_ptr<FieldFilter>>> sub_filters):
+      std::vector<std::unique_ptr<FieldFilter>>&& sub_filters):
       field_descriptors_(std::move(field_descriptors)),
       sub_filters_(std::move(sub_filters)) {}
 
@@ -56,7 +56,7 @@ class PartialFilter : public FieldFilter {
 
  private:
   std::vector<const google::protobuf::FieldDescriptor*> field_descriptors_;
-  std::unique_ptr<std::vector<std::unique_ptr<FieldFilter>>> sub_filters_;
+  std::vector<std::unique_ptr<FieldFilter>> sub_filters_;
 };
 
 }  // namespace wfa_virtual_people

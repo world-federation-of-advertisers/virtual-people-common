@@ -57,12 +57,11 @@ absl::StatusOr<std::unique_ptr<PartialFilter>> PartialFilter::New(
   // Build all the sub filters.
   const google::protobuf::Descriptor* sub_descriptor =
       field_descriptors.back()->message_type();
-  auto sub_filters =
-      absl::make_unique<std::vector<std::unique_ptr<FieldFilter>>>();
+  std::vector<std::unique_ptr<FieldFilter>> sub_filters;
   for (const FieldFilterProto& sub_filter_proto : config.sub_filters()) {
-    sub_filters->emplace_back();
+    sub_filters.emplace_back();
     ASSIGN_OR_RETURN(
-        sub_filters->back(),
+        sub_filters.back(),
         FieldFilter::New(sub_descriptor, sub_filter_proto));
   }
 
@@ -74,7 +73,7 @@ bool PartialFilter::IsMatch(const google::protobuf::Message& message) const {
   const google::protobuf::Message& sub_message =
       GetValueFromProto<const google::protobuf::Message&>(
           message, field_descriptors_);
-  for (auto& filter : *sub_filters_) {
+  for (auto& filter : sub_filters_) {
     if (!filter->IsMatch(sub_message)) {
       return false;
     }
