@@ -132,25 +132,15 @@ absl::StatusOr<std::unique_ptr<EqualFilter>> EqualFilter::New(
 
   switch (field_descriptors.back()->cpp_type()) {
     case google::protobuf::FieldDescriptor::CppType::CPPTYPE_INT32:
-      {
-        return CreateFilter<int32_t>(config, std::move(field_descriptors));
-      }
+      return CreateFilter<int32_t>(config, std::move(field_descriptors));
     case google::protobuf::FieldDescriptor::CppType::CPPTYPE_INT64:
-      {
-        return CreateFilter<int64_t>(config, std::move(field_descriptors));
-      }
+      return CreateFilter<int64_t>(config, std::move(field_descriptors));
     case google::protobuf::FieldDescriptor::CppType::CPPTYPE_UINT32:
-      {
-        return CreateFilter<uint32_t>(config, std::move(field_descriptors));
-      }
+      return CreateFilter<uint32_t>(config, std::move(field_descriptors));
     case google::protobuf::FieldDescriptor::CppType::CPPTYPE_UINT64:
-      {
-        return CreateFilter<uint64_t>(config, std::move(field_descriptors));
-      }
+      return CreateFilter<uint64_t>(config, std::move(field_descriptors));
     case google::protobuf::FieldDescriptor::CppType::CPPTYPE_BOOL:
-      {
-        return CreateFilter<bool>(config, std::move(field_descriptors));
-      }
+      return CreateFilter<bool>(config, std::move(field_descriptors));
     case google::protobuf::FieldDescriptor::CppType::CPPTYPE_ENUM:
       {
         absl::StatusOr<const google::protobuf::EnumValueDescriptor*> value =
