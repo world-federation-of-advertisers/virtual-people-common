@@ -37,15 +37,15 @@ class FieldFilter {
       const google::protobuf::Descriptor* descriptor,
       const FieldFilterProto& config);
 
+  FieldFilter(const FieldFilter&) = delete;
+  FieldFilter& operator=(const FieldFilter&) = delete;
+
   virtual ~FieldFilter() = default;
 
   // Returns true if the @message satisfies the condition given by the @config.
   // The type of @message must match the corresponding message type of
   // @descriptor.
   virtual bool IsMatch(const google::protobuf::Message& message) const = 0;
-
-  FieldFilter(const FieldFilter&) = delete;
-  FieldFilter& operator=(const FieldFilter&) = delete;
 
  protected:
   FieldFilter() = default;

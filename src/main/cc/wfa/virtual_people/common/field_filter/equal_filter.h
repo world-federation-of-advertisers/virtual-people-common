@@ -40,13 +40,13 @@ class EqualFilter : public FieldFilter {
       const google::protobuf::Descriptor* descriptor,
       const FieldFilterProto& config);
 
+  EqualFilter(const EqualFilter&) = delete;
+  EqualFilter& operator=(const EqualFilter&) = delete;
+
   // Returns true when the field represented by @config.name in @message equals
   // to @config.value. Otherwise, returns false.
   virtual bool IsMatch(
       const google::protobuf::Message& message) const override = 0;
-
-  EqualFilter(const EqualFilter&) = delete;
-  EqualFilter& operator=(const EqualFilter&) = delete;
 
  protected:
   EqualFilter() = default;

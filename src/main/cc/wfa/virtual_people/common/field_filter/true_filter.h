@@ -38,11 +38,11 @@ class TrueFilter : public FieldFilter {
 
   TrueFilter() {}
 
-  // Always returns true.
-  bool IsMatch(const google::protobuf::Message&) const override;
-
   TrueFilter(const TrueFilter&) = delete;
   TrueFilter& operator=(const TrueFilter&) = delete;
+
+  // Always returns true.
+  bool IsMatch(const google::protobuf::Message&) const override;
 };
 
 }  // namespace wfa_virtual_people

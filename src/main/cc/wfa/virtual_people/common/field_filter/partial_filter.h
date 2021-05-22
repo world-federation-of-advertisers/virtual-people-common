@@ -45,14 +45,14 @@ class PartialFilter : public FieldFilter {
       field_descriptors_(std::move(field_descriptors)),
       sub_filters_(std::move(sub_filters)) {}
 
+  PartialFilter(const PartialFilter&) = delete;
+  PartialFilter& operator=(const PartialFilter&) = delete;
+
   // Returns true when all the @config.sub_filters pass. Otherwise, returns
   // false.
   // The @config.sub_filters are applied to the message object refered by
   // @config.name.
   bool IsMatch(const google::protobuf::Message& message) const override;
-
-  PartialFilter(const PartialFilter&) = delete;
-  PartialFilter& operator=(const PartialFilter&) = delete;
 
  private:
   std::vector<const google::protobuf::FieldDescriptor*> field_descriptors_;

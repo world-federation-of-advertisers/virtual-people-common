@@ -41,11 +41,11 @@ class AndFilter : public FieldFilter {
       std::vector<std::unique_ptr<FieldFilter>>&& sub_filters):
       sub_filters_(std::move(sub_filters)) {}
 
-  // Returns true when all the sub_filters pass. Otherwise, returns false.
-  bool IsMatch(const google::protobuf::Message& message) const override;
-
   AndFilter(const AndFilter&) = delete;
   AndFilter& operator=(const AndFilter&) = delete;
+
+  // Returns true when all the sub_filters pass. Otherwise, returns false.
+  bool IsMatch(const google::protobuf::Message& message) const override;
 
  private:
   std::vector<std::unique_ptr<FieldFilter>> sub_filters_;
