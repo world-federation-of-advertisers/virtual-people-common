@@ -16,15 +16,111 @@ syntax = "proto3";
 
 package wfa_virtual_people;
 
-// Placeholder for DemoBucket message.
-message DemoBucket {}
+import "src/main/proto/wfa/virtual_people/common/demographic.proto";
+import "src/main/proto/wfa/virtual_people/common/geo_location.proto";
+import "src/main/proto/wfa/virtual_people/common/label.proto";
+import "src/main/proto/wfa/virtual_people/common/panel_data.proto";
 
-// Placeholder for LabelerInput message.
-message LabelerInput {}
+// EventId is a unique identifier across all event data provider logs.
+message EventId {
+  // The publisher of the log that this event comes from.
+  // Need this to guarantee unique event id across publishers.
+  optional string publisher = 1;
 
-// Placeholder for VirtualPersonActivity message.
-message VirtualPersonActivity {
-  // If virtual_person_id is not set, then this is only for counting impressions
-  // by labels, and can be ignored for reach purpose.
-  optional int64 virtual_person_id = 1;
+  // The publisher specific event id. Unique within all logs of the
+  // publisher.
+  optional string id = 2;
+}
+
+// Represents information on a specific user id. This data will be attached
+// to event before labeling.
+message UserInfo {
+  optional string user_id = 1;
+
+  // The profile version that this data is extracted from.
+  // For example, for daily snapshots the date string can be used
+  // as the version.
+  // This is intended for monitoring and debugging purposes.
+  optional string profile_version = 2;
+
+  // Demo data for the given user id.
+  optional DemoInfo demo = 3;
+
+  // Inferred home geographic information.
+  optional GeoLocation home_geo = 4;
+
+  // Creation or initialization time of the user id, in microseconds
+  // since epoch.
+  int64 creation_time_usec = 5;
+}
+
+// Represents info for all user ids associated with a specific event.
+message ProfileInfo {
+  // Information for email id.
+  optional UserInfo email_user_info = 1;
+
+  // Information for phone id.
+  optional UserInfo phone_user_info = 2;
+
+  // Information for proprietary id 1.
+  // The exact content may differ from publisher to publisher.
+  optional UserInfo proprietary_id_space_1_user_info = 3;
+}
+
+// Represents input to the labeler.
+// Only contains attributes needed for labeling, including attributes
+// extracted from logs and enriched by profile data.
+message LabelerInput {
+  // Uniquely identifies the event across publishers.
+  // This is intended as a key to join with other data. It is not used during
+  // labeling.
+  optional EventId event_id = 1;
+
+  // Required. When this event occurs in microseconds since epoch.
+  optional int64 timestamp_usec = 2;
+
+  // User agent string. Labeler uses this to compute device type.
+  optional string user_agent = 3;
+
+  // Geo data.
+  optional GeoLocation geo = 4;
+
+  // Profile data for all user ids.
+  optional ProfileInfo profile_info = 5;
+}
+
+// LogEvent contains all attributes in LabelerInput, as well as other
+// attributes extracted from logs.
+message LogEvent {
+  // Currently there is no other attribute decided yet.
+  // May duplicate labeler_input fields explicitly when other attributes
+  // are added.
+  optional LabelerInput labeler_input = 1000;
+}
+
+// LogEvent with labels.
+// This is used for data provider log.
+message DataProviderEvent {
+  optional LogEvent log_event = 1;
+
+  // Labels. One entry per labeling (by one model).
+  // It is possible that the same model is used in multiple labelings and
+  // results in multiple entries.
+  repeated MetaLabelerOutput labels = 2;
+}
+
+// LogEvent with labels and panel data.
+// This is used for research, model training and validation.
+message ResearchEvent {
+  optional LogEvent log_event = 1;
+
+  // Labels. One entry per labeling (by one model).
+  // It is possible that the same model is used in multiple labelings and
+  // results in multiple entries.
+  repeated MetaLabelerOutput labels = 2;
+
+  // Panel data for this event. One entry per panel.
+  // A panel data provider may have multiple panels and could add one entry
+  // for each panel.
+  repeated PanelData panel_data = 3;
 }

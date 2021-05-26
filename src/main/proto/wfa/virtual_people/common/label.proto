@@ -1,0 +1,88 @@
+// Copyright 2021 The Cross-Media Measurement Authors
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+syntax = "proto3";
+
+package wfa_virtual_people;
+
+import "src/main/proto/wfa/virtual_people/common/demographic.proto";
+
+// Represents person attributes returned by the labeler.
+message PersonLabelAttributes {
+  // The demo for the virtual person.
+  optional DemoBucket demo = 1;
+}
+
+// Represents probability based person attributes.
+// The person is assumed to really have one of labels, each with
+// the given probability.
+// QuantumLabel can be collapsed, the resulting label is chosen
+// pseudo-randomly based on the hash of virtual_person_id.
+message QuantumLabel {
+  // Specific person attributes.
+  repeated PersonLabelAttributes labels = 1;
+
+  // Probability of each of the specific attributes.
+  // The n-th probabilities is for the n-th labels.
+  repeated double probabilities = 2;
+
+  // Seed for the pseudo-random collapse.
+  optional string seed = 3;
+}
+
+// Represents a single virtual person.
+message VirtualPersonActivity {
+  // If virtual_person_id is not set, then this is only for counting
+  // impressions by labels, and can be ignored for reach purpose.
+  optional int64 virtual_person_id = 1;
+
+  oneof person_label {
+    // Quantum label. This is only for debugging purposes.
+    // It will be collapsed before the model populates LabelerOutput.
+    QuantumLabel quantum_label = 2;
+
+    // Person attributes.
+    // Could be the result of the collapse of quantum_label.
+    PersonLabelAttributes label = 3;
+  }
+}
+
+// LabelerOutput represents the output of a single event labeled by a model.
+message LabelerOutput {
+  // For each event, there will always be 1 or more "person" returned.
+  // However, for each "person", if virtual_person_id is not
+  // set, then it is only for counting impressions by labels,
+  // and can be ignored for reach purpose.
+  repeated VirtualPersonActivity people = 1;
+
+  // Debugging information.
+  optional string serialized_debug_trace = 2;
+}
+
+// LabelerResponseMetadata contains service related info.
+message LabelerResponseMetadata {
+  // The model used to produce the LabelerOutput entry.
+  optional string applied_model = 1;
+
+  // The same model can be used in multiple model lines.
+  // This is the list of applicable model lines.
+  // E.g. "origin/prod", "origin/holdback", or "VendorX/dev".
+  repeated string model_lines = 2;
+}
+
+// Represents the output of MetaLabeler, e.g. labeling pipeline.
+message MetaLabelerOutput {
+  optional LabelerOutput labeler_output = 1;
+  optional LabelerResponseMetadata labeler_response_metadata = 2;
+}

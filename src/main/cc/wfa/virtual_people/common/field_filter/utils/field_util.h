@@ -15,7 +15,7 @@
 #ifndef WFA_VIRTUAL_PEOPLE_COMMON_FIELD_FILTER_UTILS_FIELD_UTIL_H_
 #define WFA_VIRTUAL_PEOPLE_COMMON_FIELD_FILTER_UTILS_FIELD_UTIL_H_
 
-#include "absl/status/status.h"
+#include "absl/status/statusor.h"
 #include "absl/strings/string_view.h"
 #include "google/protobuf/descriptor.h"
 #include "google/protobuf/message.h"
@@ -26,13 +26,13 @@ namespace wfa_virtual_people {
 // of the field, the path of which is represented by @full_field_name.
 //
 // @full_field_name is separated by ".".
-// Any element in the input @field_descriptors is cleaned up, and the returned
-// @field_descriptors is in the order of the field name to access the nested
-// field.
-absl::Status GetFieldFromProto(
+//
+// The returned FieldDescriptors is in the order of the field name to access the
+// nested field.
+absl::StatusOr<std::vector<const google::protobuf::FieldDescriptor*>>
+GetFieldFromProto(
     const google::protobuf::Descriptor* descriptor,
-    absl::string_view full_field_name,
-    std::vector<const google::protobuf::FieldDescriptor*>* field_descriptors);
+    absl::string_view full_field_name);
 
 // Get the value from the @message, with field name represented by
 // @field_descriptor.
@@ -66,9 +66,9 @@ ValueType GetImmediateValueFromProto(
 //   optional MsgB b = 1;
 // }
 // To get the field descriptors of MsgA.b.c, the call is
-// std::vector<const google::protobuf::FieldDescriptor*> field_descriptors;
-// ASSERT_TRUE(GetFieldFromProto(
-//     MsgA().GetDescriptor(), "b.c", &field_descriptors).ok());
+// ASSIGN_OR_RETURN(
+//     std::vector<const google::protobuf::FieldDescriptor*> field_descriptors,
+//     GetFieldFromProto(MsgA().GetDescriptor(), "b.c"));
 // And if there is an MsgA object obj_a, to get the value of obj_a.b.c, the
 // call is
 // int32_t output = GetValueFromProto(obj_a, field_descriptors);

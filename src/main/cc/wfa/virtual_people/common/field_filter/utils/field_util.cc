@@ -16,6 +16,7 @@
 
 #include "absl/memory/memory.h"
 #include "absl/status/status.h"
+#include "absl/status/statusor.h"
 #include "absl/strings/str_cat.h"
 #include "absl/strings/str_split.h"
 #include "absl/strings/string_view.h"
@@ -23,11 +24,11 @@
 
 namespace wfa_virtual_people {
 
-absl::Status GetFieldFromProto(
+absl::StatusOr<std::vector<const google::protobuf::FieldDescriptor*>>
+GetFieldFromProto(
     const google::protobuf::Descriptor* descriptor,
-    absl::string_view full_field_name,
-    std::vector<const google::protobuf::FieldDescriptor*>* field_descriptors) {
-  field_descriptors->clear();
+    absl::string_view full_field_name) {
+  std::vector<const google::protobuf::FieldDescriptor*> field_descriptors;
   std::vector<std::string> field_names = absl::StrSplit(full_field_name, ".");
   for (const std::string& field_name : field_names) {
     if (descriptor == nullptr) {
@@ -40,10 +41,10 @@ absl::Status GetFieldFromProto(
       return absl::InvalidArgumentError(absl::StrCat(
           "The field name is invalid: ", full_field_name));
     }
-    field_descriptors->emplace_back(field_descriptor);
+    field_descriptors.emplace_back(field_descriptor);
     descriptor = field_descriptor->message_type();
   }
-  return absl::OkStatus();
+  return field_descriptors;
 }
 
 template <typename ValueType>

@@ -26,6 +26,7 @@
 namespace wfa_virtual_people {
 namespace {
 
+using ::wfa::StatusIs;
 using ::wfa_virtual_people::test::TestProto;
 
 // This function is required to test the FieldFilter still works when the
@@ -47,7 +48,7 @@ TEST(EqualFilterTest, TestNoName) {
   EXPECT_THAT(
       FieldFilter::New(TestProto().GetDescriptor(),
                        field_filter_proto).status(),
-      wfa::StatusIs(absl::StatusCode::kInvalidArgument, ""));
+      StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 TEST(EqualFilterTest, TestNoValue) {
@@ -59,7 +60,7 @@ TEST(EqualFilterTest, TestNoValue) {
   EXPECT_THAT(
       FieldFilter::New(TestProto().GetDescriptor(),
                        field_filter_proto).status(),
-      wfa::StatusIs(absl::StatusCode::kInvalidArgument, ""));
+      StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 TEST(EqualFilterTest, TestInt32) {

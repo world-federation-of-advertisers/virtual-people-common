@@ -38,12 +38,11 @@ absl::StatusOr<std::unique_ptr<AndFilter>> AndFilter::New(
         config.DebugString()));
   }
 
-  auto sub_filters =
-      absl::make_unique<std::vector<std::unique_ptr<FieldFilter>>>();
+  std::vector<std::unique_ptr<FieldFilter>> sub_filters;
   for (const FieldFilterProto& sub_filter_proto : config.sub_filters()) {
-    sub_filters->emplace_back();
+    sub_filters.emplace_back();
     ASSIGN_OR_RETURN(
-        sub_filters->back(),
+        sub_filters.back(),
         FieldFilter::New(descriptor, sub_filter_proto));
   }
 
@@ -51,7 +50,7 @@ absl::StatusOr<std::unique_ptr<AndFilter>> AndFilter::New(
 }
 
 bool AndFilter::IsMatch(const google::protobuf::Message& message) const {
-  for (auto& filter : *sub_filters_) {
+  for (auto& filter : sub_filters_) {
     if (!filter->IsMatch(message)) {
       return false;
     }

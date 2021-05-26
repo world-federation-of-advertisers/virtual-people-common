@@ -26,91 +26,94 @@
 namespace wfa_virtual_people {
 namespace {
 
+using ::wfa::IsOk;
+using ::wfa::IsOkAndHolds;
+using ::wfa::StatusIs;
 using ::wfa_virtual_people::test::TestProtoB;
 
 TEST(ConvertToNumericTest, TestInt32) {
-  EXPECT_THAT(ConvertToNumeric<int32_t>("1"), wfa::IsOkAndHolds(1));
+  EXPECT_THAT(ConvertToNumeric<int32_t>("1"), IsOkAndHolds(1));
 }
 
 TEST(ConvertToNumericTest, TestInt32Invalid) {
   EXPECT_THAT(
       ConvertToNumeric<int32_t>("a").status(),
-      wfa::StatusIs(absl::StatusCode::kInvalidArgument, ""));
+      StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 TEST(ConvertToNumericTest, TestInt64) {
-  EXPECT_THAT(ConvertToNumeric<int64_t>("1"), wfa::IsOkAndHolds(1));
+  EXPECT_THAT(ConvertToNumeric<int64_t>("1"), IsOkAndHolds(1));
 }
 
 TEST(ConvertToNumericTest, TestInt64Invalid) {
   EXPECT_THAT(
       ConvertToNumeric<int64_t>("a").status(),
-      wfa::StatusIs(absl::StatusCode::kInvalidArgument, ""));
+      StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 TEST(ConvertToNumericTest, TestUInt32) {
-  EXPECT_THAT(ConvertToNumeric<uint32_t>("1"), wfa::IsOkAndHolds(1));
+  EXPECT_THAT(ConvertToNumeric<uint32_t>("1"), IsOkAndHolds(1));
 }
 
 TEST(ConvertToNumericTest, TestUInt32Invalid) {
   EXPECT_THAT(
       ConvertToNumeric<uint32_t>("a").status(),
-      wfa::StatusIs(absl::StatusCode::kInvalidArgument, ""));
+      StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 TEST(ConvertToNumericTest, TestUInt64) {
-  EXPECT_THAT(ConvertToNumeric<uint64_t>("1"), wfa::IsOkAndHolds(1));
+  EXPECT_THAT(ConvertToNumeric<uint64_t>("1"), IsOkAndHolds(1));
 }
 
 TEST(ConvertToNumericTest, TestUInt64Invalid) {
   EXPECT_THAT(
       ConvertToNumeric<uint64_t>("a").status(),
-      wfa::StatusIs(absl::StatusCode::kInvalidArgument, ""));
+      StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 TEST(ConvertToNumericTest, TestFloat) {
-  EXPECT_THAT(ConvertToNumeric<float>("1.1"), wfa::IsOkAndHolds(1.1f));
+  EXPECT_THAT(ConvertToNumeric<float>("1.1"), IsOkAndHolds(1.1f));
 }
 
 TEST(ConvertToNumericTest, TestFloatInvalid) {
   EXPECT_THAT(
       ConvertToNumeric<float>("a").status(),
-      wfa::StatusIs(absl::StatusCode::kInvalidArgument, ""));
+      StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 TEST(ConvertToNumericTest, TestDouble) {
-  EXPECT_THAT(ConvertToNumeric<double>("1.1"), wfa::IsOkAndHolds(1.1));
+  EXPECT_THAT(ConvertToNumeric<double>("1.1"), IsOkAndHolds(1.1));
 }
 
 TEST(ConvertToNumericTest, TestDoubleInvalid) {
   EXPECT_THAT(
       ConvertToNumeric<double>("a").status(),
-      wfa::StatusIs(absl::StatusCode::kInvalidArgument, ""));
+      StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 TEST(ConvertToNumericTest, TestBool) {
   std::vector<std::string> true_strings = {"true", "t", "yes", "y", "1"};
   for (const std::string& s : true_strings) {
-    EXPECT_THAT(ConvertToNumeric<bool>(s), wfa::IsOkAndHolds(true));
+    EXPECT_THAT(ConvertToNumeric<bool>(s), IsOkAndHolds(true));
   }
 
   std::vector<std::string> false_strings = {"false", "f", "no", "n", "0"};
   for (const std::string& s : false_strings) {
-    EXPECT_THAT(ConvertToNumeric<bool>(s), wfa::IsOkAndHolds(false));
+    EXPECT_THAT(ConvertToNumeric<bool>(s), IsOkAndHolds(false));
   }
 }
 
 TEST(ConvertToNumericTest, TestBoolInvalid) {
   EXPECT_THAT(
       ConvertToNumeric<bool>("a").status(),
-      wfa::StatusIs(absl::StatusCode::kInvalidArgument, ""));
+      StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 TEST(ConvertToEnumTest, TestEnumName) {
   const google::protobuf::FieldDescriptor* field_descriptor =
       TestProtoB().GetDescriptor()->FindFieldByName("enum_value");
   auto output = ConvertToEnum(field_descriptor, "TEST_ENUM_1");
-  EXPECT_THAT(output, wfa::IsOk());
+  EXPECT_THAT(output, IsOk());
   EXPECT_EQ((*output)->number(), 1);
 }
 
@@ -118,7 +121,7 @@ TEST(ConvertToEnumTest, TestEnumNumber) {
   const google::protobuf::FieldDescriptor* field_descriptor =
       TestProtoB().GetDescriptor()->FindFieldByName("enum_value");
   auto output = ConvertToEnum(field_descriptor, "1");
-  EXPECT_THAT(output, wfa::IsOk());
+  EXPECT_THAT(output, IsOk());
   EXPECT_EQ((*output)->number(), 1);
 }
 
@@ -127,7 +130,7 @@ TEST(ConvertToEnumTest, TestEnumInvalid) {
       TestProtoB().GetDescriptor()->FindFieldByName("enum_value");
   EXPECT_THAT(
       ConvertToEnum(field_descriptor, "a").status(),
-      wfa::StatusIs(absl::StatusCode::kInvalidArgument, ""));
+      StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 }  // namespace

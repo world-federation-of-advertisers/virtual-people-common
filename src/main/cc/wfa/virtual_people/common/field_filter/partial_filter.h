@@ -41,9 +41,12 @@ class PartialFilter : public FieldFilter {
 
   explicit PartialFilter(
       std::vector<const google::protobuf::FieldDescriptor*>&& field_descriptors,
-      std::unique_ptr<std::vector<std::unique_ptr<FieldFilter>>> sub_filters):
+      std::vector<std::unique_ptr<FieldFilter>>&& sub_filters):
       field_descriptors_(std::move(field_descriptors)),
       sub_filters_(std::move(sub_filters)) {}
+
+  PartialFilter(const PartialFilter&) = delete;
+  PartialFilter& operator=(const PartialFilter&) = delete;
 
   // Returns true when all the @config.sub_filters pass. Otherwise, returns
   // false.
@@ -51,12 +54,9 @@ class PartialFilter : public FieldFilter {
   // @config.name.
   bool IsMatch(const google::protobuf::Message& message) const override;
 
-  PartialFilter(const PartialFilter&) = delete;
-  PartialFilter& operator=(const PartialFilter&) = delete;
-
  private:
   std::vector<const google::protobuf::FieldDescriptor*> field_descriptors_;
-  std::unique_ptr<std::vector<std::unique_ptr<FieldFilter>>> sub_filters_;
+  std::vector<std::unique_ptr<FieldFilter>> sub_filters_;
 };
 
 }  // namespace wfa_virtual_people

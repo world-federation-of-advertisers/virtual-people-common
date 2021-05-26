@@ -38,17 +38,17 @@ class AndFilter : public FieldFilter {
       const FieldFilterProto& config);
 
   explicit AndFilter(
-      std::unique_ptr<std::vector<std::unique_ptr<FieldFilter>>> sub_filters):
+      std::vector<std::unique_ptr<FieldFilter>>&& sub_filters):
       sub_filters_(std::move(sub_filters)) {}
-
-  // Returns true when all the sub_filters pass. Otherwise, returns false.
-  bool IsMatch(const google::protobuf::Message& message) const override;
 
   AndFilter(const AndFilter&) = delete;
   AndFilter& operator=(const AndFilter&) = delete;
 
+  // Returns true when all the sub_filters pass. Otherwise, returns false.
+  bool IsMatch(const google::protobuf::Message& message) const override;
+
  private:
-  std::unique_ptr<std::vector<std::unique_ptr<FieldFilter>>> sub_filters_;
+  std::vector<std::unique_ptr<FieldFilter>> sub_filters_;
 };
 
 }  // namespace wfa_virtual_people

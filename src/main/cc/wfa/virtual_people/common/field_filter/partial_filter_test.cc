@@ -26,6 +26,7 @@
 namespace wfa_virtual_people {
 namespace {
 
+using ::wfa::StatusIs;
 using ::wfa_virtual_people::test::TestProto;
 
 TEST(PartialFilterTest, TestNoName) {
@@ -46,7 +47,7 @@ TEST(PartialFilterTest, TestNoName) {
   EXPECT_THAT(
       FieldFilter::New(TestProto().GetDescriptor(),
                        field_filter_proto).status(),
-      wfa::StatusIs(absl::StatusCode::kInvalidArgument, ""));
+      StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 TEST(PartialFilterTest, TestNoSubFilters) {
@@ -58,7 +59,7 @@ TEST(PartialFilterTest, TestNoSubFilters) {
   EXPECT_THAT(
       FieldFilter::New(TestProto().GetDescriptor(),
                        field_filter_proto).status(),
-      wfa::StatusIs(absl::StatusCode::kInvalidArgument, ""));
+      StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 TEST(PartialFilterTest, TestMatch) {
