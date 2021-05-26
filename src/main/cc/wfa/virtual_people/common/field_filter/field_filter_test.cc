@@ -19,10 +19,13 @@
 #include "google/protobuf/text_format.h"
 #include "gtest/gtest.h"
 #include "src/main/cc/wfa/virtual_people/common/field_filter/test/test.pb.h"
+#include "src/test/cc/testutil/matchers.h"
+#include "src/test/cc/testutil/status_macros.h"
 
 namespace wfa_virtual_people {
 namespace {
 
+using ::wfa::StatusIs;
 using ::wfa_virtual_people::test::TestProto;
 
 TEST(FieldFilterTest, FromMessage_FloatNotSupported) {
@@ -34,10 +37,9 @@ TEST(FieldFilterTest, FromMessage_FloatNotSupported) {
         }
       }
   )PROTO", &filter_message));
-  auto filter_or = FieldFilter::New(filter_message);
-  EXPECT_EQ(
-      filter_or.status().code(),
-      absl::StatusCode::kInvalidArgument);
+  EXPECT_THAT(
+      FieldFilter::New(filter_message).status(),
+      StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 TEST(FieldFilterTest, FromMessage_DoubleNotSupported) {
@@ -49,10 +51,9 @@ TEST(FieldFilterTest, FromMessage_DoubleNotSupported) {
         }
       }
   )PROTO", &filter_message));
-  auto filter_or = FieldFilter::New(filter_message);
-  EXPECT_EQ(
-      filter_or.status().code(),
-      absl::StatusCode::kInvalidArgument);
+  EXPECT_THAT(
+      FieldFilter::New(filter_message).status(),
+      StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 TEST(FieldFilterTest, FromMessage_RepeatedNotSupported) {
@@ -60,10 +61,9 @@ TEST(FieldFilterTest, FromMessage_RepeatedNotSupported) {
   ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"PROTO(
       int32_values: 1
   )PROTO", &filter_message));
-  auto filter_or = FieldFilter::New(filter_message);
-  EXPECT_EQ(
-      filter_or.status().code(),
-      absl::StatusCode::kInvalidArgument);
+  EXPECT_THAT(
+      FieldFilter::New(filter_message).status(),
+      StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 TEST(FieldFilterTest, FromMessage_Successful) {
@@ -81,9 +81,8 @@ TEST(FieldFilterTest, FromMessage_Successful) {
         }
       }
   )PROTO", &filter_message));
-  auto filter_or = FieldFilter::New(filter_message);
-  EXPECT_TRUE(filter_or.ok());
-  std::unique_ptr<FieldFilter> filter = std::move(filter_or.value());
+  ASSERT_OK_AND_ASSIGN(
+      std::unique_ptr<FieldFilter> filter, FieldFilter::New(filter_message));
 
   ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"PROTO(
       a {

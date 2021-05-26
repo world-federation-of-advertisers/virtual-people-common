@@ -25,6 +25,8 @@
 namespace wfa_virtual_people {
 namespace {
 
+using ::wfa::EqualsProto;
+using ::wfa::StatusIs;
 using ::wfa_virtual_people::test::TestProto;
 
 TEST(ConvertMessageToFilterTest, FloatNotSupported) {
@@ -36,9 +38,9 @@ TEST(ConvertMessageToFilterTest, FloatNotSupported) {
         }
       }
   )PROTO", &filter_message));
-  EXPECT_EQ(
-      ConvertMessageToFilter(filter_message).status().code(),
-      absl::StatusCode::kInvalidArgument);
+  EXPECT_THAT(
+      ConvertMessageToFilter(filter_message).status(),
+      StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 TEST(ConvertMessageToFilterTest, DoubleNotSupported) {
@@ -50,9 +52,9 @@ TEST(ConvertMessageToFilterTest, DoubleNotSupported) {
         }
       }
   )PROTO", &filter_message));
-  EXPECT_EQ(
-      ConvertMessageToFilter(filter_message).status().code(),
-      absl::StatusCode::kInvalidArgument);
+  EXPECT_THAT(
+      ConvertMessageToFilter(filter_message).status(),
+      StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 TEST(ConvertMessageToFilterTest, RepeatedNotSupported) {
@@ -60,9 +62,9 @@ TEST(ConvertMessageToFilterTest, RepeatedNotSupported) {
   ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"PROTO(
       int32_values: 1
   )PROTO", &filter_message));
-  EXPECT_EQ(
-      ConvertMessageToFilter(filter_message).status().code(),
-      absl::StatusCode::kInvalidArgument);
+  EXPECT_THAT(
+      ConvertMessageToFilter(filter_message).status(),
+      StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 TEST(ConvertMessageToFilterTest, Successful) {
@@ -130,7 +132,7 @@ TEST(ConvertMessageToFilterTest, Successful) {
         }
       }
   )PROTO", &expected_filter));
-  EXPECT_THAT(filter, wfa::EqualsProto(expected_filter));
+  EXPECT_THAT(filter, EqualsProto(expected_filter));
 }
 
 TEST(ConvertMessageToFilterTest, BoolTrue_Successful) {
@@ -168,7 +170,7 @@ TEST(ConvertMessageToFilterTest, BoolTrue_Successful) {
         }
       }
   )PROTO", &expected_filter));
-  EXPECT_THAT(filter, wfa::EqualsProto(expected_filter));
+  EXPECT_THAT(filter, EqualsProto(expected_filter));
 }
 
 TEST(ConvertMessageToFilterTest, BoolFalse_Successful) {
@@ -206,7 +208,7 @@ TEST(ConvertMessageToFilterTest, BoolFalse_Successful) {
         }
       }
   )PROTO", &expected_filter));
-  EXPECT_THAT(filter, wfa::EqualsProto(expected_filter));
+  EXPECT_THAT(filter, EqualsProto(expected_filter));
 }
 
 }  // namespace
