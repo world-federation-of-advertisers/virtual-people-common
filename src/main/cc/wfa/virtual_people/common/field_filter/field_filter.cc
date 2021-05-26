@@ -18,6 +18,7 @@
 #include "absl/status/statusor.h"
 #include "google/protobuf/descriptor.h"
 #include "src/main/proto/wfa/virtual_people/common/field_filter.pb.h"
+#include "wfa/measurement/common/macros.h"
 #include "wfa/virtual_people/common/field_filter/and_filter.h"
 #include "wfa/virtual_people/common/field_filter/equal_filter.h"
 #include "wfa/virtual_people/common/field_filter/partial_filter.h"
@@ -63,11 +64,7 @@ absl::StatusOr<std::unique_ptr<FieldFilter>> FieldFilter::New(
 
 absl::StatusOr<std::unique_ptr<FieldFilter>> FieldFilter::New(
     const google::protobuf::Message& message) {
-  FieldFilterProto config;
-  absl::Status status = ConvertMessageToFilter(message, &config);
-  if (!status.ok()) {
-    return status;
-  }
+  ASSIGN_OR_RETURN(FieldFilterProto config, ConvertMessageToFilter(message));
   return FieldFilter::New(message.GetDescriptor(), config);
 }
 

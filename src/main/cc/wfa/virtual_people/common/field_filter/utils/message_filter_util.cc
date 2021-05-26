@@ -15,17 +15,18 @@
 #include "wfa/virtual_people/common/field_filter/utils/message_filter_util.h"
 
 #include "absl/status/status.h"
+#include "absl/status/statusor.h"
 #include "absl/strings/str_cat.h"
 #include "google/protobuf/message.h"
 #include "src/main/proto/wfa/virtual_people/common/field_filter.pb.h"
+#include "wfa/measurement/common/macros.h"
 
 namespace wfa_virtual_people {
 
-absl::Status ConvertMessageToFilter(
-    const google::protobuf::Message& message,
-    FieldFilterProto* filter) {
-  filter->Clear();
-  filter->set_op(FieldFilterProto::AND);
+absl::StatusOr<FieldFilterProto> ConvertMessageToFilter(
+    const google::protobuf::Message& message) {
+  FieldFilterProto filter;
+  filter.set_op(FieldFilterProto::AND);
 
   const google::protobuf::Reflection* reflection = message.GetReflection();
   std::vector<const google::protobuf::FieldDescriptor*> field_descriptors;
@@ -38,7 +39,7 @@ absl::Status ConvertMessageToFilter(
           "Repeated field in message when converting to FieldFilterProto: ",
           message.DebugString()));
     }
-    FieldFilterProto* sub_filter = filter->add_sub_filters();
+    FieldFilterProto* sub_filter = filter.add_sub_filters();
     sub_filter->set_name(field_descriptor->name());
     switch (field_descriptor->cpp_type()) {
       case google::protobuf::FieldDescriptor::CPPTYPE_INT32:
@@ -96,12 +97,10 @@ absl::Status ConvertMessageToFilter(
       case google::protobuf::FieldDescriptor::CPPTYPE_MESSAGE:
         {
           sub_filter->set_op(FieldFilterProto::PARTIAL);
-          absl::Status status = ConvertMessageToFilter(
-              reflection->GetMessage(message, field_descriptor),
-              sub_filter->add_sub_filters());
-          if (!status.ok()) {
-            return status;
-          }
+          ASSIGN_OR_RETURN(
+              *sub_filter->add_sub_filters(),
+              ConvertMessageToFilter(
+                  reflection->GetMessage(message, field_descriptor)));
           break;
         }
       default:
@@ -110,7 +109,7 @@ absl::Status ConvertMessageToFilter(
             message.DebugString()));
     }
   }
-  return absl::OkStatus();
+  return filter;
 }
 
 }  // namespace wfa_virtual_people

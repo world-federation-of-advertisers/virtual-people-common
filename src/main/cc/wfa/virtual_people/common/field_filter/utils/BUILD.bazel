@@ -66,8 +66,10 @@ cc_library(
     deps = [
         "//src/main/proto/wfa/virtual_people/common:field_filter_cc_proto",
         "@com_google_absl//absl/status",
+        "@com_google_absl//absl/status:statusor",
         "@com_google_absl//absl/strings",
         "@com_google_protobuf//:protobuf",
+        "@cross_media_measurement//src/main/cc/wfa/measurement/common:macros",
     ],
 )
 
@@ -81,5 +83,6 @@ cc_test(
         "@com_google_googletest//:gtest_main",
         "@com_google_protobuf//:protobuf",
         "@cross_media_measurement//src/test/cc/testutil:matchers",
+        "@cross_media_measurement//src/test/cc/testutil:status_macros",
     ],
 )

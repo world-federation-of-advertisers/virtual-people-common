@@ -20,6 +20,7 @@
 #include "gtest/gtest.h"
 #include "src/main/cc/wfa/virtual_people/common/field_filter/test/test.pb.h"
 #include "src/test/cc/testutil/matchers.h"
+#include "src/test/cc/testutil/status_macros.h"
 
 namespace wfa_virtual_people {
 namespace {
@@ -35,9 +36,8 @@ TEST(ConvertMessageToFilterTest, FloatNotSupported) {
         }
       }
   )PROTO", &filter_message));
-  FieldFilterProto filter;
   EXPECT_EQ(
-      ConvertMessageToFilter(filter_message, &filter).code(),
+      ConvertMessageToFilter(filter_message).status().code(),
       absl::StatusCode::kInvalidArgument);
 }
 
@@ -50,9 +50,8 @@ TEST(ConvertMessageToFilterTest, DoubleNotSupported) {
         }
       }
   )PROTO", &filter_message));
-  FieldFilterProto filter;
   EXPECT_EQ(
-      ConvertMessageToFilter(filter_message, &filter).code(),
+      ConvertMessageToFilter(filter_message).status().code(),
       absl::StatusCode::kInvalidArgument);
 }
 
@@ -61,9 +60,8 @@ TEST(ConvertMessageToFilterTest, RepeatedNotSupported) {
   ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"PROTO(
       int32_values: 1
   )PROTO", &filter_message));
-  FieldFilterProto filter;
   EXPECT_EQ(
-      ConvertMessageToFilter(filter_message, &filter).code(),
+      ConvertMessageToFilter(filter_message).status().code(),
       absl::StatusCode::kInvalidArgument);
 }
 
@@ -81,8 +79,8 @@ TEST(ConvertMessageToFilterTest, Successful) {
         }
       }
   )PROTO", &filter_message));
-  FieldFilterProto filter;
-  EXPECT_TRUE(ConvertMessageToFilter(filter_message, &filter).ok());
+  ASSERT_OK_AND_ASSIGN(
+      FieldFilterProto filter, ConvertMessageToFilter(filter_message));
 
   FieldFilterProto expected_filter;
   ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"PROTO(
@@ -144,8 +142,8 @@ TEST(ConvertMessageToFilterTest, BoolTrue_Successful) {
         }
       }
   )PROTO", &filter_message));
-  FieldFilterProto filter;
-  EXPECT_TRUE(ConvertMessageToFilter(filter_message, &filter).ok());
+  ASSERT_OK_AND_ASSIGN(
+      FieldFilterProto filter, ConvertMessageToFilter(filter_message));
 
   FieldFilterProto expected_filter;
   ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"PROTO(
@@ -182,8 +180,8 @@ TEST(ConvertMessageToFilterTest, BoolFalse_Successful) {
         }
       }
   )PROTO", &filter_message));
-  FieldFilterProto filter;
-  EXPECT_TRUE(ConvertMessageToFilter(filter_message, &filter).ok());
+  ASSERT_OK_AND_ASSIGN(
+      FieldFilterProto filter, ConvertMessageToFilter(filter_message));
 
   FieldFilterProto expected_filter;
   ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"PROTO(

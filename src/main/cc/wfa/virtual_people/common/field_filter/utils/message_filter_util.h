@@ -15,24 +15,21 @@
 #ifndef WFA_VIRTUAL_PEOPLE_COMMON_FIELD_FILTER_UTILS_MESSAGE_FILTER_UTIL_H_
 #define WFA_VIRTUAL_PEOPLE_COMMON_FIELD_FILTER_UTILS_MESSAGE_FILTER_UTIL_H_
 
-#include "absl/status/status.h"
+#include "absl/status/statusor.h"
 #include "google/protobuf/message.h"
 #include "src/main/proto/wfa/virtual_people/common/field_filter.pb.h"
 
 namespace wfa_virtual_people {
 
-// Converts @message to a FieldFilterProto, and writes to @filter.
+// Converts @message to a FieldFilterProto.
 //
-// Any existing field in @filter will be cleaned up.
-//
-// The output @filter represents a field filter, which checks the equality of
-// all the existing fields, including nested fields, of @message.
+// The output represents a field filter, which checks the equality of all the
+// existing fields, including nested fields, of @message.
 //
 // Float and double fields are not supported.
 // Any repeated field is not supported.
-absl::Status ConvertMessageToFilter(
-    const google::protobuf::Message& message,
-    FieldFilterProto* filter);
+absl::StatusOr<FieldFilterProto> ConvertMessageToFilter(
+    const google::protobuf::Message& message);
 
 }  // namespace wfa_virtual_people
 
