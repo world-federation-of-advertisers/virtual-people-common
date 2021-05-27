@@ -23,6 +23,92 @@
 
 namespace wfa_virtual_people {
 
+// Convert the protobuf field in @message represented by @field_descriptor to
+// a FieldFilterProto, which checkes the equality of the given field, or any
+// nested field of the given field.
+//
+// @reflection must be the reflection of @message.
+absl::StatusOr<FieldFilterProto> ConvertFieldToFilter(
+    const google::protobuf::Message& message,
+    const google::protobuf::Reflection* reflection,
+    const google::protobuf::FieldDescriptor* field_descriptor) {
+  if (field_descriptor->is_repeated()) {
+    return absl::InvalidArgumentError(absl::StrCat(
+        "Repeated field in message when converting to FieldFilterProto: ",
+        message.DebugString()));
+  }
+  FieldFilterProto filter;
+  filter.set_name(field_descriptor->name());
+  switch (field_descriptor->cpp_type()) {
+    case google::protobuf::FieldDescriptor::CPPTYPE_INT32:
+      {
+        filter.set_op(FieldFilterProto::EQUAL);
+        filter.set_value(
+            std::to_string(reflection->GetInt32(message, field_descriptor)));
+        break;
+      }
+    case google::protobuf::FieldDescriptor::CPPTYPE_INT64:
+      {
+        filter.set_op(FieldFilterProto::EQUAL);
+        filter.set_value(
+            std::to_string(reflection->GetInt64(message, field_descriptor)));
+        break;
+      }
+    case google::protobuf::FieldDescriptor::CPPTYPE_UINT32:
+      {
+        filter.set_op(FieldFilterProto::EQUAL);
+        filter.set_value(
+            std::to_string(reflection->GetUInt32(message, field_descriptor)));
+        break;
+      }
+    case google::protobuf::FieldDescriptor::CPPTYPE_UINT64:
+      {
+        filter.set_op(FieldFilterProto::EQUAL);
+        filter.set_value(
+            std::to_string(reflection->GetUInt64(message, field_descriptor)));
+        break;
+      }
+    case google::protobuf::FieldDescriptor::CPPTYPE_BOOL:
+      {
+        filter.set_op(FieldFilterProto::EQUAL);
+        if (reflection->GetBool(message, field_descriptor)) {
+          filter.set_value("true");
+        } else {
+          filter.set_value("false");
+        }
+        break;
+      }
+    case google::protobuf::FieldDescriptor::CPPTYPE_ENUM:
+      {
+        filter.set_op(FieldFilterProto::EQUAL);
+        filter.set_value(
+            reflection->GetEnum(message, field_descriptor)->name());
+        break;
+      }
+    case google::protobuf::FieldDescriptor::CPPTYPE_STRING:
+      {
+        filter.set_op(FieldFilterProto::EQUAL);
+        filter.set_value(
+            reflection->GetString(message, field_descriptor));
+        break;
+      }
+    case google::protobuf::FieldDescriptor::CPPTYPE_MESSAGE:
+      {
+        filter.set_op(FieldFilterProto::PARTIAL);
+        ASSIGN_OR_RETURN(
+            *filter.add_sub_filters(),
+            ConvertMessageToFilter(
+                reflection->GetMessage(message, field_descriptor)));
+        break;
+      }
+    default:
+      return absl::InvalidArgumentError(absl::StrCat(
+          "Unsupported field type converting to FieldFilterProto from: ",
+          message.DebugString()));
+  }
+  return filter;
+}
+
 absl::StatusOr<FieldFilterProto> ConvertMessageToFilter(
     const google::protobuf::Message& message) {
   FieldFilterProto filter;
@@ -34,80 +120,9 @@ absl::StatusOr<FieldFilterProto> ConvertMessageToFilter(
 
   for (const google::protobuf::FieldDescriptor* field_descriptor :
           field_descriptors) {
-    if (field_descriptor->is_repeated()) {
-      return absl::InvalidArgumentError(absl::StrCat(
-          "Repeated field in message when converting to FieldFilterProto: ",
-          message.DebugString()));
-    }
-    FieldFilterProto* sub_filter = filter.add_sub_filters();
-    sub_filter->set_name(field_descriptor->name());
-    switch (field_descriptor->cpp_type()) {
-      case google::protobuf::FieldDescriptor::CPPTYPE_INT32:
-        {
-          sub_filter->set_op(FieldFilterProto::EQUAL);
-          sub_filter->set_value(
-              std::to_string(reflection->GetInt32(message, field_descriptor)));
-          break;
-        }
-      case google::protobuf::FieldDescriptor::CPPTYPE_INT64:
-        {
-          sub_filter->set_op(FieldFilterProto::EQUAL);
-          sub_filter->set_value(
-              std::to_string(reflection->GetInt64(message, field_descriptor)));
-          break;
-        }
-      case google::protobuf::FieldDescriptor::CPPTYPE_UINT32:
-        {
-          sub_filter->set_op(FieldFilterProto::EQUAL);
-          sub_filter->set_value(
-              std::to_string(reflection->GetUInt32(message, field_descriptor)));
-          break;
-        }
-      case google::protobuf::FieldDescriptor::CPPTYPE_UINT64:
-        {
-          sub_filter->set_op(FieldFilterProto::EQUAL);
-          sub_filter->set_value(
-              std::to_string(reflection->GetUInt64(message, field_descriptor)));
-          break;
-        }
-      case google::protobuf::FieldDescriptor::CPPTYPE_BOOL:
-        {
-          sub_filter->set_op(FieldFilterProto::EQUAL);
-          if (reflection->GetBool(message, field_descriptor)) {
-            sub_filter->set_value("true");
-          } else {
-            sub_filter->set_value("false");
-          }
-          break;
-        }
-      case google::protobuf::FieldDescriptor::CPPTYPE_ENUM:
-        {
-          sub_filter->set_op(FieldFilterProto::EQUAL);
-          sub_filter->set_value(
-              reflection->GetEnum(message, field_descriptor)->name());
-          break;
-        }
-      case google::protobuf::FieldDescriptor::CPPTYPE_STRING:
-        {
-          sub_filter->set_op(FieldFilterProto::EQUAL);
-          sub_filter->set_value(
-              reflection->GetString(message, field_descriptor));
-          break;
-        }
-      case google::protobuf::FieldDescriptor::CPPTYPE_MESSAGE:
-        {
-          sub_filter->set_op(FieldFilterProto::PARTIAL);
-          ASSIGN_OR_RETURN(
-              *sub_filter->add_sub_filters(),
-              ConvertMessageToFilter(
-                  reflection->GetMessage(message, field_descriptor)));
-          break;
-        }
-      default:
-        return absl::InvalidArgumentError(absl::StrCat(
-            "Unsupported field type converting to FieldFilterProto from: ",
-            message.DebugString()));
-    }
+    ASSIGN_OR_RETURN(
+        *filter.add_sub_filters(),
+        ConvertFieldToFilter(message, reflection, field_descriptor));
   }
   return filter;
 }
