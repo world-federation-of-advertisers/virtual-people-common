@@ -135,7 +135,7 @@ TEST(ConvertMessageToFilterTest, Successful) {
   EXPECT_THAT(filter, EqualsProto(expected_filter));
 }
 
-TEST(ConvertMessageToFilterTest, BoolTrue_Successful) {
+TEST(ConvertMessageToFilterTest, BoolTrueSuccessful) {
   TestProto filter_message;
   ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"PROTO(
       a {
@@ -173,7 +173,7 @@ TEST(ConvertMessageToFilterTest, BoolTrue_Successful) {
   EXPECT_THAT(filter, EqualsProto(expected_filter));
 }
 
-TEST(ConvertMessageToFilterTest, BoolFalse_Successful) {
+TEST(ConvertMessageToFilterTest, BoolFalseSuccessful) {
   TestProto filter_message;
   ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"PROTO(
       a {

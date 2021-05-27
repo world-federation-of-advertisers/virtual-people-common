@@ -28,7 +28,7 @@ namespace {
 using ::wfa::StatusIs;
 using ::wfa_virtual_people::test::TestProto;
 
-TEST(FieldFilterTest, FromMessage_FloatNotSupported) {
+TEST(FieldFilterTest, FromMessageFloatNotSupported) {
   TestProto filter_message;
   ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"PROTO(
       a {
@@ -42,7 +42,7 @@ TEST(FieldFilterTest, FromMessage_FloatNotSupported) {
       StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
-TEST(FieldFilterTest, FromMessage_DoubleNotSupported) {
+TEST(FieldFilterTest, FromMessageDoubleNotSupported) {
   TestProto filter_message;
   ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"PROTO(
       a {
@@ -56,7 +56,7 @@ TEST(FieldFilterTest, FromMessage_DoubleNotSupported) {
       StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
-TEST(FieldFilterTest, FromMessage_RepeatedNotSupported) {
+TEST(FieldFilterTest, FromMessageRepeatedNotSupported) {
   TestProto filter_message;
   ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"PROTO(
       int32_values: 1
@@ -66,7 +66,7 @@ TEST(FieldFilterTest, FromMessage_RepeatedNotSupported) {
       StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
-TEST(FieldFilterTest, FromMessage_Successful) {
+TEST(FieldFilterTest, FromMessageSuccessful) {
   TestProto filter_message, test_proto_1, test_proto_2;
   ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"PROTO(
       a {
