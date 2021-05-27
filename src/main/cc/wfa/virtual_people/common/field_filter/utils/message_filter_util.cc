@@ -39,38 +39,34 @@ absl::StatusOr<FieldFilterProto> ConvertFieldToFilter(
   }
   FieldFilterProto filter;
   filter.set_name(field_descriptor->name());
+  filter.set_op(FieldFilterProto::EQUAL);
   switch (field_descriptor->cpp_type()) {
     case google::protobuf::FieldDescriptor::CPPTYPE_INT32:
       {
-        filter.set_op(FieldFilterProto::EQUAL);
         filter.set_value(
             std::to_string(reflection->GetInt32(message, field_descriptor)));
         break;
       }
     case google::protobuf::FieldDescriptor::CPPTYPE_INT64:
       {
-        filter.set_op(FieldFilterProto::EQUAL);
         filter.set_value(
             std::to_string(reflection->GetInt64(message, field_descriptor)));
         break;
       }
     case google::protobuf::FieldDescriptor::CPPTYPE_UINT32:
       {
-        filter.set_op(FieldFilterProto::EQUAL);
         filter.set_value(
             std::to_string(reflection->GetUInt32(message, field_descriptor)));
         break;
       }
     case google::protobuf::FieldDescriptor::CPPTYPE_UINT64:
       {
-        filter.set_op(FieldFilterProto::EQUAL);
         filter.set_value(
             std::to_string(reflection->GetUInt64(message, field_descriptor)));
         break;
       }
     case google::protobuf::FieldDescriptor::CPPTYPE_BOOL:
       {
-        filter.set_op(FieldFilterProto::EQUAL);
         if (reflection->GetBool(message, field_descriptor)) {
           filter.set_value("true");
         } else {
@@ -80,14 +76,12 @@ absl::StatusOr<FieldFilterProto> ConvertFieldToFilter(
       }
     case google::protobuf::FieldDescriptor::CPPTYPE_ENUM:
       {
-        filter.set_op(FieldFilterProto::EQUAL);
         filter.set_value(
             reflection->GetEnum(message, field_descriptor)->name());
         break;
       }
     case google::protobuf::FieldDescriptor::CPPTYPE_STRING:
       {
-        filter.set_op(FieldFilterProto::EQUAL);
         filter.set_value(
             reflection->GetString(message, field_descriptor));
         break;
