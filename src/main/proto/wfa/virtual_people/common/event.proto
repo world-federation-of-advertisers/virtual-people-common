@@ -52,6 +52,9 @@ message UserInfo {
   // Creation or initialization time of the user id, in microseconds
   // since epoch.
   int64 creation_time_usec = 5;
+
+  // The fingerprint of user_id. Only used in Labeler.
+  optional uint64 user_id_fingerprint = 6;
 }
 
 // Represents info for all user ids associated with a specific event.
