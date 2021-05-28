@@ -30,6 +30,9 @@ message EventId {
   // The publisher specific event id. Unique within all logs of the
   // publisher.
   optional string id = 2;
+
+  // The fingerprint of id. Only used in Labeler.
+  optional uint64 user_id_fingerprint = 3;
 }
 
 // Represents information on a specific user id. This data will be attached
