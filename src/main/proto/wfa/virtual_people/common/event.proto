@@ -32,7 +32,7 @@ message EventId {
   optional string id = 2;
 
   // The fingerprint of id. Only used in Labeler.
-  optional uint64 user_id_fingerprint = 3;
+  optional uint64 id_fingerprint = 3;
 }
 
 // Represents information on a specific user id. This data will be attached
