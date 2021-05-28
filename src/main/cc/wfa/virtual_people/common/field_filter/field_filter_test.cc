@@ -98,9 +98,12 @@ TEST(FieldFilterTest, FromMessageSuccessful) {
           string_value: "string1"
         }
       }
+      int32_values: 1
+      int32_values: 2
   )PROTO", &test_proto_1));
   EXPECT_TRUE(filter->IsMatch(test_proto_1));
 
+  // a.b.int32_value does not match.
   ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"PROTO(
       a {
         b {
@@ -115,6 +118,8 @@ TEST(FieldFilterTest, FromMessageSuccessful) {
           string_value: "string1"
         }
       }
+      int32_values: 1
+      int32_values: 2
   )PROTO", &test_proto_2));
   EXPECT_FALSE(filter->IsMatch(test_proto_2));
 }
