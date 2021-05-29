@@ -19,6 +19,8 @@ package wfa_virtual_people.test;
 
 message TestProto {
   optional TestProtoA a = 1;
+
+  repeated int32 int32_values = 2;
 }
 
 message TestProtoA {
