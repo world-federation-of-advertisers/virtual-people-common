@@ -31,7 +31,7 @@ message EventId {
   // publisher.
   optional string id = 2;
 
-  // The fingerprint of id. Only used in Labeler.
+  // The fingerprint of id. Only set and used in Labeler.
   optional uint64 id_fingerprint = 3;
 }
 
@@ -56,7 +56,7 @@ message UserInfo {
   // since epoch.
   int64 creation_time_usec = 5;
 
-  // The fingerprint of user_id. Only used in Labeler.
+  // The fingerprint of user_id. Only set and used in Labeler.
   optional uint64 user_id_fingerprint = 6;
 }
 
