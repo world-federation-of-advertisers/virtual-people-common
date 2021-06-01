@@ -30,6 +30,9 @@ message EventId {
   // The publisher specific event id. Unique within all logs of the
   // publisher.
   optional string id = 2;
+
+  // The fingerprint of id. Only set and used in Labeler.
+  optional uint64 id_fingerprint = 3;
 }
 
 // Represents information on a specific user id. This data will be attached
@@ -52,6 +55,9 @@ message UserInfo {
   // Creation or initialization time of the user id, in microseconds
   // since epoch.
   int64 creation_time_usec = 5;
+
+  // The fingerprint of user_id. Only set and used in Labeler.
+  optional uint64 user_id_fingerprint = 6;
 }
 
 // Represents info for all user ids associated with a specific event.
