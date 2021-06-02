@@ -21,6 +21,7 @@
 #include "wfa/measurement/common/macros.h"
 #include "wfa/virtual_people/common/field_filter/and_filter.h"
 #include "wfa/virtual_people/common/field_filter/equal_filter.h"
+#include "wfa/virtual_people/common/field_filter/or_filter.h"
 #include "wfa/virtual_people/common/field_filter/partial_filter.h"
 #include "wfa/virtual_people/common/field_filter/true_filter.h"
 #include "wfa/virtual_people/common/field_filter/utils/message_filter_util.h"
@@ -45,7 +46,7 @@ absl::StatusOr<std::unique_ptr<FieldFilter>> FieldFilter::New(
       return absl::UnimplementedError(
           "REGEXP field filter is not implemented.");
     case FieldFilterProto::OR:
-      return absl::UnimplementedError("OR field filter is not implemented.");
+      return OrFilter::New(descriptor, config);
     case FieldFilterProto::AND:
       return AndFilter::New(descriptor, config);
     case FieldFilterProto::NOT:
