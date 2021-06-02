@@ -47,6 +47,18 @@ GetFieldFromProto(
   return field_descriptors;
 }
 
+const google::protobuf::Message& GetParentMessageFromProto(
+    const google::protobuf::Message& message,
+    const std::vector<const google::protobuf::FieldDescriptor*>&
+        field_descriptors) {
+  const google::protobuf::Message* tmp_message = &message;
+  for (auto it = field_descriptors.begin(), j = field_descriptors.end() - 1;
+       it != j; it++) {
+    tmp_message = &(tmp_message->GetReflection()->GetMessage(*tmp_message,
+                                                             *it));
+  }
+  return *tmp_message;
+}
 template <typename ValueType>
 ValueType GetImmediateValueFromProto(
     const google::protobuf::Message& message,

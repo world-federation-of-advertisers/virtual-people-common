@@ -10,6 +10,7 @@ cc_library(
         "and_filter.cc",
         "equal_filter.cc",
         "field_filter.cc",
+        "has_filter.cc",
         "not_filter.cc",
         "or_filter.cc",
         "partial_filter.cc",
@@ -19,6 +20,7 @@ cc_library(
         "and_filter.h",
         "equal_filter.h",
         "field_filter.h",
+        "has_filter.h",
         "not_filter.h",
         "or_filter.h",
         "partial_filter.h",
@@ -46,6 +48,22 @@ cc_test(
         ":field_filter",
         "//src/main/cc/wfa/virtual_people/common/field_filter/test:test_cc_proto",
         "@com_google_absl//absl/status",
+        "@com_google_googletest//:gtest_main",
+        "@com_google_protobuf//:protobuf",
+        "@cross_media_measurement//src/test/cc/testutil:matchers",
+        "@cross_media_measurement//src/test/cc/testutil:status_macros",
+    ],
+)
+
+cc_test(
+    name = "has_filter_test",
+    srcs = ["has_filter_test.cc"],
+    deps = [
+        ":field_filter",
+        "//src/main/cc/wfa/virtual_people/common/field_filter/test:test_cc_proto",
+        "//src/main/proto/wfa/virtual_people/common:field_filter_cc_proto",
+        "@com_google_absl//absl/status",
+        "@com_google_absl//absl/status:statusor",
         "@com_google_googletest//:gtest_main",
         "@com_google_protobuf//:protobuf",
         "@cross_media_measurement//src/test/cc/testutil:matchers",
