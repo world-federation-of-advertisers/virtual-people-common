@@ -21,6 +21,7 @@
 #include "wfa/measurement/common/macros.h"
 #include "wfa/virtual_people/common/field_filter/and_filter.h"
 #include "wfa/virtual_people/common/field_filter/equal_filter.h"
+#include "wfa/virtual_people/common/field_filter/not_filter.h"
 #include "wfa/virtual_people/common/field_filter/or_filter.h"
 #include "wfa/virtual_people/common/field_filter/partial_filter.h"
 #include "wfa/virtual_people/common/field_filter/true_filter.h"
@@ -50,7 +51,7 @@ absl::StatusOr<std::unique_ptr<FieldFilter>> FieldFilter::New(
     case FieldFilterProto::AND:
       return AndFilter::New(descriptor, config);
     case FieldFilterProto::NOT:
-      return absl::UnimplementedError("NOT field filter is not implemented.");
+      return NotFilter::New(descriptor, config);
     case FieldFilterProto::PARTIAL:
       return PartialFilter::New(descriptor, config);
     case FieldFilterProto::TRUE:
