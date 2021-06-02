@@ -62,6 +62,18 @@ TEST(HasFilterTest, TestInvalidName) {
       StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
+TEST(HasFilterTest, TestDisallowedRepeatedInThePath) {
+  FieldFilterProto field_filter_proto;
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
+      name: "repeated_proto_a.b.int32_value"
+      op: HAS
+  )pb", &field_filter_proto));
+  EXPECT_THAT(
+      FieldFilter::New(TestProto().GetDescriptor(),
+                       field_filter_proto).status(),
+      StatusIs(absl::StatusCode::kInvalidArgument, ""));
+}
+
 TEST(HasFilterTest, TestNonRepeated) {
   ASSERT_OK_AND_ASSIGN(
       std::unique_ptr<FieldFilter> field_filter,
@@ -79,6 +91,7 @@ TEST(HasFilterTest, TestNonRepeated) {
       }
   )pb", &test_proto_1));
   EXPECT_TRUE(field_filter->IsMatch(test_proto_1));
+
   TestProto test_proto_2;
   ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
       a {
@@ -88,6 +101,7 @@ TEST(HasFilterTest, TestNonRepeated) {
       }
   )pb", &test_proto_2));
   EXPECT_FALSE(field_filter->IsMatch(test_proto_2));
+
   TestProto test_proto_3;
   EXPECT_FALSE(field_filter->IsMatch(test_proto_3));
 }
@@ -96,17 +110,43 @@ TEST(HasFilterTest, TestRepeated) {
   ASSERT_OK_AND_ASSIGN(
       std::unique_ptr<FieldFilter> field_filter,
       FilterFromProtoText(R"pb(
-          name: "int32_values"
+          name: "a.b.int32_values"
           op: HAS
       )pb"));
 
   TestProto test_proto_1;
   ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
-      int32_values: 1
+      a {
+        b {
+          int32_values: 1
+        }
+      }
   )pb", &test_proto_1));
   EXPECT_TRUE(field_filter->IsMatch(test_proto_1));
+
   TestProto test_proto_2;
-  EXPECT_FALSE(field_filter->IsMatch(test_proto_2));
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
+      a {
+        b {
+          int32_values: 1
+          int32_values: 2
+        }
+      }
+  )pb", &test_proto_2));
+  EXPECT_TRUE(field_filter->IsMatch(test_proto_2));
+
+  TestProto test_proto_3;
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
+      a {
+        b {
+          int32_value: 1
+        }
+      }
+  )pb", &test_proto_3));
+  EXPECT_FALSE(field_filter->IsMatch(test_proto_3));
+
+  TestProto test_proto_4;
+  EXPECT_FALSE(field_filter->IsMatch(test_proto_4));
 }
 
 }  // namespace

@@ -30,8 +30,10 @@ class HasFilter : public FieldFilter {
   // Users should never call HasFilter::New or any constructor directly.
   //
   // Returns error status if any of the following happens:
-  //   @config.op is not HAS.
-  //   @config.name is not set or invalid.
+  // * @config.op is not HAS.
+  // * @config.name is not set or invalid.
+  // * Any field, except the last one, of the path represented by @config.name
+  //   is repeated field.
   static absl::StatusOr<std::unique_ptr<HasFilter>> New(
       const google::protobuf::Descriptor* descriptor,
       const FieldFilterProto& config);
@@ -44,7 +46,7 @@ class HasFilter : public FieldFilter {
   HasFilter& operator=(const HasFilter&) = delete;
 
   // Returns true if any of the following is true
-  // * The field is not repeated, and exists in @message.
+  // * The field is not repeated, and is set in @message.
   // * The field is repeated, and is not empty in @message.
   bool IsMatch(const google::protobuf::Message& message) const override;
 

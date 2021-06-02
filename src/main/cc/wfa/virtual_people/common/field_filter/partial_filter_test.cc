@@ -50,6 +50,40 @@ TEST(PartialFilterTest, TestNoName) {
       StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
+TEST(PartialFilterTest, TestDisallowedRepeated) {
+  FieldFilterProto field_filter_proto;
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
+      name: "a.b"
+      op: PARTIAL
+      sub_filters {
+        name: "int32_values"
+        op: EQUAL
+        value: "1"
+      }
+  )pb", &field_filter_proto));
+  EXPECT_THAT(
+      FieldFilter::New(TestProto().GetDescriptor(),
+                       field_filter_proto).status(),
+      StatusIs(absl::StatusCode::kInvalidArgument, ""));
+}
+
+TEST(PartialFilterTest, TestDisallowedRepeatedInThePath) {
+  FieldFilterProto field_filter_proto;
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
+      name: "repeated_proto_a.b"
+      op: PARTIAL
+      sub_filters {
+        name: "int32_value"
+        op: EQUAL
+        value: "1"
+      }
+  )pb", &field_filter_proto));
+  EXPECT_THAT(
+      FieldFilter::New(TestProto().GetDescriptor(),
+                       field_filter_proto).status(),
+      StatusIs(absl::StatusCode::kInvalidArgument, ""));
+}
+
 TEST(PartialFilterTest, TestNoSubFilters) {
   FieldFilterProto field_filter_proto;
   ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(

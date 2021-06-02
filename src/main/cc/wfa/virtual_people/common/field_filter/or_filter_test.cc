@@ -57,7 +57,7 @@ TEST(OrFilterTest, TestMatch) {
       std::unique_ptr<FieldFilter> field_filter,
       FieldFilter::New(TestProto().GetDescriptor(), field_filter_proto));
 
-  TestProto test_proto;
+  TestProto test_proto_1;
   ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
       a {
         b {
@@ -65,8 +65,18 @@ TEST(OrFilterTest, TestMatch) {
           int64_value: 1
         }
       }
-  )pb", &test_proto));
-  EXPECT_TRUE(field_filter->IsMatch(test_proto));
+  )pb", &test_proto_1));
+  EXPECT_TRUE(field_filter->IsMatch(test_proto_1));
+
+  TestProto test_proto_2;
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
+      a {
+        b {
+          int64_value: 1
+        }
+      }
+  )pb", &test_proto_2));
+  EXPECT_TRUE(field_filter->IsMatch(test_proto_2));
 }
 
 TEST(OrFilterTest, TestNotMatch) {
@@ -88,7 +98,7 @@ TEST(OrFilterTest, TestNotMatch) {
       std::unique_ptr<FieldFilter> field_filter,
       FieldFilter::New(TestProto().GetDescriptor(), field_filter_proto));
 
-  TestProto test_proto;
+  TestProto test_proto_1;
   ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
       a {
         b {
@@ -96,8 +106,17 @@ TEST(OrFilterTest, TestNotMatch) {
           int64_value: 2
         }
       }
-  )pb", &test_proto));
-  EXPECT_FALSE(field_filter->IsMatch(test_proto));
+  )pb", &test_proto_1));
+  EXPECT_FALSE(field_filter->IsMatch(test_proto_1));
+
+  TestProto test_proto_2;
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
+      a {
+        b {
+        }
+      }
+  )pb", &test_proto_2));
+  EXPECT_FALSE(field_filter->IsMatch(test_proto_2));
 }
 
 }  // namespace

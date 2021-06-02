@@ -23,6 +23,7 @@
 #include "gtest/gtest.h"
 #include "src/main/cc/wfa/virtual_people/common/field_filter/test/test.pb.h"
 #include "src/test/cc/testutil/matchers.h"
+#include "src/test/cc/testutil/status_macros.h"
 
 namespace wfa_virtual_people {
 namespace {
@@ -158,6 +159,84 @@ TEST(GetFieldFromProtoTest, InvalidSubmessageName) {
   EXPECT_THAT(
       field_descriptors.status(),
       StatusIs(absl::StatusCode::kInvalidArgument, ""));
+}
+
+TEST(GetFieldFromProtoTest, TestGetParentMessage) {
+  ASSERT_OK_AND_ASSIGN(
+      std::vector<const google::protobuf::FieldDescriptor*> field_descriptors,
+      GetFieldFromProto(TestProto().GetDescriptor(), "a.b.int32_value"));
+
+  TestProto test_proto;
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
+      a {
+        b {
+          int32_value: 1
+          int64_value: 1
+          uint32_value: 1
+          uint64_value: 1
+          float_value: 1.0
+          double_value: 1.0
+          bool_value: true
+          enum_value: TEST_ENUM_1
+          string_value: "string1"
+          int32_values: 1
+          int32_values: 2
+        }
+      }
+  )pb", &test_proto));
+  EXPECT_THAT(
+      GetParentMessageFromProto(test_proto, field_descriptors),
+      EqualsProto(test_proto.a().b()));
+}
+
+TEST(GetFieldFromProtoTest, DisallowRepeatedField) {
+  // Any repeated field in the path except the last field is disallowed.
+  EXPECT_THAT(
+      GetFieldFromProto(
+          TestProto().GetDescriptor(),
+          "repeated_proto_a.b.int32_value").status(),
+      StatusIs(absl::StatusCode::kInvalidArgument, ""));
+  // Any repeated field in the path except the last field is disallowed.
+  EXPECT_THAT(
+      GetFieldFromProto(
+          TestProto().GetDescriptor(), "repeated_proto_a.b.int32_value",
+          /* allow_repeated = */true).status(),
+      StatusIs(absl::StatusCode::kInvalidArgument, ""));
+  // Last field is disallowed to be repeated if @allow_repeated is set to false.
+  EXPECT_THAT(
+      GetFieldFromProto(
+          TestProto().GetDescriptor(), "a.b.int32_values").status(),
+      StatusIs(absl::StatusCode::kInvalidArgument, ""));
+}
+
+TEST(GetFieldFromProtoTest, TestAllowRepeatedAndGetParentMessage) {
+  ASSERT_OK_AND_ASSIGN(
+      std::vector<const google::protobuf::FieldDescriptor*> field_descriptors,
+      GetFieldFromProto(
+          TestProto().GetDescriptor(), "a.b.int32_values",
+          /* allow_repeated = */true));
+
+  TestProto test_proto;
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
+      a {
+        b {
+          int32_value: 1
+          int64_value: 1
+          uint32_value: 1
+          uint64_value: 1
+          float_value: 1.0
+          double_value: 1.0
+          bool_value: true
+          enum_value: TEST_ENUM_1
+          string_value: "string1"
+          int32_values: 1
+          int32_values: 2
+        }
+      }
+  )pb", &test_proto));
+  EXPECT_THAT(
+      GetParentMessageFromProto(test_proto, field_descriptors),
+      EqualsProto(test_proto.a().b()));
 }
 
 }  // namespace

@@ -30,9 +30,10 @@ class EqualFilter : public FieldFilter {
   // Users should never call EqualFilter::New or any constructor directly.
   //
   // Returns error status if any of the following happens:
-  //   @config.op is not EQUAL.
-  //   @config.name is not set.
-  //   @config.value is not set.
+  // * @config.op is not EQUAL.
+  // * @config.name is not set.
+  // * Any field of the path represented by @config.name is repeated field.
+  // * @config.value is not set.
   //
   // @config.value will be casted to the type of the field represented by
   // @config.name.

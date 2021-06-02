@@ -44,12 +44,13 @@ class NotFilter : public FieldFilter {
   NotFilter(const NotFilter&) = delete;
   NotFilter& operator=(const NotFilter&) = delete;
 
-  // Returns false when all the sub_filters pass. Otherwise, returns true.
+  // Returns false when all the @config.sub_filters pass.
+  // Otherwise, returns true.
   bool IsMatch(const google::protobuf::Message& message) const override;
 
  private:
   // A field filter represents the AND of all the sub_filters.
-  // The output of this NotFilter should be the reverse of the output of 
+  // The output of this NotFilter should be the reverse of the output of
   // and_filter_.
   std::unique_ptr<FieldFilter> and_filter_;
 };

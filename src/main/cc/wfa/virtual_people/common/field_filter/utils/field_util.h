@@ -27,12 +27,18 @@ namespace wfa_virtual_people {
 //
 // @full_field_name is separated by ".".
 //
+// If @allow_repeated is true, only the last field in the path represented by
+// @full_field_name is allowed to be a repeated field.
+// If @allow_repeated is false, no repeated field is allowed in the path.
+// Returns error status if any disallowed repeated field exists.
+//
 // The returned FieldDescriptors is in the order of the field name to access the
 // nested field.
 absl::StatusOr<std::vector<const google::protobuf::FieldDescriptor*>>
 GetFieldFromProto(
     const google::protobuf::Descriptor* descriptor,
-    absl::string_view full_field_name);
+    absl::string_view full_field_name,
+    bool allow_repeated = false);
 
 // Get the parent message of the field represented by @field_descriptors from
 // the @message.

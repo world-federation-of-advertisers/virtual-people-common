@@ -40,7 +40,7 @@ absl::StatusOr<std::unique_ptr<HasFilter>> HasFilter::New(
 
   ASSIGN_OR_RETURN(
       std::vector<const google::protobuf::FieldDescriptor*> field_descriptors,
-      GetFieldFromProto(descriptor, config.name()));
+      GetFieldFromProto(descriptor, config.name(), /* allow_repeated = */true));
   return absl::make_unique<HasFilter>(std::move(field_descriptors));
 }
 
