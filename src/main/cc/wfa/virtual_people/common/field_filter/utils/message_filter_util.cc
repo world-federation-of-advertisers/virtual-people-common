@@ -112,6 +112,11 @@ absl::StatusOr<FieldFilterProto> ConvertMessageToFilter(
   std::vector<const google::protobuf::FieldDescriptor*> field_descriptors;
   reflection->ListFields(message, &field_descriptors);
 
+  if (field_descriptors.empty()) {
+    filter.set_op(FieldFilterProto::TRUE);
+    return filter;
+  }
+
   for (const google::protobuf::FieldDescriptor* field_descriptor :
           field_descriptors) {
     ASSIGN_OR_RETURN(

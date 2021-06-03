@@ -211,5 +211,47 @@ TEST(ConvertMessageToFilterTest, BoolFalseSuccessful) {
   EXPECT_THAT(filter, EqualsProto(expected_filter));
 }
 
+TEST(ConvertMessageToFilterTest, EmptyMessage) {
+  TestProto filter_message;
+  ASSERT_OK_AND_ASSIGN(
+      FieldFilterProto filter, ConvertMessageToFilter(filter_message));
+
+  FieldFilterProto expected_filter;
+  expected_filter.set_op(FieldFilterProto::TRUE);
+  EXPECT_THAT(filter, EqualsProto(expected_filter));
+}
+
+TEST(ConvertMessageToFilterTest, NestedEmptyMessage) {
+  TestProto filter_message;
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"PROTO(
+      a {
+        b {
+        }
+      }
+  )PROTO", &filter_message));
+  ASSERT_OK_AND_ASSIGN(
+      FieldFilterProto filter, ConvertMessageToFilter(filter_message));
+
+  FieldFilterProto expected_filter;
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"PROTO(
+      op: AND
+      sub_filters {
+        op: PARTIAL
+        name: "a"
+        sub_filters {
+          op: AND
+          sub_filters {
+            op: PARTIAL
+            name: "b"
+            sub_filters {
+              op: TRUE
+            }
+          }
+        }
+      }
+  )PROTO", &expected_filter));
+  EXPECT_THAT(filter, EqualsProto(expected_filter));
+}
+
 }  // namespace
 }  // namespace wfa_virtual_people
