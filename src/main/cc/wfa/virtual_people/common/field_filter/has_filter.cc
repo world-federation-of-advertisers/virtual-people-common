@@ -49,7 +49,7 @@ bool HasFilter::IsMatch(const google::protobuf::Message& message) const {
       GetParentMessageFromProto(message, field_descriptors_);
   const google::protobuf::FieldDescriptor* field = field_descriptors_.back();
   if (field->is_repeated()) {
-    return (parent.GetReflection()->FieldSize(parent, field) > 0);
+    return parent.GetReflection()->FieldSize(parent, field) > 0;
   }
   return parent.GetReflection()->HasField(parent, field);
 };

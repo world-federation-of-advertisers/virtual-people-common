@@ -46,7 +46,7 @@ GetFieldFromProto(
     descriptor = field_descriptor->message_type();
   }
   for (auto it = field_descriptors.begin(), j = field_descriptors.end() - 1;
-       it != j; it++) {
+       it != j; ++it) {
     if ((*it)->is_repeated()) {
       return absl::InvalidArgumentError(absl::StrCat(
           "Repeated field is not allowed in the path: ", full_field_name));
@@ -65,7 +65,7 @@ const google::protobuf::Message& GetParentMessageFromProto(
         field_descriptors) {
   const google::protobuf::Message* tmp_message = &message;
   for (auto it = field_descriptors.begin(), j = field_descriptors.end() - 1;
-       it != j; it++) {
+       it != j; ++it) {
     tmp_message = &(tmp_message->GetReflection()->GetMessage(*tmp_message,
                                                              *it));
   }
