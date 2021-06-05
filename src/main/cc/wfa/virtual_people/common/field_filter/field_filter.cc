@@ -21,7 +21,9 @@
 #include "wfa/measurement/common/macros.h"
 #include "wfa/virtual_people/common/field_filter/and_filter.h"
 #include "wfa/virtual_people/common/field_filter/equal_filter.h"
+#include "wfa/virtual_people/common/field_filter/gt_filter.h"
 #include "wfa/virtual_people/common/field_filter/has_filter.h"
+#include "wfa/virtual_people/common/field_filter/lt_filter.h"
 #include "wfa/virtual_people/common/field_filter/not_filter.h"
 #include "wfa/virtual_people/common/field_filter/or_filter.h"
 #include "wfa/virtual_people/common/field_filter/partial_filter.h"
@@ -39,9 +41,9 @@ absl::StatusOr<std::unique_ptr<FieldFilter>> FieldFilter::New(
     case FieldFilterProto::EQUAL:
       return EqualFilter::New(descriptor, config);
     case FieldFilterProto::GT:
-      return absl::UnimplementedError("GT field filter is not implemented.");
+      return GtFilter::New(descriptor, config);
     case FieldFilterProto::LT:
-      return absl::UnimplementedError("LT field filter is not implemented.");
+      return LtFilter::New(descriptor, config);
     case FieldFilterProto::IN:
       return absl::UnimplementedError("IN field filter is not implemented.");
     case FieldFilterProto::REGEXP:
