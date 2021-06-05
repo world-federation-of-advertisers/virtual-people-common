@@ -108,6 +108,20 @@ TEST(NotFilterTest, TestMatch) {
       }
   )pb", &test_proto_2));
   EXPECT_TRUE(field_filter->IsMatch(test_proto_2));
+
+  TestProto test_proto_3;
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
+      a {
+        b {
+          int32_value: 2
+          int64_value: 2
+        }
+      }
+  )pb", &test_proto_3));
+  EXPECT_TRUE(field_filter->IsMatch(test_proto_3));
+
+  TestProto test_proto_4;
+  EXPECT_TRUE(field_filter->IsMatch(test_proto_4));
 }
 
 }  // namespace

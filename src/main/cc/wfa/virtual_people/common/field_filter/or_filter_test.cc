@@ -117,6 +117,9 @@ TEST(OrFilterTest, TestNotMatch) {
       }
   )pb", &test_proto_2));
   EXPECT_FALSE(field_filter->IsMatch(test_proto_2));
+
+  TestProto test_proto_3;
+  EXPECT_FALSE(field_filter->IsMatch(test_proto_3));
 }
 
 }  // namespace

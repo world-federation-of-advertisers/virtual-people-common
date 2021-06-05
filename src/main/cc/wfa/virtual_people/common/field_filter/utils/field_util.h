@@ -40,8 +40,10 @@ GetFieldFromProto(
     absl::string_view full_field_name,
     bool allow_repeated = false);
 
-// Get the parent message of the field represented by @field_descriptors from
+// Gets the parent message of the field represented by @field_descriptors from
 // the @message.
+//
+// Unset parent message is equivalent to an empty message.
 //
 // All elements except the last one in @field_descriptors must refer to a
 // protobuf Message.
@@ -73,8 +75,10 @@ const google::protobuf::Message& GetParentMessageFromProto(
     const std::vector<const google::protobuf::FieldDescriptor*>&
         field_descriptors);
 
-// Get the value from the @message, with field name represented by
+// Gets the value from the @message, with field name represented by
 // @field_descriptor.
+//
+// When called with unset field, returns default value.
 //
 // The field must be an immediate field of @message.
 // The corresponding C++ type of the field must be @ValueType.
@@ -83,8 +87,10 @@ ValueType GetImmediateValueFromProto(
     const google::protobuf::Message& message,
     const google::protobuf::FieldDescriptor* field_descriptor);
 
-// Get the value from the @message, with field path represented by
+// Gets the value from the @message, with field path represented by
 // @field_descriptors.
+//
+// When called with unset field, returns default value.
 //
 // All elements except the last one in @field_descriptors must refer to a
 // protobuf Message. The last one in @field_descriptors must refer to a field
