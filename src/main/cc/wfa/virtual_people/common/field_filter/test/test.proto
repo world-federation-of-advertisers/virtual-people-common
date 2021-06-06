@@ -21,6 +21,8 @@ message TestProto {
   optional TestProtoA a = 1;
 
   repeated int32 int32_values = 2;
+
+  repeated TestProtoA repeated_proto_a = 3;
 }
 
 message TestProtoA {
@@ -42,4 +44,6 @@ message TestProtoB {
   optional bool bool_value = 7;
   optional TestEnum enum_value = 8;
   optional string string_value = 9;
+
+  repeated int32 int32_values = 10;
 }

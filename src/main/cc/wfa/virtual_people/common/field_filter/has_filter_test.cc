@@ -29,20 +29,20 @@ namespace {
 using ::wfa::StatusIs;
 using ::wfa_virtual_people::test::TestProto;
 
-TEST(PartialFilterTest, TestNoName) {
+// This function is required to test the FieldFilter still works when the
+// FieldFilterProto is out of scope.
+absl::StatusOr<std::unique_ptr<FieldFilter>> FilterFromProtoText(
+    absl::string_view proto_text) {
+  FieldFilterProto field_filter_proto;
+  EXPECT_TRUE(google::protobuf::TextFormat::ParseFromString(
+      std::string(proto_text), &field_filter_proto));
+  return FieldFilter::New(TestProto().GetDescriptor(), field_filter_proto);
+}
+
+TEST(HasFilterTest, TestNoName) {
   FieldFilterProto field_filter_proto;
   ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
-      op: PARTIAL
-      sub_filters {
-        name: "int32_value"
-        op: EQUAL
-        value: "1"
-      }
-      sub_filters {
-        name: "int64_value"
-        op: EQUAL
-        value: "1"
-      }
+      op: HAS
   )pb", &field_filter_proto));
   EXPECT_THAT(
       FieldFilter::New(TestProto().GetDescriptor(),
@@ -50,16 +50,11 @@ TEST(PartialFilterTest, TestNoName) {
       StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
-TEST(PartialFilterTest, TestDisallowedRepeated) {
+TEST(HasFilterTest, TestInvalidName) {
   FieldFilterProto field_filter_proto;
   ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
-      name: "a.b"
-      op: PARTIAL
-      sub_filters {
-        name: "int32_values"
-        op: EQUAL
-        value: "1"
-      }
+      name: "a.b.invalid_field"
+      op: HAS
   )pb", &field_filter_proto));
   EXPECT_THAT(
       FieldFilter::New(TestProto().GetDescriptor(),
@@ -67,16 +62,11 @@ TEST(PartialFilterTest, TestDisallowedRepeated) {
       StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
-TEST(PartialFilterTest, TestDisallowedRepeatedInThePath) {
+TEST(HasFilterTest, TestDisallowedRepeatedInThePath) {
   FieldFilterProto field_filter_proto;
   ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
-      name: "repeated_proto_a.b"
-      op: PARTIAL
-      sub_filters {
-        name: "int32_value"
-        op: EQUAL
-        value: "1"
-      }
+      name: "repeated_proto_a.b.int32_value"
+      op: HAS
   )pb", &field_filter_proto));
   EXPECT_THAT(
       FieldFilter::New(TestProto().GetDescriptor(),
@@ -84,80 +74,79 @@ TEST(PartialFilterTest, TestDisallowedRepeatedInThePath) {
       StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
-TEST(PartialFilterTest, TestNoSubFilters) {
-  FieldFilterProto field_filter_proto;
-  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
-      name: "a.b"
-      op: PARTIAL
-  )pb", &field_filter_proto));
-  EXPECT_THAT(
-      FieldFilter::New(TestProto().GetDescriptor(),
-                       field_filter_proto).status(),
-      StatusIs(absl::StatusCode::kInvalidArgument, ""));
-}
-
-TEST(PartialFilterTest, TestMatch) {
-  FieldFilterProto field_filter_proto;
-  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
-      name: "a.b"
-      op: PARTIAL
-      sub_filters {
-        name: "int32_value"
-        op: EQUAL
-        value: "1"
-      }
-      sub_filters {
-        name: "int64_value"
-        op: EQUAL
-        value: "1"
-      }
-  )pb", &field_filter_proto));
+TEST(HasFilterTest, TestNonRepeated) {
   ASSERT_OK_AND_ASSIGN(
       std::unique_ptr<FieldFilter> field_filter,
-      FieldFilter::New(TestProto().GetDescriptor(), field_filter_proto));
+      FilterFromProtoText(R"pb(
+          name: "a.b.int32_value"
+          op: HAS
+      )pb"));
 
-  TestProto test_proto;
+  TestProto test_proto_1;
   ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
       a {
         b {
           int32_value: 1
+        }
+      }
+  )pb", &test_proto_1));
+  EXPECT_TRUE(field_filter->IsMatch(test_proto_1));
+
+  TestProto test_proto_2;
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
+      a {
+        b {
           int64_value: 1
         }
       }
-  )pb", &test_proto));
-  EXPECT_TRUE(field_filter->IsMatch(test_proto));
+  )pb", &test_proto_2));
+  EXPECT_FALSE(field_filter->IsMatch(test_proto_2));
+
+  TestProto test_proto_3;
+  EXPECT_FALSE(field_filter->IsMatch(test_proto_3));
 }
 
-TEST(PartialFilterTest, TestNotMatch) {
-  FieldFilterProto field_filter_proto;
-  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
-      name: "a.b"
-      op: PARTIAL
-      sub_filters {
-        name: "int32_value"
-        op: EQUAL
-        value: "1"
-      }
-      sub_filters {
-        name: "int64_value"
-        op: EQUAL
-        value: "1"
-      }
-  )pb", &field_filter_proto));
+TEST(HasFilterTest, TestRepeated) {
   ASSERT_OK_AND_ASSIGN(
       std::unique_ptr<FieldFilter> field_filter,
-      FieldFilter::New(TestProto().GetDescriptor(), field_filter_proto));
+      FilterFromProtoText(R"pb(
+          name: "a.b.int32_values"
+          op: HAS
+      )pb"));
 
-  TestProto test_proto;
+  TestProto test_proto_1;
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
+      a {
+        b {
+          int32_values: 1
+        }
+      }
+  )pb", &test_proto_1));
+  EXPECT_TRUE(field_filter->IsMatch(test_proto_1));
+
+  TestProto test_proto_2;
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
+      a {
+        b {
+          int32_values: 1
+          int32_values: 2
+        }
+      }
+  )pb", &test_proto_2));
+  EXPECT_TRUE(field_filter->IsMatch(test_proto_2));
+
+  TestProto test_proto_3;
   ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
       a {
         b {
           int32_value: 1
-          int64_value: 2
         }
       }
-  )pb", &test_proto));
-  EXPECT_FALSE(field_filter->IsMatch(test_proto));
+  )pb", &test_proto_3));
+  EXPECT_FALSE(field_filter->IsMatch(test_proto_3));
+
+  TestProto test_proto_4;
+  EXPECT_FALSE(field_filter->IsMatch(test_proto_4));
 }
 
 }  // namespace

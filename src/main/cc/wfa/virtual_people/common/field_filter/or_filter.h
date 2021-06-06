@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef WFA_VIRTUAL_PEOPLE_COMMON_FIELD_FILTER_EQUAL_FILTER_H_
-#define WFA_VIRTUAL_PEOPLE_COMMON_FIELD_FILTER_EQUAL_FILTER_H_
+#ifndef WFA_VIRTUAL_PEOPLE_COMMON_FIELD_FILTER_OR_FILTER_H_
+#define WFA_VIRTUAL_PEOPLE_COMMON_FIELD_FILTER_OR_FILTER_H_
 
 #include "absl/status/statusor.h"
 #include "google/protobuf/descriptor.h"
@@ -23,36 +23,34 @@
 
 namespace wfa_virtual_people {
 
-// The implementation of field filter when op is EQUAL in @config.
-class EqualFilter : public FieldFilter {
+// The implementation of field filter when op is OR in @config.
+class OrFilter : public FieldFilter {
  public:
   // Always use FieldFilter::New.
-  // Users should never call EqualFilter::New or any constructor directly.
+  // Users should never call OrFilter::New or any constructor directly.
   //
   // Returns error status if any of the following happens:
-  // * @config.op is not EQUAL.
-  // * @config.name is not set.
-  // * Any field of the path represented by @config.name is repeated field.
-  // * @config.value is not set.
-  //
-  // @config.value will be casted to the type of the field represented by
-  // @config.name.
-  static absl::StatusOr<std::unique_ptr<EqualFilter>> New(
+  //    @config.op is not OR.
+  //    @config.sub_filters is empty.
+  //    Any of @config.sub_filters is invalid to create a FieldFilter.
+  static absl::StatusOr<std::unique_ptr<OrFilter>> New(
       const google::protobuf::Descriptor* descriptor,
       const FieldFilterProto& config);
 
-  EqualFilter(const EqualFilter&) = delete;
-  EqualFilter& operator=(const EqualFilter&) = delete;
+  explicit OrFilter(
+      std::vector<std::unique_ptr<FieldFilter>>&& sub_filters):
+      sub_filters_(std::move(sub_filters)) {}
 
-  // Returns true when the field represented by @config.name in @message equals
-  // to @config.value. Otherwise, returns false.
-  virtual bool IsMatch(
-      const google::protobuf::Message& message) const override = 0;
+  OrFilter(const OrFilter&) = delete;
+  OrFilter& operator=(const OrFilter&) = delete;
 
- protected:
-  EqualFilter() = default;
+  // Returns true when any of the sub_filters passes. Otherwise, returns false.
+  bool IsMatch(const google::protobuf::Message& message) const override;
+
+ private:
+  std::vector<std::unique_ptr<FieldFilter>> sub_filters_;
 };
 
 }  // namespace wfa_virtual_people
 
-#endif  // WFA_VIRTUAL_PEOPLE_COMMON_FIELD_FILTER_EQUAL_FILTER_H_
+#endif  // WFA_VIRTUAL_PEOPLE_COMMON_FIELD_FILTER_OR_FILTER_H_

@@ -30,11 +30,12 @@ class PartialFilter : public FieldFilter {
   // Users should never call PartialFilter::New or any constructor directly.
   //
   // Returns error status when any of the following happens:
-  //   @config.op is not PARTIAL.
-  //   @config.name is not set.
-  //   @config.name does not refer to a message type.
-  //   @config.sub_filters is empty.
-  //   Any of @config.sub_filters is invalid to create a FieldFilter.
+  // * @config.op is not PARTIAL.
+  // * @config.name is not set.
+  // * @config.name does not refer to a message type.
+  // * Any field of the path represented by @config.name is repeated field.
+  // * @config.sub_filters is empty.
+  // * Any of @config.sub_filters is invalid to create a FieldFilter.
   static absl::StatusOr<std::unique_ptr<PartialFilter>> New(
       const google::protobuf::Descriptor* descriptor,
       const FieldFilterProto& config);

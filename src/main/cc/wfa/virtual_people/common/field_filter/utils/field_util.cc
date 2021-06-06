@@ -27,7 +27,8 @@ namespace wfa_virtual_people {
 absl::StatusOr<std::vector<const google::protobuf::FieldDescriptor*>>
 GetFieldFromProto(
     const google::protobuf::Descriptor* descriptor,
-    absl::string_view full_field_name) {
+    absl::string_view full_field_name,
+    bool allow_repeated) {
   std::vector<const google::protobuf::FieldDescriptor*> field_descriptors;
   std::vector<std::string> field_names = absl::StrSplit(full_field_name, ".");
   for (const std::string& field_name : field_names) {
@@ -44,7 +45,31 @@ GetFieldFromProto(
     field_descriptors.emplace_back(field_descriptor);
     descriptor = field_descriptor->message_type();
   }
+  for (auto it = field_descriptors.begin(), j = field_descriptors.end() - 1;
+       it != j; ++it) {
+    if ((*it)->is_repeated()) {
+      return absl::InvalidArgumentError(absl::StrCat(
+          "Repeated field is not allowed in the path: ", full_field_name));
+    }
+  }
+  if (!allow_repeated && field_descriptors.back()->is_repeated()) {
+      return absl::InvalidArgumentError(absl::StrCat(
+          "Repeated field is not allowed in the path: ", full_field_name));
+  }
   return field_descriptors;
+}
+
+const google::protobuf::Message& GetParentMessageFromProto(
+    const google::protobuf::Message& message,
+    const std::vector<const google::protobuf::FieldDescriptor*>&
+        field_descriptors) {
+  const google::protobuf::Message* tmp_message = &message;
+  for (auto it = field_descriptors.begin(), j = field_descriptors.end() - 1;
+       it != j; ++it) {
+    tmp_message = &(tmp_message->GetReflection()->GetMessage(*tmp_message,
+                                                             *it));
+  }
+  return *tmp_message;
 }
 
 template <typename ValueType>
