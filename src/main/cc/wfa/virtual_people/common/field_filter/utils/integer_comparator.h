@@ -65,11 +65,11 @@ enum IntegerCompareResult {
 //
 // A a_2;
 // a_2.mutable_b()->set_c(10);
-// IntegerCompareResult result_1 = comparator.Compare(a_2);  // EQUAL
+// IntegerCompareResult result_2 = comparator.Compare(a_2);  // EQUAL
 //
 // A a_3;
 // a_3.mutable_b()->set_c(9);
-// IntegerCompareResult result_1 = comparator.Compare(a_3);  // LESS_THAN
+// IntegerCompareResult result_3 = comparator.Compare(a_3);  // LESS_THAN
 class IntegerComparator {
  public:
   // Always use IntegerComparator::New to get an IntegerComparator object.
@@ -78,6 +78,10 @@ class IntegerComparator {
   // * The last entry of @field_descriptors refers to a non-integer field.
   // * The type of @value does not match the type of the field represented by
   //   the last entry of @field_descriptors.
+  //
+  // No repeated field is allowed in @field_descriptors. This will not be caught
+  // in this class. But when following the examples above, the repeated field
+  // error will be caught before calling this library.
   static absl::StatusOr<std::unique_ptr<IntegerComparator>> New(
       std::vector<const google::protobuf::FieldDescriptor*>&& field_descriptors,
       absl::string_view value);

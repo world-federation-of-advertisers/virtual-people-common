@@ -60,7 +60,7 @@ TEST(IntegerComparatorTest, ValueTypeNotMatch) {
 }
 
 TEST(IntegerComparatorTest, FloatValue) {
-  // "-1" is not a valid uint32.
+  // "10.5" is not a valid uint32.
   ASSERT_OK_AND_ASSIGN(
       std::vector<const google::protobuf::FieldDescriptor*> field_descriptors,
       GetFieldFromProto(TestProto().GetDescriptor(), "a.b.int32_value"));
