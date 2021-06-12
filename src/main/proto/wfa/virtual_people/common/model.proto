@@ -111,6 +111,7 @@ message BranchNode {
       SparseUpdateMatrix sparse_update_matrix = 2;
       ConditionalMerge conditional_merge = 3;
       UpdateTree update_tree = 4;
+      ConditionalAssignment conditional_assignment = 5;
     }
   }
 
@@ -201,6 +202,20 @@ message ConditionalMerge {
   repeated ConditionalMergeNode nodes = 1;
   // Set to true if we allow events to not match any of the conditions.
   optional bool pass_through_non_matches = 2;
+}
+
+// If the condition is satisfied, applies all the assignments, each of which is
+// to copy the value from source_field to target_field.
+// Does nothing if the condition is not satisfied.
+message ConditionalAssignment {
+  message Assignment {
+    // No repeated field is allowed in the path of source_field and
+    // target_field.
+    optional string source_field = 1;
+    optional string target_field = 2;
+  }
+  optional FieldFilterProto condition = 1;
+  repeated Assignment assignments = 2;
 }
 
 // A matrix represented in a tree structure to reduce the column search space.
