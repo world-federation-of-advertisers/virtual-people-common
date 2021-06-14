@@ -60,6 +60,38 @@ cc_test(
 )
 
 cc_library(
+    name = "integer_comparator",
+    srcs = ["integer_comparator.cc"],
+    hdrs = ["integer_comparator.h"],
+    strip_include_prefix = _INCLUDE_PREFIX,
+    deps = [
+        ":field_util",
+        ":type_convert_util",
+        "@com_google_absl//absl/memory",
+        "@com_google_absl//absl/status",
+        "@com_google_absl//absl/status:statusor",
+        "@com_google_absl//absl/strings",
+        "@com_google_protobuf//:protobuf",
+        "@cross_media_measurement//src/main/cc/wfa/measurement/common:macros",
+    ],
+)
+
+cc_test(
+    name = "integer_comparator_test",
+    srcs = ["integer_comparator_test.cc"],
+    deps = [
+        ":field_util",
+        ":integer_comparator",
+        "//src/main/cc/wfa/virtual_people/common/field_filter/test:test_cc_proto",
+        "@com_google_absl//absl/status",
+        "@com_google_googletest//:gtest_main",
+        "@com_google_protobuf//:protobuf",
+        "@cross_media_measurement//src/test/cc/testutil:matchers",
+        "@cross_media_measurement//src/test/cc/testutil:status_macros",
+    ],
+)
+
+cc_library(
     name = "message_filter_util",
     srcs = ["message_filter_util.cc"],
     hdrs = ["message_filter_util.h"],

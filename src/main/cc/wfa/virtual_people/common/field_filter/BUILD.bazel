@@ -10,7 +10,9 @@ cc_library(
         "and_filter.cc",
         "equal_filter.cc",
         "field_filter.cc",
+        "gt_filter.cc",
         "has_filter.cc",
+        "lt_filter.cc",
         "not_filter.cc",
         "or_filter.cc",
         "partial_filter.cc",
@@ -20,7 +22,9 @@ cc_library(
         "and_filter.h",
         "equal_filter.h",
         "field_filter.h",
+        "gt_filter.h",
         "has_filter.h",
+        "lt_filter.h",
         "not_filter.h",
         "or_filter.h",
         "partial_filter.h",
@@ -29,6 +33,7 @@ cc_library(
     strip_include_prefix = _INCLUDE_PREFIX,
     deps = [
         "//src/main/cc/wfa/virtual_people/common/field_filter/utils:field_util",
+        "//src/main/cc/wfa/virtual_people/common/field_filter/utils:integer_comparator",
         "//src/main/cc/wfa/virtual_people/common/field_filter/utils:message_filter_util",
         "//src/main/cc/wfa/virtual_people/common/field_filter/utils:type_convert_util",
         "//src/main/proto/wfa/virtual_people/common:field_filter_cc_proto",
@@ -74,6 +79,38 @@ cc_test(
 cc_test(
     name = "equal_filter_test",
     srcs = ["equal_filter_test.cc"],
+    deps = [
+        ":field_filter",
+        "//src/main/cc/wfa/virtual_people/common/field_filter/test:test_cc_proto",
+        "//src/main/proto/wfa/virtual_people/common:field_filter_cc_proto",
+        "@com_google_absl//absl/status",
+        "@com_google_absl//absl/status:statusor",
+        "@com_google_googletest//:gtest_main",
+        "@com_google_protobuf//:protobuf",
+        "@cross_media_measurement//src/test/cc/testutil:matchers",
+        "@cross_media_measurement//src/test/cc/testutil:status_macros",
+    ],
+)
+
+cc_test(
+    name = "gt_filter_test",
+    srcs = ["gt_filter_test.cc"],
+    deps = [
+        ":field_filter",
+        "//src/main/cc/wfa/virtual_people/common/field_filter/test:test_cc_proto",
+        "//src/main/proto/wfa/virtual_people/common:field_filter_cc_proto",
+        "@com_google_absl//absl/status",
+        "@com_google_absl//absl/status:statusor",
+        "@com_google_googletest//:gtest_main",
+        "@com_google_protobuf//:protobuf",
+        "@cross_media_measurement//src/test/cc/testutil:matchers",
+        "@cross_media_measurement//src/test/cc/testutil:status_macros",
+    ],
+)
+
+cc_test(
+    name = "lt_filter_test",
+    srcs = ["lt_filter_test.cc"],
     deps = [
         ":field_filter",
         "//src/main/cc/wfa/virtual_people/common/field_filter/test:test_cc_proto",
