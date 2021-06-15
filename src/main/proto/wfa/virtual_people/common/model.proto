@@ -207,6 +207,19 @@ message ConditionalMerge {
 // If the condition is satisfied, applies all the assignments, each of which is
 // to copy the value from source_field to target_field.
 // Does nothing if the condition is not satisfied.
+// Example:
+// The following protobuf is to assign the gender from email profile data to the
+// acting gender field when exists:
+//    condition {
+//      op: HAS
+//      name:
+//          "labeler_input.profile_info.email_user_info.demo.demo_bucket.gender"
+//    }
+//    assignments {
+//      source_field:
+//          "labeler_input.profile_info.email_user_info.demo.demo_bucket.gender"
+//      target_field: "acting_demo.gender"
+//    }
 message ConditionalAssignment {
   message Assignment {
     // No repeated field is allowed in the path of source_field and
