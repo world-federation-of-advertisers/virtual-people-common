@@ -75,6 +75,12 @@ const google::protobuf::Message& GetParentMessageFromProto(
     const std::vector<const google::protobuf::FieldDescriptor*>&
         field_descriptors);
 
+// Same as above, but returns a mutable message.
+google::protobuf::Message& GetMutableParentMessageFromProto(
+    google::protobuf::Message& message,
+    const std::vector<const google::protobuf::FieldDescriptor*>&
+        field_descriptors);
+
 // Gets the value from the @message, with field name represented by
 // @field_descriptor.
 //
@@ -86,6 +92,17 @@ template <typename ValueType>
 ValueType GetImmediateValueFromProto(
     const google::protobuf::Message& message,
     const google::protobuf::FieldDescriptor* field_descriptor);
+
+// Sets the value to the @message, with field name represented by
+// @field_descriptor.
+//
+// The field must be an immediate field of @message.
+// The corresponding C++ type of the field must be @ValueType.
+template <typename ValueType>
+void SetImmediateValueToProto(
+    google::protobuf::Message& message,
+    const google::protobuf::FieldDescriptor* field_descriptor,
+    ValueType value);
 
 // Gets the value from the @message, with field path represented by
 // @field_descriptors.
@@ -125,6 +142,45 @@ ValueType GetValueFromProto(
   return GetImmediateValueFromProto<ValueType>(
       GetParentMessageFromProto(message, field_descriptors),
       field_descriptors.back());
+}
+
+// Sets the value to the @message, with field path represented by
+// @field_descriptors.
+//
+// All elements except the last one in @field_descriptors must refer to a
+// protobuf Message. The last one in @field_descriptors must refer to a field
+// with @ValueType.
+// The first element in @field_descriptors must refer to a field in @message,
+// Each of the rest elements must refer to a field in the message referred by
+// the previous element.
+//
+// The typical usage is to first call GetFieldFromProto(see above), to get
+// @field_descriptors for the target field in @message, then call this function
+// to set the value of the target field.
+// Example:
+// If we have a protobuf
+// message MsgA {
+//   message MsgB {
+//     optional int32 c = 1;
+//   }
+//   optional MsgB b = 1;
+// }
+// To get the field descriptors of MsgA.b.c, the call is
+// ASSIGN_OR_RETURN(
+//     std::vector<const google::protobuf::FieldDescriptor*> field_descriptors,
+//     GetFieldFromProto(MsgA().GetDescriptor(), "b.c"));
+// And if there is a MsgA object obj_a, to set the value of obj_a.b.c to 10, the
+// call is
+// SetValueToProto(obj_a, field_descriptors, 10);
+template <typename ValueType>
+void SetValueToProto(
+    google::protobuf::Message& message,
+    const std::vector<const google::protobuf::FieldDescriptor*>&
+        field_descriptors,
+    ValueType value) {
+  SetImmediateValueToProto<ValueType>(
+      GetMutableParentMessageFromProto(message, field_descriptors),
+      field_descriptors.back(), value);
 }
 
 }  // namespace wfa_virtual_people
