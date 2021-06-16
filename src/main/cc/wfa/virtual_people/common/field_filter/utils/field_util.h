@@ -15,6 +15,7 @@
 #ifndef WFA_VIRTUAL_PEOPLE_COMMON_FIELD_FILTER_UTILS_FIELD_UTIL_H_
 #define WFA_VIRTUAL_PEOPLE_COMMON_FIELD_FILTER_UTILS_FIELD_UTIL_H_
 
+#include "absl/meta/type_traits.h"
 #include "absl/status/statusor.h"
 #include "absl/strings/string_view.h"
 #include "google/protobuf/descriptor.h"
@@ -88,7 +89,18 @@ google::protobuf::Message& GetMutableParentMessageFromProto(
 //
 // The field must be an immediate field of @message.
 // The corresponding C++ type of the field must be @ValueType.
-template <typename ValueType>
+template <typename ValueType, absl::enable_if_t<absl::disjunction<
+    std::is_same<ValueType, int32_t>,
+    std::is_same<ValueType, int64_t>,
+    std::is_same<ValueType, uint32_t>,
+    std::is_same<ValueType, uint64_t>,
+    std::is_same<ValueType, float>,
+    std::is_same<ValueType, double>,
+    std::is_same<ValueType, bool>,
+    std::is_same<ValueType, const google::protobuf::EnumValueDescriptor*>,
+    std::is_same<ValueType, const std::string&>,
+    std::is_same<ValueType, const google::protobuf::Message&>
+>::value, bool> = true>
 ValueType GetImmediateValueFromProto(
     const google::protobuf::Message& message,
     const google::protobuf::FieldDescriptor* field_descriptor);
@@ -98,7 +110,16 @@ ValueType GetImmediateValueFromProto(
 //
 // The field must be an immediate field of @message.
 // The corresponding C++ type of the field must be @ValueType.
-template <typename ValueType>
+template <typename ValueType, absl::enable_if_t<absl::disjunction<
+    std::is_same<ValueType, int32_t>,
+    std::is_same<ValueType, int64_t>,
+    std::is_same<ValueType, uint32_t>,
+    std::is_same<ValueType, uint64_t>,
+    std::is_same<ValueType, float>,
+    std::is_same<ValueType, double>,
+    std::is_same<ValueType, bool>,
+    std::is_same<ValueType, const google::protobuf::EnumValueDescriptor*>,
+    std::is_same<ValueType, const std::string&>>::value, bool> = true>
 void SetImmediateValueToProto(
     google::protobuf::Message& message,
     const google::protobuf::FieldDescriptor* field_descriptor,
@@ -134,7 +155,18 @@ void SetImmediateValueToProto(
 // And if there is an MsgA object obj_a, to get the value of obj_a.b.c, the
 // call is
 // int32_t output = GetValueFromProto(obj_a, field_descriptors);
-template <typename ValueType>
+template <typename ValueType, absl::enable_if_t<absl::disjunction<
+    std::is_same<ValueType, int32_t>,
+    std::is_same<ValueType, int64_t>,
+    std::is_same<ValueType, uint32_t>,
+    std::is_same<ValueType, uint64_t>,
+    std::is_same<ValueType, float>,
+    std::is_same<ValueType, double>,
+    std::is_same<ValueType, bool>,
+    std::is_same<ValueType, const google::protobuf::EnumValueDescriptor*>,
+    std::is_same<ValueType, const std::string&>,
+    std::is_same<ValueType, const google::protobuf::Message&>
+>::value, bool> = true>
 ValueType GetValueFromProto(
     const google::protobuf::Message& message,
     const std::vector<const google::protobuf::FieldDescriptor*>&
@@ -172,7 +204,16 @@ ValueType GetValueFromProto(
 // And if there is a MsgA object obj_a, to set the value of obj_a.b.c to 10, the
 // call is
 // SetValueToProto(obj_a, field_descriptors, 10);
-template <typename ValueType>
+template <typename ValueType, absl::enable_if_t<absl::disjunction<
+    std::is_same<ValueType, int32_t>,
+    std::is_same<ValueType, int64_t>,
+    std::is_same<ValueType, uint32_t>,
+    std::is_same<ValueType, uint64_t>,
+    std::is_same<ValueType, float>,
+    std::is_same<ValueType, double>,
+    std::is_same<ValueType, bool>,
+    std::is_same<ValueType, const google::protobuf::EnumValueDescriptor*>,
+    std::is_same<ValueType, const std::string&>>::value, bool> = true>
 void SetValueToProto(
     google::protobuf::Message& message,
     const std::vector<const google::protobuf::FieldDescriptor*>&
