@@ -63,12 +63,11 @@ GetFieldFromProto(
 //   }
 //   optional MsgB b = 1;
 // }
-// To get the field descriptors of MsgA.b.c, the call is
+// To get the field descriptors of MsgA.b.c:
 // ASSIGN_OR_RETURN(
 //     std::vector<const google::protobuf::FieldDescriptor*> field_descriptors,
 //     GetFieldFromProto(MsgA().GetDescriptor(), "b.c"));
-// And if there is an MsgA object obj_a, to get the message obj_a.b, the
-// call is
+// And if there is an MsgA object obj_a, to get the message obj_a.b:
 // const google::protobuf::Message& output =
 //     GetParentMessageFromProto(obj_a, field_descriptors);
 const google::protobuf::Message& GetParentMessageFromProto(
@@ -148,12 +147,11 @@ void SetImmediateValueToProto(
 //   }
 //   optional MsgB b = 1;
 // }
-// To get the field descriptors of MsgA.b.c, the call is
+// To get the field descriptors of MsgA.b.c:
 // ASSIGN_OR_RETURN(
 //     std::vector<const google::protobuf::FieldDescriptor*> field_descriptors,
 //     GetFieldFromProto(MsgA().GetDescriptor(), "b.c"));
-// And if there is an MsgA object obj_a, to get the value of obj_a.b.c, the
-// call is
+// And if there is an MsgA object obj_a, to get the value of obj_a.b.c:
 // int32_t output = GetValueFromProto(obj_a, field_descriptors);
 template <typename ValueType, absl::enable_if_t<absl::disjunction<
     std::is_same<ValueType, int32_t>,
@@ -197,12 +195,11 @@ ValueType GetValueFromProto(
 //   }
 //   optional MsgB b = 1;
 // }
-// To get the field descriptors of MsgA.b.c, the call is
+// To get the field descriptors of MsgA.b.c:
 // ASSIGN_OR_RETURN(
 //     std::vector<const google::protobuf::FieldDescriptor*> field_descriptors,
 //     GetFieldFromProto(MsgA().GetDescriptor(), "b.c"));
-// And if there is a MsgA object obj_a, to set the value of obj_a.b.c to 10, the
-// call is
+// And if there is a MsgA object obj_a, to set the value of obj_a.b.c to 10:
 // SetValueToProto(obj_a, field_descriptors, 10);
 template <typename ValueType, absl::enable_if_t<absl::disjunction<
     std::is_same<ValueType, int32_t>,
