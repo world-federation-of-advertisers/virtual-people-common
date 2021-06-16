@@ -65,6 +65,8 @@ const google::protobuf::Message& GetParentMessageFromProto(
     const std::vector<const google::protobuf::FieldDescriptor*>&
         field_descriptors) {
   const google::protobuf::Message* tmp_message = &message;
+  // @field_descriptors refers to a field in @message. To get the parent message
+  // of the field, the last entry in @field_descriptors is unused.
   for (auto it = field_descriptors.begin(), j = field_descriptors.end() - 1;
        it != j; ++it) {
     tmp_message = &(tmp_message->GetReflection()->GetMessage(*tmp_message,
@@ -78,6 +80,8 @@ google::protobuf::Message& GetMutableParentMessageFromProto(
     const std::vector<const google::protobuf::FieldDescriptor*>&
         field_descriptors) {
   google::protobuf::Message* tmp_message = &message;
+  // @field_descriptors refers to a field in @message. To get the parent message
+  // of the field, the last entry in @field_descriptors is unused.
   for (auto it = field_descriptors.begin(), j = field_descriptors.end() - 1;
        it != j; ++it) {
     tmp_message = tmp_message->GetReflection()->MutableMessage(
