@@ -90,18 +90,7 @@ google::protobuf::Message& GetMutableParentMessageFromProto(
   return *tmp_message;
 }
 
-template <typename ValueType, absl::enable_if_t<absl::disjunction<
-    std::is_same<ValueType, int32_t>,
-    std::is_same<ValueType, int64_t>,
-    std::is_same<ValueType, uint32_t>,
-    std::is_same<ValueType, uint64_t>,
-    std::is_same<ValueType, float>,
-    std::is_same<ValueType, double>,
-    std::is_same<ValueType, bool>,
-    std::is_same<ValueType, const google::protobuf::EnumValueDescriptor*>,
-    std::is_same<ValueType, const std::string&>,
-    std::is_same<ValueType, const google::protobuf::Message&>
->::value, bool> = true>
+template <typename ValueType, EnableIfProtoType<ValueType> = true>
 ValueType GetImmediateValueFromProto(
     const google::protobuf::Message& message,
     const google::protobuf::FieldDescriptor* field_descriptor);
@@ -183,16 +172,7 @@ GetImmediateValueFromProto<const google::protobuf::Message&>(
   return message.GetReflection()->GetMessage(message, field_descriptor);
 }
 
-template <typename ValueType, absl::enable_if_t<absl::disjunction<
-    std::is_same<ValueType, int32_t>,
-    std::is_same<ValueType, int64_t>,
-    std::is_same<ValueType, uint32_t>,
-    std::is_same<ValueType, uint64_t>,
-    std::is_same<ValueType, float>,
-    std::is_same<ValueType, double>,
-    std::is_same<ValueType, bool>,
-    std::is_same<ValueType, const google::protobuf::EnumValueDescriptor*>,
-    std::is_same<ValueType, const std::string&>>::value, bool> = true>
+template <typename ValueType, EnableIfProtoValueType<ValueType> = true>
 void SetImmediateValueToProto(
     google::protobuf::Message& message,
     const google::protobuf::FieldDescriptor* field_descriptor,

@@ -23,6 +23,33 @@
 
 namespace wfa_virtual_people {
 
+template <typename ValueType>
+using EnableIfProtoType = absl::enable_if_t<absl::disjunction<
+    std::is_same<ValueType, int32_t>,
+    std::is_same<ValueType, int64_t>,
+    std::is_same<ValueType, uint32_t>,
+    std::is_same<ValueType, uint64_t>,
+    std::is_same<ValueType, float>,
+    std::is_same<ValueType, double>,
+    std::is_same<ValueType, bool>,
+    std::is_same<ValueType, const google::protobuf::EnumValueDescriptor*>,
+    std::is_same<ValueType, const std::string&>,
+    std::is_same<ValueType, const google::protobuf::Message&>
+>::value, bool>;
+
+template <typename ValueType>
+using EnableIfProtoValueType = absl::enable_if_t<absl::disjunction<
+    std::is_same<ValueType, int32_t>,
+    std::is_same<ValueType, int64_t>,
+    std::is_same<ValueType, uint32_t>,
+    std::is_same<ValueType, uint64_t>,
+    std::is_same<ValueType, float>,
+    std::is_same<ValueType, double>,
+    std::is_same<ValueType, bool>,
+    std::is_same<ValueType, const google::protobuf::EnumValueDescriptor*>,
+    std::is_same<ValueType, const std::string&>
+>::value, bool>;
+
 // In the protobuf message represented by @descriptor, get the field descriptors
 // of the field, the path of which is represented by @full_field_name.
 //
@@ -88,18 +115,7 @@ google::protobuf::Message& GetMutableParentMessageFromProto(
 //
 // The field must be an immediate field of @message.
 // The corresponding C++ type of the field must be @ValueType.
-template <typename ValueType, absl::enable_if_t<absl::disjunction<
-    std::is_same<ValueType, int32_t>,
-    std::is_same<ValueType, int64_t>,
-    std::is_same<ValueType, uint32_t>,
-    std::is_same<ValueType, uint64_t>,
-    std::is_same<ValueType, float>,
-    std::is_same<ValueType, double>,
-    std::is_same<ValueType, bool>,
-    std::is_same<ValueType, const google::protobuf::EnumValueDescriptor*>,
-    std::is_same<ValueType, const std::string&>,
-    std::is_same<ValueType, const google::protobuf::Message&>
->::value, bool> = true>
+template <typename ValueType, EnableIfProtoType<ValueType> = true>
 ValueType GetImmediateValueFromProto(
     const google::protobuf::Message& message,
     const google::protobuf::FieldDescriptor* field_descriptor);
@@ -109,16 +125,7 @@ ValueType GetImmediateValueFromProto(
 //
 // The field must be an immediate field of @message.
 // The corresponding C++ type of the field must be @ValueType.
-template <typename ValueType, absl::enable_if_t<absl::disjunction<
-    std::is_same<ValueType, int32_t>,
-    std::is_same<ValueType, int64_t>,
-    std::is_same<ValueType, uint32_t>,
-    std::is_same<ValueType, uint64_t>,
-    std::is_same<ValueType, float>,
-    std::is_same<ValueType, double>,
-    std::is_same<ValueType, bool>,
-    std::is_same<ValueType, const google::protobuf::EnumValueDescriptor*>,
-    std::is_same<ValueType, const std::string&>>::value, bool> = true>
+template <typename ValueType, EnableIfProtoValueType<ValueType> = true>
 void SetImmediateValueToProto(
     google::protobuf::Message& message,
     const google::protobuf::FieldDescriptor* field_descriptor,
@@ -153,18 +160,7 @@ void SetImmediateValueToProto(
 //     GetFieldFromProto(MsgA().GetDescriptor(), "b.c"));
 // And if there is an MsgA object obj_a, to get the value of obj_a.b.c:
 // int32_t output = GetValueFromProto(obj_a, field_descriptors);
-template <typename ValueType, absl::enable_if_t<absl::disjunction<
-    std::is_same<ValueType, int32_t>,
-    std::is_same<ValueType, int64_t>,
-    std::is_same<ValueType, uint32_t>,
-    std::is_same<ValueType, uint64_t>,
-    std::is_same<ValueType, float>,
-    std::is_same<ValueType, double>,
-    std::is_same<ValueType, bool>,
-    std::is_same<ValueType, const google::protobuf::EnumValueDescriptor*>,
-    std::is_same<ValueType, const std::string&>,
-    std::is_same<ValueType, const google::protobuf::Message&>
->::value, bool> = true>
+template <typename ValueType, EnableIfProtoType<ValueType> = true>
 ValueType GetValueFromProto(
     const google::protobuf::Message& message,
     const std::vector<const google::protobuf::FieldDescriptor*>&
@@ -201,16 +197,7 @@ ValueType GetValueFromProto(
 //     GetFieldFromProto(MsgA().GetDescriptor(), "b.c"));
 // And if there is a MsgA object obj_a, to set the value of obj_a.b.c to 10:
 // SetValueToProto(obj_a, field_descriptors, 10);
-template <typename ValueType, absl::enable_if_t<absl::disjunction<
-    std::is_same<ValueType, int32_t>,
-    std::is_same<ValueType, int64_t>,
-    std::is_same<ValueType, uint32_t>,
-    std::is_same<ValueType, uint64_t>,
-    std::is_same<ValueType, float>,
-    std::is_same<ValueType, double>,
-    std::is_same<ValueType, bool>,
-    std::is_same<ValueType, const google::protobuf::EnumValueDescriptor*>,
-    std::is_same<ValueType, const std::string&>>::value, bool> = true>
+template <typename ValueType, EnableIfProtoValueType<ValueType> = true>
 void SetValueToProto(
     google::protobuf::Message& message,
     const std::vector<const google::protobuf::FieldDescriptor*>&
