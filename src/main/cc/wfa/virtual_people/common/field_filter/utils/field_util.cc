@@ -90,7 +90,7 @@ google::protobuf::Message& GetMutableParentMessageFromProto(
   return *tmp_message;
 }
 
-template <typename ValueType, EnableIfProtoType<ValueType> = true>
+template <typename ValueType, EnableIfProtoType<ValueType>>
 ValueType GetImmediateValueFromProto(
     const google::protobuf::Message& message,
     const google::protobuf::FieldDescriptor* field_descriptor);
@@ -172,7 +172,7 @@ GetImmediateValueFromProto<const google::protobuf::Message&>(
   return message.GetReflection()->GetMessage(message, field_descriptor);
 }
 
-template <typename ValueType, EnableIfProtoValueType<ValueType> = true>
+template <typename ValueType, EnableIfProtoValueType<ValueType>>
 void SetImmediateValueToProto(
     google::protobuf::Message& message,
     const google::protobuf::FieldDescriptor* field_descriptor,
