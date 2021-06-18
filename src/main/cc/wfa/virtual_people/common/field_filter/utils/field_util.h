@@ -24,7 +24,7 @@
 namespace wfa_virtual_people {
 
 template <typename ValueType>
-using EnableIfProtoType = absl::enable_if_t<absl::disjunction<
+using IsProtoValueType = absl::disjunction<
     std::is_same<ValueType, int32_t>,
     std::is_same<ValueType, int64_t>,
     std::is_same<ValueType, uint32_t>,
@@ -33,22 +33,17 @@ using EnableIfProtoType = absl::enable_if_t<absl::disjunction<
     std::is_same<ValueType, double>,
     std::is_same<ValueType, bool>,
     std::is_same<ValueType, const google::protobuf::EnumValueDescriptor*>,
-    std::is_same<ValueType, const std::string&>,
+    std::is_same<ValueType, const std::string&>>;
+
+template <typename ValueType>
+using EnableIfProtoType = absl::enable_if_t<absl::disjunction<
+    IsProtoValueType<ValueType>,
     std::is_same<ValueType, const google::protobuf::Message&>
 >::value, bool>;
 
 template <typename ValueType>
-using EnableIfProtoValueType = absl::enable_if_t<absl::disjunction<
-    std::is_same<ValueType, int32_t>,
-    std::is_same<ValueType, int64_t>,
-    std::is_same<ValueType, uint32_t>,
-    std::is_same<ValueType, uint64_t>,
-    std::is_same<ValueType, float>,
-    std::is_same<ValueType, double>,
-    std::is_same<ValueType, bool>,
-    std::is_same<ValueType, const google::protobuf::EnumValueDescriptor*>,
-    std::is_same<ValueType, const std::string&>
->::value, bool>;
+using EnableIfProtoValueType = absl::enable_if_t<
+    IsProtoValueType<ValueType>::value, bool>;
 
 // In the protobuf message represented by @descriptor, get the field descriptors
 // of the field, the path of which is represented by @full_field_name.
