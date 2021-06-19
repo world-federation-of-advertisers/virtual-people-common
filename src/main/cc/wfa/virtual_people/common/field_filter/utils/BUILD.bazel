@@ -8,9 +8,11 @@ cc_library(
     name = "field_util",
     srcs = ["field_util.cc"],
     hdrs = ["field_util.h"],
+    visibility = ["//visibility:public"],
     strip_include_prefix = _INCLUDE_PREFIX,
     deps = [
         "@com_google_absl//absl/memory",
+        "@com_google_absl//absl/meta:type_traits",
         "@com_google_absl//absl/status",
         "@com_google_absl//absl/status:statusor",
         "@com_google_absl//absl/strings",

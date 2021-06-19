@@ -15,12 +15,35 @@
 #ifndef WFA_VIRTUAL_PEOPLE_COMMON_FIELD_FILTER_UTILS_FIELD_UTIL_H_
 #define WFA_VIRTUAL_PEOPLE_COMMON_FIELD_FILTER_UTILS_FIELD_UTIL_H_
 
+#include "absl/meta/type_traits.h"
 #include "absl/status/statusor.h"
 #include "absl/strings/string_view.h"
 #include "google/protobuf/descriptor.h"
 #include "google/protobuf/message.h"
 
 namespace wfa_virtual_people {
+
+template <typename ValueType>
+using IsProtoValueType = absl::disjunction<
+    std::is_same<ValueType, int32_t>,
+    std::is_same<ValueType, int64_t>,
+    std::is_same<ValueType, uint32_t>,
+    std::is_same<ValueType, uint64_t>,
+    std::is_same<ValueType, float>,
+    std::is_same<ValueType, double>,
+    std::is_same<ValueType, bool>,
+    std::is_same<ValueType, const google::protobuf::EnumValueDescriptor*>,
+    std::is_same<ValueType, const std::string&>>;
+
+template <typename ValueType>
+using EnableIfProtoType = absl::enable_if_t<absl::disjunction<
+    IsProtoValueType<ValueType>,
+    std::is_same<ValueType, const google::protobuf::Message&>
+>::value, bool>;
+
+template <typename ValueType>
+using EnableIfProtoValueType = absl::enable_if_t<
+    IsProtoValueType<ValueType>::value, bool>;
 
 // In the protobuf message represented by @descriptor, get the field descriptors
 // of the field, the path of which is represented by @full_field_name.
@@ -62,16 +85,21 @@ GetFieldFromProto(
 //   }
 //   optional MsgB b = 1;
 // }
-// To get the field descriptors of MsgA.b.c, the call is
+// To get the field descriptors of MsgA.b.c:
 // ASSIGN_OR_RETURN(
 //     std::vector<const google::protobuf::FieldDescriptor*> field_descriptors,
 //     GetFieldFromProto(MsgA().GetDescriptor(), "b.c"));
-// And if there is an MsgA object obj_a, to get the message obj_a.b, the
-// call is
+// And if there is an MsgA object obj_a, to get the message obj_a.b:
 // const google::protobuf::Message& output =
 //     GetParentMessageFromProto(obj_a, field_descriptors);
 const google::protobuf::Message& GetParentMessageFromProto(
     const google::protobuf::Message& message,
+    const std::vector<const google::protobuf::FieldDescriptor*>&
+        field_descriptors);
+
+// Same as above, but returns a mutable message.
+google::protobuf::Message& GetMutableParentMessageFromProto(
+    google::protobuf::Message& message,
     const std::vector<const google::protobuf::FieldDescriptor*>&
         field_descriptors);
 
@@ -82,10 +110,21 @@ const google::protobuf::Message& GetParentMessageFromProto(
 //
 // The field must be an immediate field of @message.
 // The corresponding C++ type of the field must be @ValueType.
-template <typename ValueType>
+template <typename ValueType, EnableIfProtoType<ValueType> = true>
 ValueType GetImmediateValueFromProto(
     const google::protobuf::Message& message,
     const google::protobuf::FieldDescriptor* field_descriptor);
+
+// Sets the value to the @message, with field name represented by
+// @field_descriptor.
+//
+// The field must be an immediate field of @message.
+// The corresponding C++ type of the field must be @ValueType.
+template <typename ValueType, EnableIfProtoValueType<ValueType> = true>
+void SetImmediateValueToProto(
+    google::protobuf::Message& message,
+    const google::protobuf::FieldDescriptor* field_descriptor,
+    ValueType value);
 
 // Gets the value from the @message, with field path represented by
 // @field_descriptors.
@@ -110,14 +149,13 @@ ValueType GetImmediateValueFromProto(
 //   }
 //   optional MsgB b = 1;
 // }
-// To get the field descriptors of MsgA.b.c, the call is
+// To get the field descriptors of MsgA.b.c:
 // ASSIGN_OR_RETURN(
 //     std::vector<const google::protobuf::FieldDescriptor*> field_descriptors,
 //     GetFieldFromProto(MsgA().GetDescriptor(), "b.c"));
-// And if there is an MsgA object obj_a, to get the value of obj_a.b.c, the
-// call is
+// And if there is an MsgA object obj_a, to get the value of obj_a.b.c:
 // int32_t output = GetValueFromProto(obj_a, field_descriptors);
-template <typename ValueType>
+template <typename ValueType, EnableIfProtoType<ValueType> = true>
 ValueType GetValueFromProto(
     const google::protobuf::Message& message,
     const std::vector<const google::protobuf::FieldDescriptor*>&
@@ -125,6 +163,44 @@ ValueType GetValueFromProto(
   return GetImmediateValueFromProto<ValueType>(
       GetParentMessageFromProto(message, field_descriptors),
       field_descriptors.back());
+}
+
+// Sets the value to the @message, with field path represented by
+// @field_descriptors.
+//
+// All elements except the last one in @field_descriptors must refer to a
+// protobuf Message. The last one in @field_descriptors must refer to a field
+// with @ValueType.
+// The first element in @field_descriptors must refer to a field in @message,
+// Each of the rest elements must refer to a field in the message referred by
+// the previous element.
+//
+// The typical usage is to first call GetFieldFromProto(see above), to get
+// @field_descriptors for the target field in @message, then call this function
+// to set the value of the target field.
+// Example:
+// If we have a protobuf
+// message MsgA {
+//   message MsgB {
+//     optional int32 c = 1;
+//   }
+//   optional MsgB b = 1;
+// }
+// To get the field descriptors of MsgA.b.c:
+// ASSIGN_OR_RETURN(
+//     std::vector<const google::protobuf::FieldDescriptor*> field_descriptors,
+//     GetFieldFromProto(MsgA().GetDescriptor(), "b.c"));
+// And if there is a MsgA object obj_a, to set the value of obj_a.b.c to 10:
+// SetValueToProto(obj_a, field_descriptors, 10);
+template <typename ValueType, EnableIfProtoValueType<ValueType> = true>
+void SetValueToProto(
+    google::protobuf::Message& message,
+    const std::vector<const google::protobuf::FieldDescriptor*>&
+        field_descriptors,
+    ValueType value) {
+  SetImmediateValueToProto<ValueType>(
+      GetMutableParentMessageFromProto(message, field_descriptors),
+      field_descriptors.back(), value);
 }
 
 }  // namespace wfa_virtual_people

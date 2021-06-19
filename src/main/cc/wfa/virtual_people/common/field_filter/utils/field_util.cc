@@ -15,6 +15,7 @@
 #include "wfa/virtual_people/common/field_filter/utils/field_util.h"
 
 #include "absl/memory/memory.h"
+#include "absl/meta/type_traits.h"
 #include "absl/status/status.h"
 #include "absl/status/statusor.h"
 #include "absl/strings/str_cat.h"
@@ -64,6 +65,8 @@ const google::protobuf::Message& GetParentMessageFromProto(
     const std::vector<const google::protobuf::FieldDescriptor*>&
         field_descriptors) {
   const google::protobuf::Message* tmp_message = &message;
+  // @field_descriptors refers to a field in @message. To get the parent message
+  // of the field, the last entry in @field_descriptors is unused.
   for (auto it = field_descriptors.begin(), j = field_descriptors.end() - 1;
        it != j; ++it) {
     tmp_message = &(tmp_message->GetReflection()->GetMessage(*tmp_message,
@@ -72,7 +75,22 @@ const google::protobuf::Message& GetParentMessageFromProto(
   return *tmp_message;
 }
 
-template <typename ValueType>
+google::protobuf::Message& GetMutableParentMessageFromProto(
+    google::protobuf::Message& message,
+    const std::vector<const google::protobuf::FieldDescriptor*>&
+        field_descriptors) {
+  google::protobuf::Message* tmp_message = &message;
+  // @field_descriptors refers to a field in @message. To get the parent message
+  // of the field, the last entry in @field_descriptors is unused.
+  for (auto it = field_descriptors.begin(), j = field_descriptors.end() - 1;
+       it != j; ++it) {
+    tmp_message = tmp_message->GetReflection()->MutableMessage(
+        tmp_message, *it);
+  }
+  return *tmp_message;
+}
+
+template <typename ValueType, EnableIfProtoType<ValueType>>
 ValueType GetImmediateValueFromProto(
     const google::protobuf::Message& message,
     const google::protobuf::FieldDescriptor* field_descriptor);
@@ -152,6 +170,84 @@ GetImmediateValueFromProto<const google::protobuf::Message&>(
     const google::protobuf::Message& message,
     const google::protobuf::FieldDescriptor* field_descriptor) {
   return message.GetReflection()->GetMessage(message, field_descriptor);
+}
+
+template <typename ValueType, EnableIfProtoValueType<ValueType>>
+void SetImmediateValueToProto(
+    google::protobuf::Message& message,
+    const google::protobuf::FieldDescriptor* field_descriptor,
+    ValueType value);
+
+template <>
+void SetImmediateValueToProto<int32_t>(
+    google::protobuf::Message& message,
+    const google::protobuf::FieldDescriptor* field_descriptor,
+    int32_t value) {
+  message.GetReflection()->SetInt32(&message, field_descriptor, value);
+}
+
+template <>
+void SetImmediateValueToProto<int64_t>(
+    google::protobuf::Message& message,
+    const google::protobuf::FieldDescriptor* field_descriptor,
+    int64_t value) {
+  message.GetReflection()->SetInt64(&message, field_descriptor, value);
+}
+
+template <>
+void SetImmediateValueToProto<uint32_t>(
+    google::protobuf::Message& message,
+    const google::protobuf::FieldDescriptor* field_descriptor,
+    uint32_t value) {
+  message.GetReflection()->SetUInt32(&message, field_descriptor, value);
+}
+
+template <>
+void SetImmediateValueToProto<uint64_t>(
+    google::protobuf::Message& message,
+    const google::protobuf::FieldDescriptor* field_descriptor,
+    uint64_t value) {
+  message.GetReflection()->SetUInt64(&message, field_descriptor, value);
+}
+
+template <>
+void SetImmediateValueToProto<float>(
+    google::protobuf::Message& message,
+    const google::protobuf::FieldDescriptor* field_descriptor,
+    float value) {
+  message.GetReflection()->SetFloat(&message, field_descriptor, value);
+}
+
+template <>
+void SetImmediateValueToProto<double>(
+    google::protobuf::Message& message,
+    const google::protobuf::FieldDescriptor* field_descriptor,
+    double value) {
+  message.GetReflection()->SetDouble(&message, field_descriptor, value);
+}
+
+template <>
+void SetImmediateValueToProto<bool>(
+    google::protobuf::Message& message,
+    const google::protobuf::FieldDescriptor* field_descriptor,
+    bool value) {
+  message.GetReflection()->SetBool(&message, field_descriptor, value);
+}
+
+template <>
+void SetImmediateValueToProto<const google::protobuf::EnumValueDescriptor*>(
+    google::protobuf::Message& message,
+    const google::protobuf::FieldDescriptor* field_descriptor,
+    const google::protobuf::EnumValueDescriptor* value) {
+  message.GetReflection()->SetEnum(&message, field_descriptor, value);
+}
+
+template <>
+void SetImmediateValueToProto<const std::string&>(
+    google::protobuf::Message& message,
+    const google::protobuf::FieldDescriptor* field_descriptor,
+    const std::string& value) {
+  message.GetReflection()->SetString(&message, field_descriptor, value);
 }
 
 }  // namespace wfa_virtual_people

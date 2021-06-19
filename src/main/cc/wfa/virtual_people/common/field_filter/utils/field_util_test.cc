@@ -34,8 +34,9 @@ using ::wfa::EqualsProto;
 using ::wfa::IsOk;
 using ::wfa::StatusIs;
 using ::wfa_virtual_people::test::TestProto;
+using ::wfa_virtual_people::test::TestProtoB;
 
-TEST(GetFieldFromProtoTest, GetFieldAndValue) {
+TEST(FieldUtilTest, GetFieldAndValue) {
   TestProto test_proto_1, test_proto_2;
   ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
       a {
@@ -127,7 +128,7 @@ TEST(GetFieldFromProtoTest, GetFieldAndValue) {
       EqualsProto(test_proto_2.a().b()));
 }
 
-TEST(GetFieldFromProtoTest, GetValueForUnsetField) {
+TEST(FieldUtilTest, GetValueForUnsetField) {
   TestProto test_proto;
   // Test int32.
   absl::StatusOr<std::vector<const google::protobuf::FieldDescriptor*>>
@@ -188,7 +189,240 @@ TEST(GetFieldFromProtoTest, GetValueForUnsetField) {
       EqualsProto(test_proto.a().b()));
 }
 
-TEST(GetFieldFromProtoTest, InvalidFieldName) {
+TEST(FieldUtilTest, GetFieldAndSetValue) {
+  TestProtoB test_b_proto;
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
+      int32_value: 1
+      int64_value: 1
+      uint32_value: 1
+      uint64_value: 1
+      float_value: 1.0
+      double_value: 1.0
+      bool_value: true
+      enum_value: TEST_ENUM_1
+      string_value: "string1"
+  )pb", &test_b_proto));
+  std::vector<const google::protobuf::FieldDescriptor*> field_descriptors;
+  // Test int32.
+  ASSERT_OK_AND_ASSIGN(
+      field_descriptors,
+      GetFieldFromProto(TestProtoB().GetDescriptor(), "int32_value"));
+  SetValueToProto<int32_t>(test_b_proto, field_descriptors, 2);
+  // Test int64.
+  ASSERT_OK_AND_ASSIGN(
+      field_descriptors,
+      GetFieldFromProto(TestProtoB().GetDescriptor(), "int64_value"));
+  SetValueToProto<int64_t>(test_b_proto, field_descriptors, 2);
+  // Test uint32.
+  ASSERT_OK_AND_ASSIGN(
+      field_descriptors,
+      GetFieldFromProto(TestProtoB().GetDescriptor(), "uint32_value"));
+  SetValueToProto<uint32_t>(test_b_proto, field_descriptors, 2);
+  // Test uint64.
+  ASSERT_OK_AND_ASSIGN(
+      field_descriptors,
+      GetFieldFromProto(TestProtoB().GetDescriptor(), "uint64_value"));
+  SetValueToProto<uint64_t>(test_b_proto, field_descriptors, 2);
+  // Test float.
+  ASSERT_OK_AND_ASSIGN(
+      field_descriptors,
+      GetFieldFromProto(TestProtoB().GetDescriptor(), "float_value"));
+  SetValueToProto<float>(test_b_proto, field_descriptors, 2.0);
+  // Test double.
+  ASSERT_OK_AND_ASSIGN(
+      field_descriptors,
+      GetFieldFromProto(TestProtoB().GetDescriptor(), "double_value"));
+  SetValueToProto<double>(test_b_proto, field_descriptors, 2.0);
+  // Test bool.
+  ASSERT_OK_AND_ASSIGN(
+      field_descriptors,
+      GetFieldFromProto(TestProtoB().GetDescriptor(), "bool_value"));
+  SetValueToProto<bool>(test_b_proto, field_descriptors, false);
+  // Test enum.
+  ASSERT_OK_AND_ASSIGN(
+      field_descriptors,
+      GetFieldFromProto(TestProtoB().GetDescriptor(), "enum_value"));
+  SetValueToProto<const google::protobuf::EnumValueDescriptor*>(
+      test_b_proto, field_descriptors,
+      field_descriptors.back()->enum_type()->FindValueByNumber(2));
+  // Test string.
+  ASSERT_OK_AND_ASSIGN(
+      field_descriptors,
+      GetFieldFromProto(TestProtoB().GetDescriptor(), "string_value"));
+  SetValueToProto<const std::string&>(
+      test_b_proto, field_descriptors, "string2");
+
+  TestProtoB expected_test_b_proto;
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
+      int32_value: 2
+      int64_value: 2
+      uint32_value: 2
+      uint64_value: 2
+      float_value: 2.0
+      double_value: 2.0
+      bool_value: false
+      enum_value: TEST_ENUM_2
+      string_value: "string2"
+  )pb", &expected_test_b_proto));
+  EXPECT_THAT(test_b_proto, EqualsProto(expected_test_b_proto));
+}
+
+TEST(FieldUtilTest, GetFieldAndSetNestedValue) {
+  TestProto test_proto;
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
+      a {
+        b {
+          int32_value: 1
+          int64_value: 1
+          uint32_value: 1
+          uint64_value: 1
+          float_value: 1.0
+          double_value: 1.0
+          bool_value: true
+          enum_value: TEST_ENUM_1
+          string_value: "string1"
+        }
+      }
+  )pb", &test_proto));
+  std::vector<const google::protobuf::FieldDescriptor*> field_descriptors;
+  // Test int32.
+  ASSERT_OK_AND_ASSIGN(
+      field_descriptors,
+      GetFieldFromProto(TestProto().GetDescriptor(), "a.b.int32_value"));
+  SetValueToProto<int32_t>(test_proto, field_descriptors, 2);
+  // Test int64.
+  ASSERT_OK_AND_ASSIGN(
+      field_descriptors,
+      GetFieldFromProto(TestProto().GetDescriptor(), "a.b.int64_value"));
+  SetValueToProto<int64_t>(test_proto, field_descriptors, 2);
+  // Test uint32.
+  ASSERT_OK_AND_ASSIGN(
+      field_descriptors,
+      GetFieldFromProto(TestProto().GetDescriptor(), "a.b.uint32_value"));
+  SetValueToProto<uint32_t>(test_proto, field_descriptors, 2);
+  // Test uint64.
+  ASSERT_OK_AND_ASSIGN(
+      field_descriptors,
+      GetFieldFromProto(TestProto().GetDescriptor(), "a.b.uint64_value"));
+  SetValueToProto<uint64_t>(test_proto, field_descriptors, 2);
+  // Test float.
+  ASSERT_OK_AND_ASSIGN(
+      field_descriptors,
+      GetFieldFromProto(TestProto().GetDescriptor(), "a.b.float_value"));
+  SetValueToProto<float>(test_proto, field_descriptors, 2.0);
+  // Test double.
+  ASSERT_OK_AND_ASSIGN(
+      field_descriptors,
+      GetFieldFromProto(TestProto().GetDescriptor(), "a.b.double_value"));
+  SetValueToProto<double>(test_proto, field_descriptors, 2.0);
+  // Test bool.
+  ASSERT_OK_AND_ASSIGN(
+      field_descriptors,
+      GetFieldFromProto(TestProto().GetDescriptor(), "a.b.bool_value"));
+  SetValueToProto<bool>(test_proto, field_descriptors, false);
+  // Test enum.
+  ASSERT_OK_AND_ASSIGN(
+      field_descriptors,
+      GetFieldFromProto(TestProto().GetDescriptor(), "a.b.enum_value"));
+  SetValueToProto<const google::protobuf::EnumValueDescriptor*>(
+      test_proto, field_descriptors,
+      field_descriptors.back()->enum_type()->FindValueByNumber(2));
+  // Test string.
+  ASSERT_OK_AND_ASSIGN(
+      field_descriptors,
+      GetFieldFromProto(TestProto().GetDescriptor(), "a.b.string_value"));
+  SetValueToProto<const std::string&>(test_proto, field_descriptors, "string2");
+
+  TestProto expected_test_proto;
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
+      a {
+        b {
+          int32_value: 2
+          int64_value: 2
+          uint32_value: 2
+          uint64_value: 2
+          float_value: 2.0
+          double_value: 2.0
+          bool_value: false
+          enum_value: TEST_ENUM_2
+          string_value: "string2"
+        }
+      }
+  )pb", &expected_test_proto));
+  EXPECT_THAT(test_proto, EqualsProto(expected_test_proto));
+}
+
+TEST(FieldUtilTest, GetFieldAndSetValueForUnsetParentMessage) {
+  TestProto test_proto;
+  std::vector<const google::protobuf::FieldDescriptor*> field_descriptors;
+  // Test int32.
+  ASSERT_OK_AND_ASSIGN(
+      field_descriptors,
+      GetFieldFromProto(TestProto().GetDescriptor(), "a.b.int32_value"));
+  SetValueToProto<int32_t>(test_proto, field_descriptors, 2);
+  // Test int64.
+  ASSERT_OK_AND_ASSIGN(
+      field_descriptors,
+      GetFieldFromProto(TestProto().GetDescriptor(), "a.b.int64_value"));
+  SetValueToProto<int64_t>(test_proto, field_descriptors, 2);
+  // Test uint32.
+  ASSERT_OK_AND_ASSIGN(
+      field_descriptors,
+      GetFieldFromProto(TestProto().GetDescriptor(), "a.b.uint32_value"));
+  SetValueToProto<uint32_t>(test_proto, field_descriptors, 2);
+  // Test uint64.
+  ASSERT_OK_AND_ASSIGN(
+      field_descriptors,
+      GetFieldFromProto(TestProto().GetDescriptor(), "a.b.uint64_value"));
+  SetValueToProto<uint64_t>(test_proto, field_descriptors, 2);
+  // Test float.
+  ASSERT_OK_AND_ASSIGN(
+      field_descriptors,
+      GetFieldFromProto(TestProto().GetDescriptor(), "a.b.float_value"));
+  SetValueToProto<float>(test_proto, field_descriptors, 2.0);
+  // Test double.
+  ASSERT_OK_AND_ASSIGN(
+      field_descriptors,
+      GetFieldFromProto(TestProto().GetDescriptor(), "a.b.double_value"));
+  SetValueToProto<double>(test_proto, field_descriptors, 2.0);
+  // Test bool.
+  ASSERT_OK_AND_ASSIGN(
+      field_descriptors,
+      GetFieldFromProto(TestProto().GetDescriptor(), "a.b.bool_value"));
+  SetValueToProto<bool>(test_proto, field_descriptors, false);
+  // Test enum.
+  ASSERT_OK_AND_ASSIGN(
+      field_descriptors,
+      GetFieldFromProto(TestProto().GetDescriptor(), "a.b.enum_value"));
+  SetValueToProto<const google::protobuf::EnumValueDescriptor*>(
+      test_proto, field_descriptors,
+      field_descriptors.back()->enum_type()->FindValueByNumber(2));
+  // Test string.
+  ASSERT_OK_AND_ASSIGN(
+      field_descriptors,
+      GetFieldFromProto(TestProto().GetDescriptor(), "a.b.string_value"));
+  SetValueToProto<const std::string&>(test_proto, field_descriptors, "string2");
+
+  TestProto expected_test_proto;
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
+      a {
+        b {
+          int32_value: 2
+          int64_value: 2
+          uint32_value: 2
+          uint64_value: 2
+          float_value: 2.0
+          double_value: 2.0
+          bool_value: false
+          enum_value: TEST_ENUM_2
+          string_value: "string2"
+        }
+      }
+  )pb", &expected_test_proto));
+  EXPECT_THAT(test_proto, EqualsProto(expected_test_proto));
+}
+
+TEST(FieldUtilTest, InvalidFieldName) {
   TestProto test_proto;
   ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
       a {
@@ -205,7 +439,7 @@ TEST(GetFieldFromProtoTest, InvalidFieldName) {
       StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
-TEST(GetFieldFromProtoTest, InvalidSubmessageName) {
+TEST(FieldUtilTest, InvalidSubmessageName) {
   TestProto test_proto;
   ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
       a {
@@ -222,7 +456,7 @@ TEST(GetFieldFromProtoTest, InvalidSubmessageName) {
       StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
-TEST(GetFieldFromProtoTest, TestGetParentMessage) {
+TEST(FieldUtilTest, TestGetParentMessage) {
   ASSERT_OK_AND_ASSIGN(
       std::vector<const google::protobuf::FieldDescriptor*> field_descriptors,
       GetFieldFromProto(TestProto().GetDescriptor(), "a.b.int32_value"));
@@ -250,7 +484,7 @@ TEST(GetFieldFromProtoTest, TestGetParentMessage) {
       EqualsProto(test_proto.a().b()));
 }
 
-TEST(GetFieldFromProtoTest, DisallowRepeatedField) {
+TEST(FieldUtilTest, DisallowRepeatedField) {
   // Any repeated field in the path except the last field is disallowed.
   EXPECT_THAT(
       GetFieldFromProto(
@@ -270,7 +504,7 @@ TEST(GetFieldFromProtoTest, DisallowRepeatedField) {
       StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
-TEST(GetFieldFromProtoTest, TestAllowRepeatedAndGetParentMessage) {
+TEST(FieldUtilTest, TestAllowRepeatedAndGetParentMessage) {
   ASSERT_OK_AND_ASSIGN(
       std::vector<const google::protobuf::FieldDescriptor*> field_descriptors,
       GetFieldFromProto(
@@ -300,7 +534,7 @@ TEST(GetFieldFromProtoTest, TestAllowRepeatedAndGetParentMessage) {
       EqualsProto(test_proto.a().b()));
 }
 
-TEST(GetFieldFromProtoTest, TestGetParentMessageParentNotSet) {
+TEST(FieldUtilTest, TestGetParentMessageParentNotSet) {
   ASSERT_OK_AND_ASSIGN(
       std::vector<const google::protobuf::FieldDescriptor*> field_descriptors,
       GetFieldFromProto(TestProto().GetDescriptor(), "a.b.int32_value"));
