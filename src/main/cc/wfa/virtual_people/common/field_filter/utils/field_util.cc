@@ -22,6 +22,7 @@
 #include "absl/strings/str_split.h"
 #include "absl/strings/string_view.h"
 #include "google/protobuf/descriptor.h"
+#include "wfa/virtual_people/common/field_filter/utils/template_util.h"
 
 namespace wfa_virtual_people {
 
