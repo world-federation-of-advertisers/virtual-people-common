@@ -35,10 +35,10 @@ namespace wfa_virtual_people {
 template <typename ValueType, EnableIfNumericType<ValueType> = true>
 absl::StatusOr<ValueType> ConvertToNumeric(absl::string_view input);
 
-// Convert the string @input to a enum type descriptor.
-// The enum is referred by @field_descriptor.
+// Convert the string @input to a enum value descriptor.
+// The enum is referred by @descriptor.
 absl::StatusOr<const google::protobuf::EnumValueDescriptor*> ConvertToEnum(
-    const google::protobuf::FieldDescriptor* field_descriptor,
+    const google::protobuf::EnumDescriptor* descriptor,
     absl::string_view input);
 
 }  // namespace wfa_virtual_people

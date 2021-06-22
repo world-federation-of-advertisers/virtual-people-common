@@ -98,18 +98,17 @@ absl::StatusOr<bool> ConvertToNumeric<bool>(absl::string_view input) {
 }
 
 absl::StatusOr<const google::protobuf::EnumValueDescriptor*> ConvertToEnum(
-    const google::protobuf::FieldDescriptor* field_descriptor,
+    const google::protobuf::EnumDescriptor* descriptor,
     absl::string_view input) {
   // Try to get the enum by enum name.
   const google::protobuf::EnumValueDescriptor* enum_value_descriptor =
-      field_descriptor->enum_type()->FindValueByName(std::string(input));
+      descriptor->FindValueByName(std::string(input));
 
   if (enum_value_descriptor == nullptr) {
     // Did not find the enum by enum name. Try to find the enum by enum number.
     int enum_number;
     if (absl::SimpleAtoi(input, &enum_number)) {
-      enum_value_descriptor =
-          field_descriptor->enum_type()->FindValueByNumber(enum_number);
+      enum_value_descriptor = descriptor->FindValueByNumber(enum_number);
     }
   }
 

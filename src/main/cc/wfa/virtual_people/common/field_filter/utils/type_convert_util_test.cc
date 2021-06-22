@@ -112,7 +112,7 @@ TEST(ConvertToNumericTest, TestBoolInvalid) {
 TEST(ConvertToEnumTest, TestEnumName) {
   const google::protobuf::FieldDescriptor* field_descriptor =
       TestProtoB().GetDescriptor()->FindFieldByName("enum_value");
-  auto output = ConvertToEnum(field_descriptor, "TEST_ENUM_1");
+  auto output = ConvertToEnum(field_descriptor->enum_type(), "TEST_ENUM_1");
   EXPECT_THAT(output, IsOk());
   EXPECT_EQ((*output)->number(), 1);
 }
@@ -120,7 +120,7 @@ TEST(ConvertToEnumTest, TestEnumName) {
 TEST(ConvertToEnumTest, TestEnumNumber) {
   const google::protobuf::FieldDescriptor* field_descriptor =
       TestProtoB().GetDescriptor()->FindFieldByName("enum_value");
-  auto output = ConvertToEnum(field_descriptor, "1");
+  auto output = ConvertToEnum(field_descriptor->enum_type(), "1");
   EXPECT_THAT(output, IsOk());
   EXPECT_EQ((*output)->number(), 1);
 }
@@ -129,7 +129,7 @@ TEST(ConvertToEnumTest, TestEnumInvalid) {
   const google::protobuf::FieldDescriptor* field_descriptor =
       TestProtoB().GetDescriptor()->FindFieldByName("enum_value");
   EXPECT_THAT(
-      ConvertToEnum(field_descriptor, "a").status(),
+      ConvertToEnum(field_descriptor->enum_type(), "a").status(),
       StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
