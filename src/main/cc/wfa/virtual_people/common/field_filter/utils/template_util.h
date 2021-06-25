@@ -59,6 +59,25 @@ template <typename ValueType>
 using EnableIfProtoValueType = absl::enable_if_t<
     IsProtoValueType<ValueType>::value, bool>;
 
+template <typename ValueType>
+using IsIntBoolStrType = absl::disjunction<
+    IsIntegerType<ValueType>,
+    std::is_same<ValueType, bool>,
+    std::is_same<ValueType, const std::string&>>;
+
+template <typename ValueType>
+using EnableIfIntBoolStrType = absl::enable_if_t<
+    IsIntBoolStrType<ValueType>::value, bool>;
+
+template <typename ValueType>
+using IsNonFloatProtoValueType = absl::disjunction<
+    IsIntBoolStrType<ValueType>,
+    std::is_same<ValueType, const google::protobuf::EnumValueDescriptor*>>;
+
+template <typename ValueType>
+using EnableIfNonFloatProtoValueType = absl::enable_if_t<
+    IsNonFloatProtoValueType<ValueType>::value, bool>;
+
 }  // namespace wfa_virtual_people
 
 #endif  // WFA_VIRTUAL_PEOPLE_COMMON_FIELD_FILTER_UTILS_TEMPLATE_UTIL_H_

@@ -34,6 +34,7 @@ message TestProtoB {
     INVALID = 0;
     TEST_ENUM_1 = 1;
     TEST_ENUM_2 = 2;
+    TEST_ENUM_3 = 3;
   }
   optional int32 int32_value = 1;
   optional int64 int64_value = 2;

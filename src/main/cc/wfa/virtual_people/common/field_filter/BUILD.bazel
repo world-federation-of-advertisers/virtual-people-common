@@ -12,6 +12,7 @@ cc_library(
         "field_filter.cc",
         "gt_filter.cc",
         "has_filter.cc",
+        "in_filter.cc",
         "lt_filter.cc",
         "not_filter.cc",
         "or_filter.cc",
@@ -24,6 +25,7 @@ cc_library(
         "field_filter.h",
         "gt_filter.h",
         "has_filter.h",
+        "in_filter.h",
         "lt_filter.h",
         "not_filter.h",
         "or_filter.h",
@@ -36,7 +38,9 @@ cc_library(
         "//src/main/cc/wfa/virtual_people/common/field_filter/utils:integer_comparator",
         "//src/main/cc/wfa/virtual_people/common/field_filter/utils:message_filter_util",
         "//src/main/cc/wfa/virtual_people/common/field_filter/utils:type_convert_util",
+        "//src/main/cc/wfa/virtual_people/common/field_filter/utils:values_parser",
         "//src/main/proto/wfa/virtual_people/common:field_filter_cc_proto",
+        "@com_google_absl//absl/container:flat_hash_set",
         "@com_google_absl//absl/memory",
         "@com_google_absl//absl/status",
         "@com_google_absl//absl/status:statusor",
@@ -189,6 +193,22 @@ cc_test(
 cc_test(
     name = "partial_filter_test",
     srcs = ["partial_filter_test.cc"],
+    deps = [
+        ":field_filter",
+        "//src/main/cc/wfa/virtual_people/common/field_filter/test:test_cc_proto",
+        "//src/main/proto/wfa/virtual_people/common:field_filter_cc_proto",
+        "@com_google_absl//absl/status",
+        "@com_google_absl//absl/status:statusor",
+        "@com_google_googletest//:gtest_main",
+        "@com_google_protobuf//:protobuf",
+        "@cross_media_measurement//src/test/cc/testutil:matchers",
+        "@cross_media_measurement//src/test/cc/testutil:status_macros",
+    ],
+)
+
+cc_test(
+    name = "in_filter_test",
+    srcs = ["in_filter_test.cc"],
     deps = [
         ":field_filter",
         "//src/main/cc/wfa/virtual_people/common/field_filter/test:test_cc_proto",

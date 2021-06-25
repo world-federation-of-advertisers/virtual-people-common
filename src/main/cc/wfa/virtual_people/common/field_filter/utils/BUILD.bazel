@@ -135,3 +135,34 @@ cc_test(
         "@cross_media_measurement//src/test/cc/testutil:status_macros",
     ],
 )
+
+cc_library(
+    name = "values_parser",
+    srcs = ["values_parser.cc"],
+    hdrs = ["values_parser.h"],
+    strip_include_prefix = _INCLUDE_PREFIX,
+    deps = [
+        ":template_util",
+        ":type_convert_util",
+        "@com_google_absl//absl/container:flat_hash_set",
+        "@com_google_absl//absl/status:statusor",
+        "@com_google_absl//absl/strings",
+        "@com_google_protobuf//:protobuf",
+        "@cross_media_measurement//src/main/cc/wfa/measurement/common:macros",
+    ],
+)
+
+cc_test(
+    name = "values_parser_test",
+    srcs = ["values_parser_test.cc"],
+    deps = [
+        ":values_parser",
+        "//src/main/cc/wfa/virtual_people/common/field_filter/test:test_cc_proto",
+        "@com_google_absl//absl/status",
+        "@com_google_absl//absl/status:statusor",
+        "@com_google_googletest//:gtest_main",
+        "@com_google_protobuf//:protobuf",
+        "@cross_media_measurement//src/test/cc/testutil:matchers",
+        "@cross_media_measurement//src/test/cc/testutil:status_macros",
+    ],
+)
