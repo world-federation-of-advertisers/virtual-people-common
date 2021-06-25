@@ -64,7 +64,7 @@ absl::StatusOr<ValuesParser<ValueType>> BuildValuesParser(
   return parser;
 }
 
-template <>
+template <> inline
 absl::StatusOr<ValuesParser<const std::string&>>
 BuildValuesParser<const std::string&>(absl::string_view values_str) {
   std::vector<std::string> values_list = absl::StrSplit(values_str, ',');

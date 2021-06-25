@@ -545,5 +545,173 @@ TEST(FieldUtilTest, TestGetParentMessageParentNotSet) {
       EqualsProto(test_proto.a().b()));
 }
 
+TEST(FieldUtilTest, GetSizeOfRepeatedProto) {
+  TestProto test_proto;
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
+      a {
+        b {
+          int32_values: 1
+          int32_values: 1
+        }
+      }
+  )pb", &test_proto));
+
+  ASSERT_OK_AND_ASSIGN(
+      std::vector<const google::protobuf::FieldDescriptor*> field_descriptors,
+      GetFieldFromProto(
+          TestProto().GetDescriptor(), "a.b.int32_values",
+          /*allow_repeated = */true));
+  EXPECT_EQ(GetSizeOfRepeatedProto(test_proto, field_descriptors), 2);
+}
+
+TEST(FieldUtilTest, GetSizeOfRepeatedProtoEmptyField) {
+  TestProto test_proto;
+
+  ASSERT_OK_AND_ASSIGN(
+      std::vector<const google::protobuf::FieldDescriptor*> field_descriptors,
+      GetFieldFromProto(
+          TestProto().GetDescriptor(), "a.b.int32_values",
+          /*allow_repeated = */true));
+  EXPECT_EQ(GetSizeOfRepeatedProto(test_proto, field_descriptors), 0);
+}
+
+TEST(FieldUtilTest, GetRepeatedFieldAndValue) {
+  TestProto test_proto;
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
+      a {
+        b {
+          int32_values: 1
+          int32_values: 2
+          int64_values: 1
+          int64_values: 2
+          uint32_values: 1
+          uint32_values: 2
+          uint64_values: 1
+          uint64_values: 2
+          float_values: 1.0
+          float_values: 2.0
+          double_values: 1.0
+          double_values: 2.0
+          bool_values: true
+          bool_values: false
+          enum_values: TEST_ENUM_1
+          enum_values: TEST_ENUM_2
+          string_values: "string1"
+          string_values: "string2"
+        }
+      }
+      repeated_proto_a {
+        b { int32_value: 1 }
+      }
+      repeated_proto_a {
+        b { int32_value: 2 }
+      }
+  )pb", &test_proto));
+
+  std::vector<const google::protobuf::FieldDescriptor*> field_descriptors;
+
+  // Test int32.
+  ASSERT_OK_AND_ASSIGN(
+      field_descriptors,
+      GetFieldFromProto(
+          TestProto().GetDescriptor(), "a.b.int32_values",
+          /*allow_repeated = */true));
+  EXPECT_EQ(
+      GetValueFromRepeatedProto<int32_t>(test_proto, field_descriptors, 1),
+      2);
+
+  // Test int64.
+  ASSERT_OK_AND_ASSIGN(
+      field_descriptors,
+      GetFieldFromProto(
+          TestProto().GetDescriptor(), "a.b.int64_values",
+          /*allow_repeated = */true));
+  EXPECT_EQ(
+      GetValueFromRepeatedProto<int64_t>(test_proto, field_descriptors, 1),
+      2);
+
+  // Test uint32.
+  ASSERT_OK_AND_ASSIGN(
+      field_descriptors,
+      GetFieldFromProto(
+          TestProto().GetDescriptor(), "a.b.uint32_values",
+          /*allow_repeated = */true));
+  EXPECT_EQ(
+      GetValueFromRepeatedProto<uint32_t>(test_proto, field_descriptors, 1),
+      2);
+
+  // Test uint64.
+  ASSERT_OK_AND_ASSIGN(
+      field_descriptors,
+      GetFieldFromProto(
+          TestProto().GetDescriptor(), "a.b.uint64_values",
+          /*allow_repeated = */true));
+  EXPECT_EQ(
+      GetValueFromRepeatedProto<uint64_t>(test_proto, field_descriptors, 1),
+      2);
+
+  // Test float.
+  ASSERT_OK_AND_ASSIGN(
+      field_descriptors,
+      GetFieldFromProto(
+          TestProto().GetDescriptor(), "a.b.float_values",
+          /*allow_repeated = */true));
+  EXPECT_EQ(
+      GetValueFromRepeatedProto<float>(test_proto, field_descriptors, 1),
+      2.0);
+
+  // Test double.
+  ASSERT_OK_AND_ASSIGN(
+      field_descriptors,
+      GetFieldFromProto(
+          TestProto().GetDescriptor(), "a.b.double_values",
+          /*allow_repeated = */true));
+  EXPECT_EQ(
+      GetValueFromRepeatedProto<double>(test_proto, field_descriptors, 1),
+      2.0);
+
+  // Test bool.
+  ASSERT_OK_AND_ASSIGN(
+      field_descriptors,
+      GetFieldFromProto(
+          TestProto().GetDescriptor(), "a.b.bool_values",
+          /*allow_repeated = */true));
+  EXPECT_FALSE(
+      GetValueFromRepeatedProto<bool>(test_proto, field_descriptors, 1));
+
+  // Test enum.
+  ASSERT_OK_AND_ASSIGN(
+      field_descriptors,
+      GetFieldFromProto(
+          TestProto().GetDescriptor(), "a.b.enum_values",
+          /*allow_repeated = */true));
+  EXPECT_EQ(
+      GetValueFromRepeatedProto<const google::protobuf::EnumValueDescriptor*>(
+          test_proto, field_descriptors, 1)->number(),
+      2);
+
+  // Test string.
+  ASSERT_OK_AND_ASSIGN(
+      field_descriptors,
+      GetFieldFromProto(
+          TestProto().GetDescriptor(), "a.b.string_values",
+          /*allow_repeated = */true));
+  EXPECT_EQ(
+      GetValueFromRepeatedProto<const std::string&>(
+          test_proto, field_descriptors, 1),
+      "string2");
+
+  // Test Message.
+  ASSERT_OK_AND_ASSIGN(
+      field_descriptors,
+      GetFieldFromProto(
+          TestProto().GetDescriptor(), "repeated_proto_a",
+          /*allow_repeated = */true));
+  EXPECT_THAT(
+      GetValueFromRepeatedProto<const google::protobuf::Message&>(
+          test_proto, field_descriptors, 1),
+      EqualsProto(test_proto.repeated_proto_a(1)));
+}
+
 }  // namespace
 }  // namespace wfa_virtual_people

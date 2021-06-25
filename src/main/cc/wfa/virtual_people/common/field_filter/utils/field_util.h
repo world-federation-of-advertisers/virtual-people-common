@@ -182,6 +182,69 @@ void SetValueToProto(
       field_descriptors.back(), value);
 }
 
+// Gets the size of the repeated field represented by @field_descriptors in
+// @message.
+//
+// @index must be in the boundary of the repeated field.
+int GetSizeOfRepeatedProto(
+    const google::protobuf::Message& message,
+    const std::vector<const google::protobuf::FieldDescriptor*>&
+        field_descriptors);
+
+// Gets the value from the @message, with repeated field name represented by
+// @field_descriptor, and the index represented by @index.
+//
+// @index must be in the boundary of the repeated field.
+//
+// The field must be an immediate field of @message.
+// The corresponding C++ type of the field must be @ValueType.
+template <typename ValueType, EnableIfProtoType<ValueType> = true>
+ValueType GetImmediateValueFromRepeatedProto(
+    const google::protobuf::Message& message,
+    const google::protobuf::FieldDescriptor* field_descriptor,
+    int index);
+
+// Gets the value from the @message, with repeated field path represented by
+// @field_descriptors, and the index represented by @index.
+//
+// @index must be in the boundary of the repeated field.
+//
+// All entries except the last one in @field_descriptors must refer to a
+// singular protobuf Message field. The last entry in @field_descriptors must
+// refer to a repeated field with @ValueType.
+// The first element in @field_descriptors must refer to a field in @message,
+// Each of the rest elements must refer to a field in the message referred by
+// the previous element.
+//
+// The typical usage is to first call GetFieldFromProto(see above), to get
+// @field_descriptors for the target field in @message, then call this function
+// to get the value of the target field and target index.
+// Example:
+// If we have a protobuf
+// message MsgA {
+//   message MsgB {
+//     repeated int32 c = 1;
+//   }
+//   optional MsgB b = 1;
+// }
+// To get the field descriptors of MsgA.b.c:
+// ASSIGN_OR_RETURN(
+//     std::vector<const google::protobuf::FieldDescriptor*> field_descriptors,
+//     GetFieldFromProto(
+//         MsgA().GetDescriptor(), "b.c", /*allow_repeated = */true));
+// And if there is an MsgA object obj_a, to get the value of obj_a.b.c(2):
+// int32_t output = GetValueFromRepeatedProto(obj_a, field_descriptors, 2);
+template <typename ValueType, EnableIfProtoType<ValueType> = true>
+ValueType GetValueFromRepeatedProto(
+    const google::protobuf::Message& message,
+    const std::vector<const google::protobuf::FieldDescriptor*>&
+        field_descriptors,
+    int index) {
+  return GetImmediateValueFromRepeatedProto<ValueType>(
+      GetParentMessageFromProto(message, field_descriptors),
+      field_descriptors.back(), index);
+}
+
 }  // namespace wfa_virtual_people
 
 #endif  // WFA_VIRTUAL_PEOPLE_COMMON_FIELD_FILTER_UTILS_FIELD_UTIL_H_

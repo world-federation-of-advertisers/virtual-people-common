@@ -20,6 +20,7 @@
 #include "src/main/proto/wfa/virtual_people/common/field_filter.pb.h"
 #include "wfa/measurement/common/macros.h"
 #include "wfa/virtual_people/common/field_filter/and_filter.h"
+#include "wfa/virtual_people/common/field_filter/any_in_filter.h"
 #include "wfa/virtual_people/common/field_filter/equal_filter.h"
 #include "wfa/virtual_people/common/field_filter/gt_filter.h"
 #include "wfa/virtual_people/common/field_filter/has_filter.h"
@@ -61,8 +62,7 @@ absl::StatusOr<std::unique_ptr<FieldFilter>> FieldFilter::New(
     case FieldFilterProto::TRUE:
       return TrueFilter::New(config);
     case FieldFilterProto::ANY_IN:
-      return absl::UnimplementedError(
-          "ANY_IN field filter is not implemented.");
+      return AnyInFilter::New(descriptor, config);
     default:
       return absl::InvalidArgumentError("Invalid op in field filter.");
   }

@@ -47,6 +47,11 @@ GetFieldFromProto(
     field_descriptors.emplace_back(field_descriptor);
     descriptor = field_descriptor->message_type();
   }
+  if (field_descriptors.empty()) {
+    // This should never happen.
+    return absl::InternalError(absl::StrCat(
+        "Get empty field descriptor from ", full_field_name));
+  }
   for (auto it = field_descriptors.begin(), j = field_descriptors.end() - 1;
        it != j; ++it) {
     if ((*it)->is_repeated()) {
@@ -249,6 +254,117 @@ void SetImmediateValueToProto<const std::string&>(
     const google::protobuf::FieldDescriptor* field_descriptor,
     const std::string& value) {
   message.GetReflection()->SetString(&message, field_descriptor, value);
+}
+
+int GetSizeOfRepeatedProto(
+    const google::protobuf::Message& message,
+    const std::vector<const google::protobuf::FieldDescriptor*>&
+        field_descriptors) {
+  const google::protobuf::Message& parent =
+      GetParentMessageFromProto(message, field_descriptors);
+  return parent.GetReflection()->FieldSize(parent, field_descriptors.back());
+}
+
+template <typename ValueType, EnableIfProtoType<ValueType>>
+ValueType GetImmediateValueFromRepeatedProto(
+    const google::protobuf::Message& message,
+    const google::protobuf::FieldDescriptor* field_descriptor,
+    const int index);
+
+template <>
+int32_t GetImmediateValueFromRepeatedProto<int32_t>(
+    const google::protobuf::Message& message,
+    const google::protobuf::FieldDescriptor* field_descriptor,
+    const int index) {
+  return message.GetReflection()->GetRepeatedInt32(
+      message, field_descriptor, index);
+}
+
+template <>
+int64_t GetImmediateValueFromRepeatedProto<int64_t>(
+    const google::protobuf::Message& message,
+    const google::protobuf::FieldDescriptor* field_descriptor,
+    const int index) {
+  return message.GetReflection()->GetRepeatedInt64(
+      message, field_descriptor, index);
+}
+
+template <>
+uint32_t GetImmediateValueFromRepeatedProto<uint32_t>(
+    const google::protobuf::Message& message,
+    const google::protobuf::FieldDescriptor* field_descriptor,
+    const int index) {
+  return message.GetReflection()->GetRepeatedUInt32(
+      message, field_descriptor, index);
+}
+
+template <>
+uint64_t GetImmediateValueFromRepeatedProto<uint64_t>(
+    const google::protobuf::Message& message,
+    const google::protobuf::FieldDescriptor* field_descriptor,
+    const int index) {
+  return message.GetReflection()->GetRepeatedUInt64(
+      message, field_descriptor, index);
+}
+
+template <>
+float GetImmediateValueFromRepeatedProto<float>(
+    const google::protobuf::Message& message,
+    const google::protobuf::FieldDescriptor* field_descriptor,
+    const int index) {
+  return message.GetReflection()->GetRepeatedFloat(
+      message, field_descriptor, index);
+}
+
+template <>
+double GetImmediateValueFromRepeatedProto<double>(
+    const google::protobuf::Message& message,
+    const google::protobuf::FieldDescriptor* field_descriptor,
+    const int index) {
+  return message.GetReflection()->GetRepeatedDouble(
+      message, field_descriptor, index);
+}
+
+template <>
+bool GetImmediateValueFromRepeatedProto<bool>(
+    const google::protobuf::Message& message,
+    const google::protobuf::FieldDescriptor* field_descriptor,
+    const int index) {
+  return message.GetReflection()->GetRepeatedBool(
+      message, field_descriptor, index);
+}
+
+template <>
+const google::protobuf::EnumValueDescriptor* GetImmediateValueFromRepeatedProto<
+    const google::protobuf::EnumValueDescriptor*>(
+    const google::protobuf::Message& message,
+    const google::protobuf::FieldDescriptor* field_descriptor,
+    const int index) {
+  return message.GetReflection()->GetRepeatedEnum(
+      message, field_descriptor, index);
+}
+
+// The field referred by @field_descriptor must be a string field.
+template <>
+const std::string& GetImmediateValueFromRepeatedProto<const std::string&>(
+    const google::protobuf::Message& message,
+    const google::protobuf::FieldDescriptor* field_descriptor,
+    const int index) {
+  // As long as the @field_descriptor refers to a string field, scratch is not
+  // used.
+  std::string scratch;
+  return message.GetReflection()->GetRepeatedStringReference(
+      message, field_descriptor, index, &scratch);
+}
+
+template <>
+const google::protobuf::Message&
+GetImmediateValueFromRepeatedProto<const google::protobuf::Message&>(
+    const google::protobuf::Message& message,
+    const google::protobuf::FieldDescriptor* field_descriptor,
+    const int index) {
+  return message.GetReflection()->GetRepeatedMessage(
+      message, field_descriptor, index);
 }
 
 }  // namespace wfa_virtual_people
