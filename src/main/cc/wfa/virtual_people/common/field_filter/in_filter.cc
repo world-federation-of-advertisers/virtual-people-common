@@ -59,20 +59,17 @@ class InFilterImpl : public InFilter {
 template <typename ValueType>
 bool InFilterImpl<ValueType>::IsMatch(
     const google::protobuf::Message& message) const {
-  return (
-      parser_.values.find(GetValueFromProto<ValueType>(
-          message, field_descriptors_)) !=
-      parser_.values.end());
+  ValueType value = GetValueFromProto<ValueType>(message, field_descriptors_);
+  return parser_.values.find(value) != parser_.values.end();
 }
 
 template <>
 bool InFilterImpl<const google::protobuf::EnumValueDescriptor*>::IsMatch(
     const google::protobuf::Message& message) const {
-  return (
-      parser_.values.find(
-          GetValueFromProto<const google::protobuf::EnumValueDescriptor*>(
-              message, field_descriptors_)->number()) !=
-      parser_.values.end());
+  const google::protobuf::EnumValueDescriptor* value =
+      GetValueFromProto<const google::protobuf::EnumValueDescriptor*>(
+          message, field_descriptors_);
+  return parser_.values.find(value->number()) != parser_.values.end();
 }
 
 template <typename ValueType>

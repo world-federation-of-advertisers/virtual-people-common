@@ -61,8 +61,9 @@ bool AnyInFilterImpl<ValueType>::IsMatch(
     const google::protobuf::Message& message) const {
   int size = GetSizeOfRepeatedProto(message, field_descriptors_);
   for (int i = 0; i < size; ++i) {
-    if (parser_.values.find(GetValueFromRepeatedProto<ValueType>(
-            message, field_descriptors_, i)) != parser_.values.end()) {
+    ValueType value = GetValueFromRepeatedProto<ValueType>(
+        message, field_descriptors_, i);
+    if (parser_.values.find(value) != parser_.values.end()) {
       return true;
     }
   }
@@ -74,9 +75,10 @@ bool AnyInFilterImpl<const google::protobuf::EnumValueDescriptor*>::IsMatch(
     const google::protobuf::Message& message) const {
   int size = GetSizeOfRepeatedProto(message, field_descriptors_);
   for (int i = 0; i < size; ++i) {
-    if (parser_.values.find(GetValueFromRepeatedProto<
-            const google::protobuf::EnumValueDescriptor*>(
-            message, field_descriptors_, i)->number()) != parser_.values.end()) {
+    const google::protobuf::EnumValueDescriptor* value =
+        GetValueFromRepeatedProto<const google::protobuf::EnumValueDescriptor*>(
+            message, field_descriptors_, i);
+    if (parser_.values.find(value->number()) != parser_.values.end()) {
       return true;
     }
   }
