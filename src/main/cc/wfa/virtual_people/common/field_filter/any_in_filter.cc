@@ -30,6 +30,8 @@
 
 namespace wfa_virtual_people {
 
+namespace {
+
 // The implementation of AnyInFilter based on the type of field represented by
 // @field_descriptors. The supported ValueTypes are
 //   int32_t
@@ -105,6 +107,8 @@ absl::StatusOr<std::unique_ptr<AnyInFilterImpl<
       const google::protobuf::EnumValueDescriptor*>>(
       std::move(field_descriptors), std::move(parser));
 }
+
+}  // namespace
 
 absl::StatusOr<std::unique_ptr<AnyInFilter>> AnyInFilter::New(
     const google::protobuf::Descriptor* descriptor,
