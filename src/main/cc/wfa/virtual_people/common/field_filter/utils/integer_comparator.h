@@ -89,6 +89,8 @@ class IntegerComparator {
   IntegerComparator(const IntegerComparator&) = delete;
   IntegerComparator& operator=(const IntegerComparator&) = delete;
 
+  virtual ~IntegerComparator() = default;
+
   // Compares the field represented by @field_descriptors in @message and
   // @value.
   // Returns GREATER_THAN if the field in @message is greater than @value.
