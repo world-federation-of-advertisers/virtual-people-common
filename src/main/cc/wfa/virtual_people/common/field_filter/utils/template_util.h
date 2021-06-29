@@ -21,6 +21,16 @@
 
 namespace wfa_virtual_people {
 
+// Is*Type are used to check if the given template type is one of the given
+// types.
+// EnableIf*Type are used to restrict the allowed template type.
+// E.g., if we would like to restrict the template type of a template fucntion
+//     template <typename ValueType>
+//     void SomeFunction<ValueType>();
+// to only work for integer types, we can use
+//     template <typename ValueType, IsIntegerType<ValueType> = true>
+//     void SomeFunction<ValueType>();
+
 template <typename ValueType>
 using IsIntegerType = absl::disjunction<
     std::is_same<ValueType, int32_t>,
