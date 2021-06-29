@@ -24,19 +24,19 @@
 
 namespace wfa_virtual_people {
 
-absl::StatusOr<ValuesParser<const google::protobuf::EnumValueDescriptor*>>
-BuildEnumValuesParser(
+absl::StatusOr<ParsedValues<const google::protobuf::EnumValueDescriptor*>>
+ParseEnumValues(
     const google::protobuf::EnumDescriptor* descriptor,
     absl::string_view values_str) {
   std::vector<std::string> values_list = absl::StrSplit(values_str, ',');
-  ValuesParser<const google::protobuf::EnumValueDescriptor*> parser;
+  ParsedValues<const google::protobuf::EnumValueDescriptor*> parsed_values;
   for (const std::string& value_str : values_list) {
     ASSIGN_OR_RETURN(
         const google::protobuf::EnumValueDescriptor* value,
         ConvertToEnum(descriptor, value_str));
-    parser.values.insert(value->number());
+    parsed_values.values.insert(value->number());
   }
-  return parser;
+  return parsed_values;
 }
 
 }  // namespace wfa_virtual_people

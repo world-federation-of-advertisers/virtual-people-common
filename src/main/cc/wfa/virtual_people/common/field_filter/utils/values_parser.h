@@ -27,17 +27,17 @@
 namespace wfa_virtual_people {
 
 template <typename ValueType, EnableIfNonFloatProtoValueType<ValueType> = true>
-struct ValuesParser {
+struct ParsedValues {
   absl::flat_hash_set<ValueType> values;
 };
 
 template <>
-struct ValuesParser<const google::protobuf::EnumValueDescriptor*> {
+struct ParsedValues<const google::protobuf::EnumValueDescriptor*> {
   absl::flat_hash_set<int> values;
 };
 
 template <>
-struct ValuesParser<const std::string&> {
+struct ParsedValues<const std::string&> {
   absl::flat_hash_set<std::string> values;
 };
 
@@ -52,33 +52,33 @@ struct ValuesParser<const std::string&> {
 //   bool
 //   const std::string&
 template <typename ValueType, EnableIfIntBoolStrType<ValueType> = true>
-absl::StatusOr<ValuesParser<ValueType>> BuildValuesParser(
+absl::StatusOr<ParsedValues<ValueType>> ParseValues(
     absl::string_view values_str) {
   std::vector<std::string> values_list = absl::StrSplit(values_str, ',');
-  ValuesParser<ValueType> parser;
+  ParsedValues<ValueType> parsed_values;
   for (const std::string& value_str : values_list) {
     ASSIGN_OR_RETURN(
         ValueType value, ConvertToNumeric<ValueType>(value_str));
-    parser.values.insert(value);
+    parsed_values.values.insert(value);
   }
-  return parser;
+  return parsed_values;
 }
 
 template <> inline
-absl::StatusOr<ValuesParser<const std::string&>>
-BuildValuesParser<const std::string&>(absl::string_view values_str) {
+absl::StatusOr<ParsedValues<const std::string&>>
+ParseValues<const std::string&>(absl::string_view values_str) {
   std::vector<std::string> values_list = absl::StrSplit(values_str, ',');
-  ValuesParser<const std::string&> parser;
-  parser.values = absl::flat_hash_set<std::string>(
+  ParsedValues<const std::string&> parsed_values;
+  parsed_values.values = absl::flat_hash_set<std::string>(
       values_list.begin(), values_list.end());
-  return parser;
+  return parsed_values;
 }
 
 // A helper function to parse and store @values_str as a set of protobuf enums.
 // @values_str is a string represents a list of protobuf enum values (enum
 // number or enum name) separated by comma.
-absl::StatusOr<ValuesParser<const google::protobuf::EnumValueDescriptor*>>
-BuildEnumValuesParser(
+absl::StatusOr<ParsedValues<const google::protobuf::EnumValueDescriptor*>>
+ParseEnumValues(
     const google::protobuf::EnumDescriptor* descriptor,
     absl::string_view values_str);
 

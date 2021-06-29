@@ -46,14 +46,14 @@ class AnyInFilterImpl : public AnyInFilter {
  public:
   explicit AnyInFilterImpl(
       std::vector<const google::protobuf::FieldDescriptor*>&& field_descriptors,
-      ValuesParser<ValueType>&& parser):
+      ParsedValues<ValueType>&& parsed_values):
       AnyInFilter(std::move(field_descriptors)),
-      parser_(std::move(parser)) {}
+      parsed_values_(std::move(parsed_values)) {}
 
   bool IsMatch(const google::protobuf::Message& message) const override;
 
  private:
-  ValuesParser<ValueType> parser_;
+  ParsedValues<ValueType> parsed_values_;
 };
 
 template <typename ValueType>
@@ -63,7 +63,7 @@ bool AnyInFilterImpl<ValueType>::IsMatch(
   for (int i = 0; i < size; ++i) {
     ValueType value = GetValueFromRepeatedProto<ValueType>(
         message, field_descriptors_, i);
-    if (parser_.values.find(value) != parser_.values.end()) {
+    if (parsed_values_.values.find(value) != parsed_values_.values.end()) {
       return true;
     }
   }
@@ -78,7 +78,8 @@ bool AnyInFilterImpl<const google::protobuf::EnumValueDescriptor*>::IsMatch(
     const google::protobuf::EnumValueDescriptor* value =
         GetValueFromRepeatedProto<const google::protobuf::EnumValueDescriptor*>(
             message, field_descriptors_, i);
-    if (parser_.values.find(value->number()) != parser_.values.end()) {
+    if (parsed_values_.values.find(value->number()) !=
+        parsed_values_.values.end()) {
       return true;
     }
   }
@@ -90,10 +91,10 @@ absl::StatusOr<std::unique_ptr<AnyInFilterImpl<ValueType>>> CreateFilter(
     std::vector<const google::protobuf::FieldDescriptor*>&& field_descriptors,
     absl::string_view values_str) {
   ASSIGN_OR_RETURN(
-      ValuesParser<ValueType> parser,
-      BuildValuesParser<ValueType>(values_str));
+      ParsedValues<ValueType> parsed_values,
+      ParseValues<ValueType>(values_str));
   return absl::make_unique<AnyInFilterImpl<ValueType>>(
-      std::move(field_descriptors), std::move(parser));
+      std::move(field_descriptors), std::move(parsed_values));
 }
 
 template <>
@@ -102,12 +103,11 @@ absl::StatusOr<std::unique_ptr<AnyInFilterImpl<
     std::vector<const google::protobuf::FieldDescriptor*>&& field_descriptors,
     absl::string_view values_str) {
   ASSIGN_OR_RETURN(
-      ValuesParser<const google::protobuf::EnumValueDescriptor*> parser,
-      BuildEnumValuesParser(
-          field_descriptors.back()->enum_type(), values_str));
+      ParsedValues<const google::protobuf::EnumValueDescriptor*> parsed_values,
+      ParseEnumValues(field_descriptors.back()->enum_type(), values_str));
   return absl::make_unique<AnyInFilterImpl<
       const google::protobuf::EnumValueDescriptor*>>(
-      std::move(field_descriptors), std::move(parser));
+      std::move(field_descriptors), std::move(parsed_values));
 }
 
 }  // namespace

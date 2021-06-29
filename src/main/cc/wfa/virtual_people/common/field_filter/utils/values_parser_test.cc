@@ -33,88 +33,87 @@ using ::wfa_virtual_people::test::TestProtoB;
 
 TEST(ValuesParserTest, TestInt32) {
   ASSERT_OK_AND_ASSIGN(
-      ValuesParser<int32_t> parser, BuildValuesParser<int32_t>("1,2,1"));
+      ParsedValues<int32_t> parser, ParseValues<int32_t>("1,2,1"));
   EXPECT_THAT(parser.values, UnorderedElementsAre(1, 2));
 }
 
 TEST(ValuesParserTest, TestInt32Invalid) {
   EXPECT_THAT(
-      BuildValuesParser<int32_t>("1,a,1").status(),
+      ParseValues<int32_t>("1,a,1").status(),
       StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 TEST(ValuesParserTest, TestInt64) {
   ASSERT_OK_AND_ASSIGN(
-      ValuesParser<int64_t> parser, BuildValuesParser<int64_t>("1,2,1"));
+      ParsedValues<int64_t> parser, ParseValues<int64_t>("1,2,1"));
   EXPECT_THAT(parser.values, UnorderedElementsAre(1, 2));
 }
 
 TEST(ValuesParserTest, TestInt64Invalid) {
   EXPECT_THAT(
-      BuildValuesParser<int64_t>("1,a,1").status(),
+      ParseValues<int64_t>("1,a,1").status(),
       StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 TEST(ValuesParserTest, TestUInt32) {
   ASSERT_OK_AND_ASSIGN(
-      ValuesParser<uint32_t> parser, BuildValuesParser<uint32_t>("1,2,1"));
+      ParsedValues<uint32_t> parser, ParseValues<uint32_t>("1,2,1"));
   EXPECT_THAT(parser.values, UnorderedElementsAre(1, 2));
 }
 
 TEST(ValuesParserTest, TestUInt32Invalid) {
   EXPECT_THAT(
-      BuildValuesParser<uint32_t>("1,a,1").status(),
+      ParseValues<uint32_t>("1,a,1").status(),
       StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 TEST(ValuesParserTest, TestUInt64) {
   ASSERT_OK_AND_ASSIGN(
-      ValuesParser<uint64_t> parser, BuildValuesParser<uint64_t>("1,2,1"));
+      ParsedValues<uint64_t> parser, ParseValues<uint64_t>("1,2,1"));
   EXPECT_THAT(parser.values, UnorderedElementsAre(1, 2));
 }
 
 TEST(ValuesParserTest, TestUInt64Invalid) {
   EXPECT_THAT(
-      BuildValuesParser<uint64_t>("1,a,1").status(),
+      ParseValues<uint64_t>("1,a,1").status(),
       StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 TEST(ValuesParserTest, TestBool) {
   ASSERT_OK_AND_ASSIGN(
-      ValuesParser<bool> parser, BuildValuesParser<bool>("true,false,true"));
+      ParsedValues<bool> parser, ParseValues<bool>("true,false,true"));
   EXPECT_THAT(parser.values, UnorderedElementsAre(true, false));
 }
 
 TEST(ValuesParserTest, TestBoolInvalid) {
   EXPECT_THAT(
-      BuildValuesParser<bool>("true,a,false").status(),
+      ParseValues<bool>("true,a,false").status(),
       StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 TEST(ValuesParserTest, TestString) {
   ASSERT_OK_AND_ASSIGN(
-      ValuesParser<const std::string&> parser,
-      BuildValuesParser<const std::string&>("a,b,a"));
+      ParsedValues<const std::string&> parser,
+      ParseValues<const std::string&>("a,b,a"));
   EXPECT_THAT(parser.values, UnorderedElementsAre("a", "b"));
 }
 
 TEST(ValuesParserTest, TestEnum) {
   ASSERT_OK_AND_ASSIGN(
-      ValuesParser<const google::protobuf::EnumValueDescriptor*> parser_1,
-      BuildEnumValuesParser(TestProtoB::TestEnum_descriptor(), "1,2,1"));
+      ParsedValues<const google::protobuf::EnumValueDescriptor*> parser_1,
+      ParseEnumValues(TestProtoB::TestEnum_descriptor(), "1,2,1"));
   EXPECT_THAT(parser_1.values, UnorderedElementsAre(1, 2));
 
   ASSERT_OK_AND_ASSIGN(
-      ValuesParser<const google::protobuf::EnumValueDescriptor*> parser_2,
-      BuildEnumValuesParser(TestProtoB::TestEnum_descriptor(),
-                            "TEST_ENUM_1,TEST_ENUM_2,TEST_ENUM_1"));
+      ParsedValues<const google::protobuf::EnumValueDescriptor*> parser_2,
+      ParseEnumValues(TestProtoB::TestEnum_descriptor(),
+                      "TEST_ENUM_1,TEST_ENUM_2,TEST_ENUM_1"));
   EXPECT_THAT(parser_2.values, UnorderedElementsAre(1, 2));
 }
 
 TEST(ValuesParserTest, TestEnumInvalid) {
   EXPECT_THAT(
-      BuildEnumValuesParser(
-          TestProtoB::TestEnum_descriptor(), "1,a,1").status(),
+      ParseEnumValues(TestProtoB::TestEnum_descriptor(), "1,a,1").status(),
       StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
