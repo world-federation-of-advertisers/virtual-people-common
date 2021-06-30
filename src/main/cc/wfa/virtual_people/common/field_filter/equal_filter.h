@@ -44,6 +44,8 @@ class EqualFilter : public FieldFilter {
   EqualFilter(const EqualFilter&) = delete;
   EqualFilter& operator=(const EqualFilter&) = delete;
 
+  virtual ~EqualFilter() = default;
+
   // Returns true when the field represented by @config.name in @message equals
   // to @config.value. Otherwise, returns false.
   virtual bool IsMatch(
