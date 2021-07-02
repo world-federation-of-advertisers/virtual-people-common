@@ -35,7 +35,7 @@ namespace wfa_virtual_people {
 template <typename ValueType, EnableIfNumericType<ValueType> = true>
 absl::StatusOr<ValueType> ConvertToNumeric(absl::string_view input);
 
-// Convert the string @input to a enum value descriptor.
+// Convert the string @input to an enum value descriptor.
 // The enum is referred by @descriptor.
 absl::StatusOr<const google::protobuf::EnumValueDescriptor*> ConvertToEnum(
     const google::protobuf::EnumDescriptor* descriptor,

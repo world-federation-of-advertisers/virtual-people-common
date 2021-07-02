@@ -186,8 +186,6 @@ void SetValueToProto(
 
 // Gets the size of the repeated field represented by @field_descriptors in
 // @message.
-//
-// @index must be in the boundary of the repeated field.
 int GetSizeOfRepeatedProto(
     const google::protobuf::Message& message,
     const std::vector<const google::protobuf::FieldDescriptor*>&
@@ -236,6 +234,17 @@ ValueType GetImmediateValueFromRepeatedProto(
 //         MsgA().GetDescriptor(), "b.c", /*allow_repeated = */true));
 // And if there is an MsgA object obj_a, to get the value of obj_a.b.c(2):
 // int32_t output = GetValueFromRepeatedProto(obj_a, field_descriptors, 2);
+//
+// To iterate through all the values of MsgA.b.c in obj_a:
+// ASSIGN_OR_RETURN(
+//     std::vector<const google::protobuf::FieldDescriptor*> field_descriptors,
+//     GetFieldFromProto(
+//         MsgA().GetDescriptor(), "b.c", /*allow_repeated = */true));
+// int size = GetSizeOfRepeatedProto(MsgA().GetDescriptor(), field_descriptors);
+// for (int i = 0; i < size; ++i) {
+//   int32_t output = GetValueFromRepeatedProto(obj_a, field_descriptors, i);
+//   // Do something with @output.
+// }
 template <typename ValueType, EnableIfProtoType<ValueType> = true>
 ValueType GetValueFromRepeatedProto(
     const google::protobuf::Message& message,
