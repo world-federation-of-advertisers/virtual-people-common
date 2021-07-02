@@ -98,6 +98,23 @@ TEST(ValuesParserTest, TestString) {
   EXPECT_THAT(parser.values, UnorderedElementsAre("a", "b"));
 }
 
+TEST(ValuesParserTest, TestEmptyString) {
+  ASSERT_OK_AND_ASSIGN(
+      ParsedValues<const std::string&> parser_1,
+      ParseValues<const std::string&>(""));
+  EXPECT_THAT(parser_1.values, UnorderedElementsAre(""));
+
+  ASSERT_OK_AND_ASSIGN(
+      ParsedValues<const std::string&> parser_2,
+      ParseValues<const std::string&>(",a"));
+  EXPECT_THAT(parser_2.values, UnorderedElementsAre("", "a"));
+
+  ASSERT_OK_AND_ASSIGN(
+      ParsedValues<const std::string&> parser_3,
+      ParseValues<const std::string&>("\"a,b,a"));
+  EXPECT_THAT(parser_3.values, UnorderedElementsAre("\"a", "a", "b"));
+}
+
 TEST(ValuesParserTest, TestEnum) {
   ASSERT_OK_AND_ASSIGN(
       ParsedValues<const google::protobuf::EnumValueDescriptor*> parser_1,
@@ -109,6 +126,12 @@ TEST(ValuesParserTest, TestEnum) {
       ParseEnumValues(TestProtoB::TestEnum_descriptor(),
                       "TEST_ENUM_1,TEST_ENUM_2,TEST_ENUM_1"));
   EXPECT_THAT(parser_2.values, UnorderedElementsAre(1, 2));
+
+  ASSERT_OK_AND_ASSIGN(
+      ParsedValues<const google::protobuf::EnumValueDescriptor*> parser_3,
+      ParseEnumValues(TestProtoB::TestEnum_descriptor(),
+                      "1,TEST_ENUM_2,TEST_ENUM_1,2"));
+  EXPECT_THAT(parser_3.values, UnorderedElementsAre(1, 2));
 }
 
 TEST(ValuesParserTest, TestEnumInvalid) {
