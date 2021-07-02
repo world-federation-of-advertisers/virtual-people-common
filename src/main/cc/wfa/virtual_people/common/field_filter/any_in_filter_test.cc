@@ -322,6 +322,38 @@ TEST(AnyInFilterTest, TestEnumNumber) {
   EXPECT_FALSE(field_filter->IsMatch(test_proto_4));
 }
 
+TEST(AnyInFilterTest, TestMixedEnumNameNumber) {
+  ASSERT_OK_AND_ASSIGN(
+      std::unique_ptr<FieldFilter> field_filter,
+      FilterFromProtoText(R"pb(
+          name: "a.b.enum_values"
+          op: ANY_IN
+          value: "TEST_ENUM_1,2,1,TEST_ENUM_2"
+      )pb"));
+
+  TestProto test_proto_1;
+  test_proto_1.mutable_a()->mutable_b()->add_enum_values(
+      TestProtoB::TEST_ENUM_1);
+  test_proto_1.mutable_a()->mutable_b()->add_enum_values(
+      TestProtoB::TEST_ENUM_3);
+  EXPECT_TRUE(field_filter->IsMatch(test_proto_1));
+
+  TestProto test_proto_2;
+  test_proto_2.mutable_a()->mutable_b()->add_enum_values(
+      TestProtoB::TEST_ENUM_2);
+  test_proto_2.mutable_a()->mutable_b()->add_enum_values(
+      TestProtoB::TEST_ENUM_3);
+  EXPECT_TRUE(field_filter->IsMatch(test_proto_2));
+
+  TestProto test_proto_3;
+  test_proto_3.mutable_a()->mutable_b()->add_enum_values(
+      TestProtoB::TEST_ENUM_3);
+  EXPECT_FALSE(field_filter->IsMatch(test_proto_3));
+
+  TestProto test_proto_4;
+  EXPECT_FALSE(field_filter->IsMatch(test_proto_4));
+}
+
 TEST(AnyInFilterTest, TestEnumInvalidValue) {
   EXPECT_THAT(
       FilterFromProtoText(R"pb(
@@ -357,6 +389,50 @@ TEST(AnyInFilterTest, TestString) {
 
   TestProto test_proto_4;
   EXPECT_FALSE(field_filter->IsMatch(test_proto_4));
+}
+
+TEST(AnyInFilterTest, TestEmptyString) {
+  ASSERT_OK_AND_ASSIGN(
+      std::unique_ptr<FieldFilter> field_filter,
+      FilterFromProtoText(R"pb(
+          name: "a.b.string_values"
+          op: ANY_IN
+          value: ""
+      )pb"));
+
+  TestProto test_proto_1;
+  test_proto_1.mutable_a()->mutable_b()->add_string_values("");
+  test_proto_1.mutable_a()->mutable_b()->add_string_values("a");
+  EXPECT_TRUE(field_filter->IsMatch(test_proto_1));
+
+  TestProto test_proto_2;
+  test_proto_2.mutable_a()->mutable_b()->add_string_values("a");
+  EXPECT_FALSE(field_filter->IsMatch(test_proto_2));
+
+  TestProto test_proto_3;
+  EXPECT_FALSE(field_filter->IsMatch(test_proto_3));
+}
+
+TEST(AnyInFilterTest, TestQuoteString) {
+  ASSERT_OK_AND_ASSIGN(
+      std::unique_ptr<FieldFilter> field_filter,
+      FilterFromProtoText(R"pb(
+          name: "a.b.string_values"
+          op: ANY_IN
+          value: "\""
+      )pb"));
+
+  TestProto test_proto_1;
+  test_proto_1.mutable_a()->mutable_b()->add_string_values("\"");
+  test_proto_1.mutable_a()->mutable_b()->add_string_values("a");
+  EXPECT_TRUE(field_filter->IsMatch(test_proto_1));
+
+  TestProto test_proto_2;
+  test_proto_2.mutable_a()->mutable_b()->add_string_values("a");
+  EXPECT_FALSE(field_filter->IsMatch(test_proto_2));
+
+  TestProto test_proto_3;
+  EXPECT_FALSE(field_filter->IsMatch(test_proto_3));
 }
 
 }  // namespace

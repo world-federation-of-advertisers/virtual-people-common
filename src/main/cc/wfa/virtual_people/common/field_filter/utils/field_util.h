@@ -139,6 +139,8 @@ ValueType GetValueFromProto(
     const google::protobuf::Message& message,
     const std::vector<const google::protobuf::FieldDescriptor*>&
         field_descriptors) {
+  // TODO(@tcsnfkx): Handles the case that the field is not set rather than
+  //                 returning the default value.
   return GetImmediateValueFromProto<ValueType>(
       GetParentMessageFromProto(message, field_descriptors),
       field_descriptors.back());
