@@ -231,7 +231,7 @@ ValueType GetImmediateValueFromRepeatedProto(
 // ASSIGN_OR_RETURN(
 //     std::vector<const google::protobuf::FieldDescriptor*> field_descriptors,
 //     GetFieldFromProto(
-//         MsgA().GetDescriptor(), "b.c", /*allow_repeated = */true));
+//         MsgA().GetDescriptor(), "b.c", /*allow_repeated=*/true));
 // And if there is an MsgA object obj_a, to get the value of obj_a.b.c(2):
 // int32_t output = GetValueFromRepeatedProto(obj_a, field_descriptors, 2);
 //
@@ -239,7 +239,7 @@ ValueType GetImmediateValueFromRepeatedProto(
 // ASSIGN_OR_RETURN(
 //     std::vector<const google::protobuf::FieldDescriptor*> field_descriptors,
 //     GetFieldFromProto(
-//         MsgA().GetDescriptor(), "b.c", /*allow_repeated = */true));
+//         MsgA().GetDescriptor(), "b.c", /*allow_repeated=*/true));
 // int size = GetSizeOfRepeatedProto(MsgA().GetDescriptor(), field_descriptors);
 // for (int i = 0; i < size; ++i) {
 //   int32_t output = GetValueFromRepeatedProto(obj_a, field_descriptors, i);
