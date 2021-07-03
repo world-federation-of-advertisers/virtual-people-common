@@ -20,10 +20,11 @@
 #include "absl/strings/str_cat.h"
 #include "absl/strings/string_view.h"
 #include "google/protobuf/descriptor.h"
+#include "wfa/virtual_people/common/field_filter/utils/template_util.h"
 
 namespace wfa_virtual_people {
 
-template <typename ValueType>
+template <typename ValueType, EnableIfNumericType<ValueType>>
 absl::StatusOr<ValueType> ConvertToNumeric(absl::string_view input);
 
 template <>
@@ -97,18 +98,17 @@ absl::StatusOr<bool> ConvertToNumeric<bool>(absl::string_view input) {
 }
 
 absl::StatusOr<const google::protobuf::EnumValueDescriptor*> ConvertToEnum(
-    const google::protobuf::FieldDescriptor* field_descriptor,
+    const google::protobuf::EnumDescriptor* descriptor,
     absl::string_view input) {
   // Try to get the enum by enum name.
   const google::protobuf::EnumValueDescriptor* enum_value_descriptor =
-      field_descriptor->enum_type()->FindValueByName(std::string(input));
+      descriptor->FindValueByName(std::string(input));
 
   if (enum_value_descriptor == nullptr) {
     // Did not find the enum by enum name. Try to find the enum by enum number.
     int enum_number;
     if (absl::SimpleAtoi(input, &enum_number)) {
-      enum_value_descriptor =
-          field_descriptor->enum_type()->FindValueByNumber(enum_number);
+      enum_value_descriptor = descriptor->FindValueByNumber(enum_number);
     }
   }
 

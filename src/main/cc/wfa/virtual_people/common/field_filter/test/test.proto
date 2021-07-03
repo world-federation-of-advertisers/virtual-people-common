@@ -34,6 +34,7 @@ message TestProtoB {
     INVALID = 0;
     TEST_ENUM_1 = 1;
     TEST_ENUM_2 = 2;
+    TEST_ENUM_3 = 3;
   }
   optional int32 int32_value = 1;
   optional int64 int64_value = 2;
@@ -46,4 +47,12 @@ message TestProtoB {
   optional string string_value = 9;
 
   repeated int32 int32_values = 10;
+  repeated int64 int64_values = 11;
+  repeated uint32 uint32_values = 12;
+  repeated uint64 uint64_values = 13;
+  repeated float float_values = 14;
+  repeated double double_values = 15;
+  repeated bool bool_values = 16;
+  repeated TestEnum enum_values = 17;
+  repeated string string_values = 18;
 }

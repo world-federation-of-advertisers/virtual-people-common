@@ -144,7 +144,8 @@ absl::StatusOr<std::unique_ptr<EqualFilter>> EqualFilter::New(
     case google::protobuf::FieldDescriptor::CppType::CPPTYPE_ENUM:
       {
         absl::StatusOr<const google::protobuf::EnumValueDescriptor*> value =
-            ConvertToEnum(field_descriptors.back(), config.value());
+            ConvertToEnum(
+                field_descriptors.back()->enum_type(), config.value());
         if (!value.ok()) {
           return absl::InvalidArgumentError(absl::StrCat(
               "Value type does not match name. Input FieldFilterProto: ",

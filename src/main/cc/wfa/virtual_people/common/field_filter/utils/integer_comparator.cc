@@ -22,11 +22,12 @@
 #include "google/protobuf/message.h"
 #include "wfa/measurement/common/macros.h"
 #include "wfa/virtual_people/common/field_filter/utils/field_util.h"
+#include "wfa/virtual_people/common/field_filter/utils/template_util.h"
 #include "wfa/virtual_people/common/field_filter/utils/type_convert_util.h"
 
 namespace wfa_virtual_people {
 
-template <typename IntegerType>
+template <typename IntegerType, EnableIfIntegerType<IntegerType> = true>
 class IntegerComparatorImpl : public IntegerComparator {
  public:
   IntegerComparatorImpl(
@@ -51,7 +52,7 @@ class IntegerComparatorImpl : public IntegerComparator {
   IntegerType value_;
 };
 
-template <typename IntegerType>
+template <typename IntegerType, EnableIfIntegerType<IntegerType> = true>
 absl::StatusOr<std::unique_ptr<IntegerComparatorImpl<IntegerType>>>
 CreateComparator(
     std::vector<const google::protobuf::FieldDescriptor*>&& field_descriptors,

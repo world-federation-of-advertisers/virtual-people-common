@@ -20,6 +20,7 @@
 #include "absl/strings/numbers.h"
 #include "absl/strings/string_view.h"
 #include "google/protobuf/descriptor.h"
+#include "wfa/virtual_people/common/field_filter/utils/template_util.h"
 
 namespace wfa_virtual_people {
 
@@ -31,13 +32,13 @@ namespace wfa_virtual_people {
 //   float
 //   double
 //   bool
-template <typename ValueType>
+template <typename ValueType, EnableIfNumericType<ValueType> = true>
 absl::StatusOr<ValueType> ConvertToNumeric(absl::string_view input);
 
-// Convert the string @input to a enum type descriptor.
-// The enum is referred by @field_descriptor.
+// Convert the string @input to an enum value descriptor.
+// The enum is referred by @descriptor.
 absl::StatusOr<const google::protobuf::EnumValueDescriptor*> ConvertToEnum(
-    const google::protobuf::FieldDescriptor* field_descriptor,
+    const google::protobuf::EnumDescriptor* descriptor,
     absl::string_view input);
 
 }  // namespace wfa_virtual_people
