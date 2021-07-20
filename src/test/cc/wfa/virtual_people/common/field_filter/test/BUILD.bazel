@@ -1,7 +1,7 @@
 load("@rules_cc//cc:defs.bzl", "cc_proto_library")
 load("@rules_proto//proto:defs.bzl", "proto_library")
 
-package(default_visibility = ["//src/main/cc/wfa/virtual_people/common/field_filter:__subpackages__"])
+package(default_visibility = ["//src/test/cc/wfa/virtual_people/common/field_filter:__subpackages__"])
 
 proto_library(
     name = "test_proto",

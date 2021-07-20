@@ -21,9 +21,9 @@
 #include "google/protobuf/message.h"
 #include "google/protobuf/text_format.h"
 #include "gtest/gtest.h"
-#include "src/main/cc/wfa/virtual_people/common/field_filter/test/test.pb.h"
 #include "src/test/cc/testutil/matchers.h"
 #include "src/test/cc/testutil/status_macros.h"
+#include "src/test/cc/wfa/virtual_people/common/field_filter/test/test.pb.h"
 
 namespace wfa_virtual_people {
 namespace {

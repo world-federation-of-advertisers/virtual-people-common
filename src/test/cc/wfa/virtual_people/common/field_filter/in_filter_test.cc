@@ -17,10 +17,10 @@
 #include "gmock/gmock.h"
 #include "google/protobuf/text_format.h"
 #include "gtest/gtest.h"
-#include "src/main/cc/wfa/virtual_people/common/field_filter/test/test.pb.h"
 #include "src/main/proto/wfa/virtual_people/common/field_filter.pb.h"
 #include "src/test/cc/testutil/matchers.h"
 #include "src/test/cc/testutil/status_macros.h"
+#include "src/test/cc/wfa/virtual_people/common/field_filter/test/test.pb.h"
 #include "wfa/virtual_people/common/field_filter/field_filter.h"
 
 namespace wfa_virtual_people {

@@ -18,9 +18,9 @@
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include "google/protobuf/descriptor.h"
-#include "src/main/cc/wfa/virtual_people/common/field_filter/test/test.pb.h"
 #include "src/test/cc/testutil/matchers.h"
 #include "src/test/cc/testutil/status_macros.h"
+#include "src/test/cc/wfa/virtual_people/common/field_filter/test/test.pb.h"
 #include "wfa/virtual_people/common/field_filter/utils/field_util.h"
 
 namespace wfa_virtual_people {

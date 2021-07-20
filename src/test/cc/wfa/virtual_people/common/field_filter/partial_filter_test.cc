@@ -17,10 +17,10 @@
 #include "gmock/gmock.h"
 #include "google/protobuf/text_format.h"
 #include "gtest/gtest.h"
-#include "src/main/cc/wfa/virtual_people/common/field_filter/test/test.pb.h"
 #include "src/main/proto/wfa/virtual_people/common/field_filter.pb.h"
 #include "src/test/cc/testutil/matchers.h"
 #include "src/test/cc/testutil/status_macros.h"
+#include "src/test/cc/wfa/virtual_people/common/field_filter/test/test.pb.h"
 #include "wfa/virtual_people/common/field_filter/field_filter.h"
 
 namespace wfa_virtual_people {
@@ -29,26 +29,85 @@ namespace {
 using ::wfa::StatusIs;
 using ::wfa_virtual_people::test::TestProto;
 
-TEST(AndFilterTest, TestNoSubFilters) {
+TEST(PartialFilterTest, TestNoName) {
   FieldFilterProto field_filter_proto;
-  field_filter_proto.set_op(FieldFilterProto::AND);
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
+      op: PARTIAL
+      sub_filters {
+        name: "int32_value"
+        op: EQUAL
+        value: "1"
+      }
+      sub_filters {
+        name: "int64_value"
+        op: EQUAL
+        value: "1"
+      }
+  )pb", &field_filter_proto));
   EXPECT_THAT(
       FieldFilter::New(TestProto().GetDescriptor(),
                        field_filter_proto).status(),
       StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
-TEST(AndFilterTest, TestMatch) {
+TEST(PartialFilterTest, TestDisallowedRepeated) {
   FieldFilterProto field_filter_proto;
   ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
-      op: AND
+      name: "a.b"
+      op: PARTIAL
       sub_filters {
-        name: "a.b.int32_value"
+        name: "int32_values"
+        op: EQUAL
+        value: "1"
+      }
+  )pb", &field_filter_proto));
+  EXPECT_THAT(
+      FieldFilter::New(TestProto().GetDescriptor(),
+                       field_filter_proto).status(),
+      StatusIs(absl::StatusCode::kInvalidArgument, ""));
+}
+
+TEST(PartialFilterTest, TestDisallowedRepeatedInThePath) {
+  FieldFilterProto field_filter_proto;
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
+      name: "repeated_proto_a.b"
+      op: PARTIAL
+      sub_filters {
+        name: "int32_value"
+        op: EQUAL
+        value: "1"
+      }
+  )pb", &field_filter_proto));
+  EXPECT_THAT(
+      FieldFilter::New(TestProto().GetDescriptor(),
+                       field_filter_proto).status(),
+      StatusIs(absl::StatusCode::kInvalidArgument, ""));
+}
+
+TEST(PartialFilterTest, TestNoSubFilters) {
+  FieldFilterProto field_filter_proto;
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
+      name: "a.b"
+      op: PARTIAL
+  )pb", &field_filter_proto));
+  EXPECT_THAT(
+      FieldFilter::New(TestProto().GetDescriptor(),
+                       field_filter_proto).status(),
+      StatusIs(absl::StatusCode::kInvalidArgument, ""));
+}
+
+TEST(PartialFilterTest, TestMatch) {
+  FieldFilterProto field_filter_proto;
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
+      name: "a.b"
+      op: PARTIAL
+      sub_filters {
+        name: "int32_value"
         op: EQUAL
         value: "1"
       }
       sub_filters {
-        name: "a.b.int64_value"
+        name: "int64_value"
         op: EQUAL
         value: "1"
       }
@@ -69,17 +128,18 @@ TEST(AndFilterTest, TestMatch) {
   EXPECT_TRUE(field_filter->IsMatch(test_proto));
 }
 
-TEST(AndFilterTest, TestNotMatch) {
+TEST(PartialFilterTest, TestNotMatch) {
   FieldFilterProto field_filter_proto;
   ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
-      op: AND
+      name: "a.b"
+      op: PARTIAL
       sub_filters {
-        name: "a.b.int32_value"
+        name: "int32_value"
         op: EQUAL
         value: "1"
       }
       sub_filters {
-        name: "a.b.int64_value"
+        name: "int64_value"
         op: EQUAL
         value: "1"
       }
