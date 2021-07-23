@@ -2,7 +2,7 @@ load("@rules_cc//cc:defs.bzl", "cc_library")
 
 package(default_visibility = [
     "//src/main/cc/wfa/virtual_people/common/field_filter:__subpackages__",
-    "//src/test/cc/wfa/virtual_people/common/field_filter:__subpackages__"
+    "//src/test/cc/wfa/virtual_people/common/field_filter:__subpackages__",
 ])
 
 _INCLUDE_PREFIX = "/src/main/cc"
@@ -10,8 +10,8 @@ _INCLUDE_PREFIX = "/src/main/cc"
 cc_library(
     name = "template_util",
     hdrs = ["template_util.h"],
-    visibility = ["//visibility:public"],
     strip_include_prefix = _INCLUDE_PREFIX,
+    visibility = ["//visibility:public"],
     deps = [
         "@com_google_absl//absl/meta:type_traits",
         "@com_google_protobuf//:protobuf",
@@ -22,8 +22,8 @@ cc_library(
     name = "field_util",
     srcs = ["field_util.cc"],
     hdrs = ["field_util.h"],
-    visibility = ["//visibility:public"],
     strip_include_prefix = _INCLUDE_PREFIX,
+    visibility = ["//visibility:public"],
     deps = [
         ":template_util",
         "@com_google_absl//absl/memory",
