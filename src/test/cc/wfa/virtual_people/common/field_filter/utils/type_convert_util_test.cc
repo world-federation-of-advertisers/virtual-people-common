@@ -36,9 +36,8 @@ TEST(ConvertToNumericTest, TestInt32) {
 }
 
 TEST(ConvertToNumericTest, TestInt32Invalid) {
-  EXPECT_THAT(
-      ConvertToNumeric<int32_t>("a").status(),
-      StatusIs(absl::StatusCode::kInvalidArgument, ""));
+  EXPECT_THAT(ConvertToNumeric<int32_t>("a").status(),
+              StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 TEST(ConvertToNumericTest, TestInt64) {
@@ -46,9 +45,8 @@ TEST(ConvertToNumericTest, TestInt64) {
 }
 
 TEST(ConvertToNumericTest, TestInt64Invalid) {
-  EXPECT_THAT(
-      ConvertToNumeric<int64_t>("a").status(),
-      StatusIs(absl::StatusCode::kInvalidArgument, ""));
+  EXPECT_THAT(ConvertToNumeric<int64_t>("a").status(),
+              StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 TEST(ConvertToNumericTest, TestUInt32) {
@@ -56,9 +54,8 @@ TEST(ConvertToNumericTest, TestUInt32) {
 }
 
 TEST(ConvertToNumericTest, TestUInt32Invalid) {
-  EXPECT_THAT(
-      ConvertToNumeric<uint32_t>("a").status(),
-      StatusIs(absl::StatusCode::kInvalidArgument, ""));
+  EXPECT_THAT(ConvertToNumeric<uint32_t>("a").status(),
+              StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 TEST(ConvertToNumericTest, TestUInt64) {
@@ -66,9 +63,8 @@ TEST(ConvertToNumericTest, TestUInt64) {
 }
 
 TEST(ConvertToNumericTest, TestUInt64Invalid) {
-  EXPECT_THAT(
-      ConvertToNumeric<uint64_t>("a").status(),
-      StatusIs(absl::StatusCode::kInvalidArgument, ""));
+  EXPECT_THAT(ConvertToNumeric<uint64_t>("a").status(),
+              StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 TEST(ConvertToNumericTest, TestFloat) {
@@ -76,9 +72,8 @@ TEST(ConvertToNumericTest, TestFloat) {
 }
 
 TEST(ConvertToNumericTest, TestFloatInvalid) {
-  EXPECT_THAT(
-      ConvertToNumeric<float>("a").status(),
-      StatusIs(absl::StatusCode::kInvalidArgument, ""));
+  EXPECT_THAT(ConvertToNumeric<float>("a").status(),
+              StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 TEST(ConvertToNumericTest, TestDouble) {
@@ -86,9 +81,8 @@ TEST(ConvertToNumericTest, TestDouble) {
 }
 
 TEST(ConvertToNumericTest, TestDoubleInvalid) {
-  EXPECT_THAT(
-      ConvertToNumeric<double>("a").status(),
-      StatusIs(absl::StatusCode::kInvalidArgument, ""));
+  EXPECT_THAT(ConvertToNumeric<double>("a").status(),
+              StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 TEST(ConvertToNumericTest, TestBool) {
@@ -104,9 +98,8 @@ TEST(ConvertToNumericTest, TestBool) {
 }
 
 TEST(ConvertToNumericTest, TestBoolInvalid) {
-  EXPECT_THAT(
-      ConvertToNumeric<bool>("a").status(),
-      StatusIs(absl::StatusCode::kInvalidArgument, ""));
+  EXPECT_THAT(ConvertToNumeric<bool>("a").status(),
+              StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 TEST(ConvertToEnumTest, TestEnumName) {
@@ -128,9 +121,8 @@ TEST(ConvertToEnumTest, TestEnumNumber) {
 TEST(ConvertToEnumTest, TestEnumInvalid) {
   const google::protobuf::FieldDescriptor* field_descriptor =
       TestProtoB().GetDescriptor()->FindFieldByName("enum_value");
-  EXPECT_THAT(
-      ConvertToEnum(field_descriptor->enum_type(), "a").status(),
-      StatusIs(absl::StatusCode::kInvalidArgument, ""));
+  EXPECT_THAT(ConvertToEnum(field_descriptor->enum_type(), "a").status(),
+              StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 }  // namespace

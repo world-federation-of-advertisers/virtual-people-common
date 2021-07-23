@@ -31,183 +31,153 @@ using ::wfa_virtual_people::test::TestProto;
 
 TEST(ConvertMessageToFilterTest, FloatNotSupported) {
   TestProto filter_message;
-  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"PROTO(
-      a {
-        b {
-          float_value: 1.0
-        }
-      }
-  )PROTO", &filter_message));
-  EXPECT_THAT(
-      ConvertMessageToFilter(filter_message).status(),
-      StatusIs(absl::StatusCode::kInvalidArgument, ""));
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(
+      R"pb(
+        a { b { float_value: 1.0 } }
+      )pb",
+      &filter_message));
+  EXPECT_THAT(ConvertMessageToFilter(filter_message).status(),
+              StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 TEST(ConvertMessageToFilterTest, DoubleNotSupported) {
   TestProto filter_message;
-  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"PROTO(
-      a {
-        b {
-          double_value: 1.0
-        }
-      }
-  )PROTO", &filter_message));
-  EXPECT_THAT(
-      ConvertMessageToFilter(filter_message).status(),
-      StatusIs(absl::StatusCode::kInvalidArgument, ""));
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(
+      R"pb(
+        a { b { double_value: 1.0 } }
+      )pb",
+      &filter_message));
+  EXPECT_THAT(ConvertMessageToFilter(filter_message).status(),
+              StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 TEST(ConvertMessageToFilterTest, RepeatedNotSupported) {
   TestProto filter_message;
-  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"PROTO(
-      int32_values: 1
-  )PROTO", &filter_message));
-  EXPECT_THAT(
-      ConvertMessageToFilter(filter_message).status(),
-      StatusIs(absl::StatusCode::kInvalidArgument, ""));
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
+                                                              int32_values: 1
+                                                            )pb",
+                                                            &filter_message));
+  EXPECT_THAT(ConvertMessageToFilter(filter_message).status(),
+              StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 TEST(ConvertMessageToFilterTest, Successful) {
   TestProto filter_message;
-  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"PROTO(
-      a {
-        b {
-          int32_value: 1
-          int64_value: 1
-          uint32_value: 1
-          uint64_value: 1
-          enum_value: TEST_ENUM_1
-          string_value: "string1"
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(
+      R"pb(
+        a {
+          b {
+            int32_value: 1
+            int64_value: 1
+            uint32_value: 1
+            uint64_value: 1
+            enum_value: TEST_ENUM_1
+            string_value: "string1"
+          }
         }
-      }
-  )PROTO", &filter_message));
-  ASSERT_OK_AND_ASSIGN(
-      FieldFilterProto filter, ConvertMessageToFilter(filter_message));
+      )pb",
+      &filter_message));
+  ASSERT_OK_AND_ASSIGN(FieldFilterProto filter,
+                       ConvertMessageToFilter(filter_message));
 
   FieldFilterProto expected_filter;
-  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"PROTO(
-      op: AND
-      sub_filters {
-        op: PARTIAL
-        name: "a"
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(
+      R"pb(
+        op: AND
         sub_filters {
-          op: AND
+          op: PARTIAL
+          name: "a"
           sub_filters {
-            op: PARTIAL
-            name: "b"
+            op: AND
             sub_filters {
-              op: AND
+              op: PARTIAL
+              name: "b"
               sub_filters {
-                op: EQUAL
-                name: "int32_value"
-                value: "1"
-              }
-              sub_filters {
-                op: EQUAL
-                name: "int64_value"
-                value: "1"
-              }
-              sub_filters {
-                op: EQUAL
-                name: "uint32_value"
-                value: "1"
-              }
-              sub_filters {
-                op: EQUAL
-                name: "uint64_value"
-                value: "1"
-              }
-              sub_filters {
-                op: EQUAL
-                name: "enum_value"
-                value: "TEST_ENUM_1"
-              }
-              sub_filters {
-                op: EQUAL
-                name: "string_value"
-                value: "string1"
+                op: AND
+                sub_filters { op: EQUAL name: "int32_value" value: "1" }
+                sub_filters { op: EQUAL name: "int64_value" value: "1" }
+                sub_filters { op: EQUAL name: "uint32_value" value: "1" }
+                sub_filters { op: EQUAL name: "uint64_value" value: "1" }
+                sub_filters {
+                  op: EQUAL
+                  name: "enum_value"
+                  value: "TEST_ENUM_1"
+                }
+                sub_filters { op: EQUAL name: "string_value" value: "string1" }
               }
             }
           }
         }
-      }
-  )PROTO", &expected_filter));
+      )pb",
+      &expected_filter));
   EXPECT_THAT(filter, EqualsProto(expected_filter));
 }
 
 TEST(ConvertMessageToFilterTest, BoolTrueSuccessful) {
   TestProto filter_message;
-  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"PROTO(
-      a {
-        b {
-          bool_value: true
-        }
-      }
-  )PROTO", &filter_message));
-  ASSERT_OK_AND_ASSIGN(
-      FieldFilterProto filter, ConvertMessageToFilter(filter_message));
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(
+      R"pb(
+        a { b { bool_value: true } }
+      )pb",
+      &filter_message));
+  ASSERT_OK_AND_ASSIGN(FieldFilterProto filter,
+                       ConvertMessageToFilter(filter_message));
 
   FieldFilterProto expected_filter;
-  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"PROTO(
-      op: AND
-      sub_filters {
-        op: PARTIAL
-        name: "a"
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(
+      R"pb(
+        op: AND
         sub_filters {
-          op: AND
+          op: PARTIAL
+          name: "a"
           sub_filters {
-            op: PARTIAL
-            name: "b"
+            op: AND
             sub_filters {
-              op: AND
+              op: PARTIAL
+              name: "b"
               sub_filters {
-                op: EQUAL
-                name: "bool_value"
-                value: "true"
+                op: AND
+                sub_filters { op: EQUAL name: "bool_value" value: "true" }
               }
             }
           }
         }
-      }
-  )PROTO", &expected_filter));
+      )pb",
+      &expected_filter));
   EXPECT_THAT(filter, EqualsProto(expected_filter));
 }
 
 TEST(ConvertMessageToFilterTest, BoolFalseSuccessful) {
   TestProto filter_message;
-  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"PROTO(
-      a {
-        b {
-          bool_value: false
-        }
-      }
-  )PROTO", &filter_message));
-  ASSERT_OK_AND_ASSIGN(
-      FieldFilterProto filter, ConvertMessageToFilter(filter_message));
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(
+      R"pb(
+        a { b { bool_value: false } }
+      )pb",
+      &filter_message));
+  ASSERT_OK_AND_ASSIGN(FieldFilterProto filter,
+                       ConvertMessageToFilter(filter_message));
 
   FieldFilterProto expected_filter;
-  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"PROTO(
-      op: AND
-      sub_filters {
-        op: PARTIAL
-        name: "a"
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(
+      R"pb(
+        op: AND
         sub_filters {
-          op: AND
+          op: PARTIAL
+          name: "a"
           sub_filters {
-            op: PARTIAL
-            name: "b"
+            op: AND
             sub_filters {
-              op: AND
+              op: PARTIAL
+              name: "b"
               sub_filters {
-                op: EQUAL
-                name: "bool_value"
-                value: "false"
+                op: AND
+                sub_filters { op: EQUAL name: "bool_value" value: "false" }
               }
             }
           }
         }
-      }
-  )PROTO", &expected_filter));
+      )pb",
+      &expected_filter));
   EXPECT_THAT(filter, EqualsProto(expected_filter));
 }
 

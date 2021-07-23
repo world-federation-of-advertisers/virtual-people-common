@@ -30,97 +30,97 @@ using ::wfa_virtual_people::test::TestProto;
 
 TEST(FieldFilterTest, FromMessageFloatNotSupported) {
   TestProto filter_message;
-  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"PROTO(
-      a {
-        b {
-          float_value: 1.0
-        }
-      }
-  )PROTO", &filter_message));
-  EXPECT_THAT(
-      FieldFilter::New(filter_message).status(),
-      StatusIs(absl::StatusCode::kInvalidArgument, ""));
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(
+      R"pb(
+        a { b { float_value: 1.0 } }
+      )pb",
+      &filter_message));
+  EXPECT_THAT(FieldFilter::New(filter_message).status(),
+              StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 TEST(FieldFilterTest, FromMessageDoubleNotSupported) {
   TestProto filter_message;
-  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"PROTO(
-      a {
-        b {
-          double_value: 1.0
-        }
-      }
-  )PROTO", &filter_message));
-  EXPECT_THAT(
-      FieldFilter::New(filter_message).status(),
-      StatusIs(absl::StatusCode::kInvalidArgument, ""));
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(
+      R"pb(
+        a { b { double_value: 1.0 } }
+      )pb",
+      &filter_message));
+  EXPECT_THAT(FieldFilter::New(filter_message).status(),
+              StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 TEST(FieldFilterTest, FromMessageRepeatedNotSupported) {
   TestProto filter_message;
-  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"PROTO(
-      int32_values: 1
-  )PROTO", &filter_message));
-  EXPECT_THAT(
-      FieldFilter::New(filter_message).status(),
-      StatusIs(absl::StatusCode::kInvalidArgument, ""));
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
+                                                              int32_values: 1
+                                                            )pb",
+                                                            &filter_message));
+  EXPECT_THAT(FieldFilter::New(filter_message).status(),
+              StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 TEST(FieldFilterTest, FromMessageSuccessful) {
   TestProto filter_message, test_proto_1, test_proto_2;
-  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"PROTO(
-      a {
-        b {
-          int32_value: 1
-          int64_value: 1
-          uint32_value: 1
-          uint64_value: 1
-          bool_value: true
-          enum_value: TEST_ENUM_1
-          string_value: "string1"
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(
+      R"pb(
+        a {
+          b {
+            int32_value: 1
+            int64_value: 1
+            uint32_value: 1
+            uint64_value: 1
+            bool_value: true
+            enum_value: TEST_ENUM_1
+            string_value: "string1"
+          }
         }
-      }
-  )PROTO", &filter_message));
-  ASSERT_OK_AND_ASSIGN(
-      std::unique_ptr<FieldFilter> filter, FieldFilter::New(filter_message));
+      )pb",
+      &filter_message));
+  ASSERT_OK_AND_ASSIGN(std::unique_ptr<FieldFilter> filter,
+                       FieldFilter::New(filter_message));
 
-  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"PROTO(
-      a {
-        b {
-          int32_value: 1
-          int64_value: 1
-          uint32_value: 1
-          uint64_value: 1
-          float_value: 1.0
-          double_value: 1.0
-          bool_value: true
-          enum_value: TEST_ENUM_1
-          string_value: "string1"
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(
+      R"pb(
+        a {
+          b {
+            int32_value: 1
+            int64_value: 1
+            uint32_value: 1
+            uint64_value: 1
+            float_value: 1.0
+            double_value: 1.0
+            bool_value: true
+            enum_value: TEST_ENUM_1
+            string_value: "string1"
+          }
         }
-      }
-      int32_values: 1
-      int32_values: 2
-  )PROTO", &test_proto_1));
+        int32_values: 1
+        int32_values: 2
+      )pb",
+      &test_proto_1));
   EXPECT_TRUE(filter->IsMatch(test_proto_1));
 
   // a.b.int32_value does not match.
-  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"PROTO(
-      a {
-        b {
-          int32_value: 2
-          int64_value: 1
-          uint32_value: 1
-          uint64_value: 1
-          float_value: 1.0
-          double_value: 1.0
-          bool_value: true
-          enum_value: TEST_ENUM_1
-          string_value: "string1"
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(
+      R"pb(
+        a {
+          b {
+            int32_value: 2
+            int64_value: 1
+            uint32_value: 1
+            uint64_value: 1
+            float_value: 1.0
+            double_value: 1.0
+            bool_value: true
+            enum_value: TEST_ENUM_1
+            string_value: "string1"
+          }
         }
-      }
-      int32_values: 1
-      int32_values: 2
-  )PROTO", &test_proto_2));
+        int32_values: 1
+        int32_values: 2
+      )pb",
+      &test_proto_2));
   EXPECT_FALSE(filter->IsMatch(test_proto_2));
 }
 

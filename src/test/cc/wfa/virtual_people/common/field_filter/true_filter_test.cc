@@ -51,42 +51,39 @@ TEST(TrueFilterTest, TestIsMatchNotEmptyEvent) {
 
 TEST(TrueFilterTest, TestWithName) {
   FieldFilterProto field_filter_proto;
-  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
-      op: TRUE
-      name: "a"
-  )pb", &field_filter_proto));
-  EXPECT_THAT(
-      FieldFilter::New(TestProto().GetDescriptor(),
-                       field_filter_proto).status(),
-      StatusIs(absl::StatusCode::kInvalidArgument, ""));
+  ASSERT_TRUE(
+      google::protobuf::TextFormat::ParseFromString(R"pb(
+                                                      op: TRUE name: "a"
+                                                    )pb",
+                                                    &field_filter_proto));
+  EXPECT_THAT(FieldFilter::New(TestProto().GetDescriptor(), field_filter_proto)
+                  .status(),
+              StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 TEST(TrueFilterTest, TestWithValue) {
   FieldFilterProto field_filter_proto;
-  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
-      op: TRUE
-      value: "1"
-  )pb", &field_filter_proto));
-  EXPECT_THAT(
-      FieldFilter::New(TestProto().GetDescriptor(),
-                       field_filter_proto).status(),
-      StatusIs(absl::StatusCode::kInvalidArgument, ""));
+  ASSERT_TRUE(
+      google::protobuf::TextFormat::ParseFromString(R"pb(
+                                                      op: TRUE value: "1"
+                                                    )pb",
+                                                    &field_filter_proto));
+  EXPECT_THAT(FieldFilter::New(TestProto().GetDescriptor(), field_filter_proto)
+                  .status(),
+              StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 TEST(TrueFilterTest, TestWithSubFilters) {
   FieldFilterProto field_filter_proto;
-  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
-      op: TRUE
-      sub_filters {
-        op: EQUAL
-        name: "a"
-        value: "1"
-      }
-  )pb", &field_filter_proto));
-  EXPECT_THAT(
-      FieldFilter::New(TestProto().GetDescriptor(),
-                       field_filter_proto).status(),
-      StatusIs(absl::StatusCode::kInvalidArgument, ""));
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(
+      R"pb(
+        op: TRUE
+        sub_filters { op: EQUAL name: "a" value: "1" }
+      )pb",
+      &field_filter_proto));
+  EXPECT_THAT(FieldFilter::New(TestProto().GetDescriptor(), field_filter_proto)
+                  .status(),
+              StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 }  // namespace

@@ -16,8 +16,8 @@
 
 #include "absl/status/status.h"
 #include "gmock/gmock.h"
-#include "gtest/gtest.h"
 #include "google/protobuf/descriptor.h"
+#include "gtest/gtest.h"
 #include "src/test/cc/testutil/matchers.h"
 #include "src/test/cc/testutil/status_macros.h"
 #include "src/test/cc/wfa/virtual_people/common/field_filter/test/test.pb.h"

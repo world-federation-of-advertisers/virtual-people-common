@@ -32,86 +32,77 @@ using ::wfa::StatusIs;
 using ::wfa_virtual_people::test::TestProtoB;
 
 TEST(ValuesParserTest, TestInt32) {
-  ASSERT_OK_AND_ASSIGN(
-      ParsedValues<int32_t> parser, ParseValues<int32_t>("1,2,1"));
+  ASSERT_OK_AND_ASSIGN(ParsedValues<int32_t> parser,
+                       ParseValues<int32_t>("1,2,1"));
   EXPECT_THAT(parser.values, UnorderedElementsAre(1, 2));
 }
 
 TEST(ValuesParserTest, TestInt32Invalid) {
-  EXPECT_THAT(
-      ParseValues<int32_t>("1,a,1").status(),
-      StatusIs(absl::StatusCode::kInvalidArgument, ""));
+  EXPECT_THAT(ParseValues<int32_t>("1,a,1").status(),
+              StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 TEST(ValuesParserTest, TestInt64) {
-  ASSERT_OK_AND_ASSIGN(
-      ParsedValues<int64_t> parser, ParseValues<int64_t>("1,2,1"));
+  ASSERT_OK_AND_ASSIGN(ParsedValues<int64_t> parser,
+                       ParseValues<int64_t>("1,2,1"));
   EXPECT_THAT(parser.values, UnorderedElementsAre(1, 2));
 }
 
 TEST(ValuesParserTest, TestInt64Invalid) {
-  EXPECT_THAT(
-      ParseValues<int64_t>("1,a,1").status(),
-      StatusIs(absl::StatusCode::kInvalidArgument, ""));
+  EXPECT_THAT(ParseValues<int64_t>("1,a,1").status(),
+              StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 TEST(ValuesParserTest, TestUInt32) {
-  ASSERT_OK_AND_ASSIGN(
-      ParsedValues<uint32_t> parser, ParseValues<uint32_t>("1,2,1"));
+  ASSERT_OK_AND_ASSIGN(ParsedValues<uint32_t> parser,
+                       ParseValues<uint32_t>("1,2,1"));
   EXPECT_THAT(parser.values, UnorderedElementsAre(1, 2));
 }
 
 TEST(ValuesParserTest, TestUInt32Invalid) {
-  EXPECT_THAT(
-      ParseValues<uint32_t>("1,a,1").status(),
-      StatusIs(absl::StatusCode::kInvalidArgument, ""));
+  EXPECT_THAT(ParseValues<uint32_t>("1,a,1").status(),
+              StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 TEST(ValuesParserTest, TestUInt64) {
-  ASSERT_OK_AND_ASSIGN(
-      ParsedValues<uint64_t> parser, ParseValues<uint64_t>("1,2,1"));
+  ASSERT_OK_AND_ASSIGN(ParsedValues<uint64_t> parser,
+                       ParseValues<uint64_t>("1,2,1"));
   EXPECT_THAT(parser.values, UnorderedElementsAre(1, 2));
 }
 
 TEST(ValuesParserTest, TestUInt64Invalid) {
-  EXPECT_THAT(
-      ParseValues<uint64_t>("1,a,1").status(),
-      StatusIs(absl::StatusCode::kInvalidArgument, ""));
+  EXPECT_THAT(ParseValues<uint64_t>("1,a,1").status(),
+              StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 TEST(ValuesParserTest, TestBool) {
-  ASSERT_OK_AND_ASSIGN(
-      ParsedValues<bool> parser, ParseValues<bool>("true,false,true"));
+  ASSERT_OK_AND_ASSIGN(ParsedValues<bool> parser,
+                       ParseValues<bool>("true,false,true"));
   EXPECT_THAT(parser.values, UnorderedElementsAre(true, false));
 }
 
 TEST(ValuesParserTest, TestBoolInvalid) {
-  EXPECT_THAT(
-      ParseValues<bool>("true,a,false").status(),
-      StatusIs(absl::StatusCode::kInvalidArgument, ""));
+  EXPECT_THAT(ParseValues<bool>("true,a,false").status(),
+              StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 TEST(ValuesParserTest, TestString) {
-  ASSERT_OK_AND_ASSIGN(
-      ParsedValues<const std::string&> parser,
-      ParseValues<const std::string&>("a,b,a"));
+  ASSERT_OK_AND_ASSIGN(ParsedValues<const std::string&> parser,
+                       ParseValues<const std::string&>("a,b,a"));
   EXPECT_THAT(parser.values, UnorderedElementsAre("a", "b"));
 }
 
 TEST(ValuesParserTest, TestEmptyString) {
-  ASSERT_OK_AND_ASSIGN(
-      ParsedValues<const std::string&> parser_1,
-      ParseValues<const std::string&>(""));
+  ASSERT_OK_AND_ASSIGN(ParsedValues<const std::string&> parser_1,
+                       ParseValues<const std::string&>(""));
   EXPECT_THAT(parser_1.values, UnorderedElementsAre(""));
 
-  ASSERT_OK_AND_ASSIGN(
-      ParsedValues<const std::string&> parser_2,
-      ParseValues<const std::string&>(",a"));
+  ASSERT_OK_AND_ASSIGN(ParsedValues<const std::string&> parser_2,
+                       ParseValues<const std::string&>(",a"));
   EXPECT_THAT(parser_2.values, UnorderedElementsAre("", "a"));
 
-  ASSERT_OK_AND_ASSIGN(
-      ParsedValues<const std::string&> parser_3,
-      ParseValues<const std::string&>("\"a,b,a"));
+  ASSERT_OK_AND_ASSIGN(ParsedValues<const std::string&> parser_3,
+                       ParseValues<const std::string&>("\"a,b,a"));
   EXPECT_THAT(parser_3.values, UnorderedElementsAre("\"a", "a", "b"));
 }
 

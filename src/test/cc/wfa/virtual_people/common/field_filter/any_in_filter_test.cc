@@ -41,51 +41,47 @@ absl::StatusOr<std::unique_ptr<FieldFilter>> FilterFromProtoText(
 }
 
 TEST(AnyInFilterTest, TestNoName) {
-  EXPECT_THAT(
-      FilterFromProtoText(R"pb(
-          op: ANY_IN
-          value: "1,2,1"
-      )pb").status(),
-      StatusIs(absl::StatusCode::kInvalidArgument, ""));
+  EXPECT_THAT(FilterFromProtoText(R"pb(
+                op: ANY_IN value: "1,2,1"
+              )pb")
+                  .status(),
+              StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 TEST(AnyInFilterTest, TestDisallowedSingularField) {
   EXPECT_THAT(
       FilterFromProtoText(R"pb(
-          name: "a.b.int32_value"
-          op: ANY_IN
-          value: "1,2,1"
-      )pb").status(),
+        name: "a.b.int32_value" op: ANY_IN value: "1,2,1"
+      )pb")
+          .status(),
       StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 TEST(AnyInFilterTest, TestDisallowedRepeatedInThePath) {
-  EXPECT_THAT(
-      FilterFromProtoText(R"pb(
-          name: "repeated_proto_a.b.int32_values"
-          op: ANY_IN
-          value: "1,2,1"
-      )pb").status(),
-      StatusIs(absl::StatusCode::kInvalidArgument, ""));
+  EXPECT_THAT(FilterFromProtoText(R"pb(
+                name: "repeated_proto_a.b.int32_values"
+                op: ANY_IN
+                value: "1,2,1"
+              )pb")
+                  .status(),
+              StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 TEST(AnyInFilterTest, TestNoValue) {
-  EXPECT_THAT(
-      FilterFromProtoText(R"pb(
-          name: "a.b.int32_values"
-          op: ANY_IN
-      )pb").status(),
-      StatusIs(absl::StatusCode::kInvalidArgument, ""));
+  EXPECT_THAT(FilterFromProtoText(R"pb(
+                name: "a.b.int32_values" op: ANY_IN
+              )pb")
+                  .status(),
+              StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 TEST(AnyInFilterTest, TestInt32) {
-  ASSERT_OK_AND_ASSIGN(
-      std::unique_ptr<FieldFilter> field_filter,
-      FilterFromProtoText(R"pb(
-          name: "a.b.int32_values"
-          op: ANY_IN
-          value: "1,2,1"
-      )pb"));
+  ASSERT_OK_AND_ASSIGN(std::unique_ptr<FieldFilter> field_filter,
+                       FilterFromProtoText(R"pb(
+                         name: "a.b.int32_values"
+                         op: ANY_IN
+                         value: "1,2,1"
+                       )pb"));
 
   TestProto test_proto_1;
   test_proto_1.mutable_a()->mutable_b()->add_int32_values(1);
@@ -106,23 +102,22 @@ TEST(AnyInFilterTest, TestInt32) {
 }
 
 TEST(AnyInFilterTest, TestInt32InvalidValue) {
-  EXPECT_THAT(
-      FilterFromProtoText(R"pb(
-          name: "a.b.int32_values"
-          op: ANY_IN
-          value: "1,a,1"
-      )pb").status(),
-      StatusIs(absl::StatusCode::kInvalidArgument, ""));
+  EXPECT_THAT(FilterFromProtoText(R"pb(
+                name: "a.b.int32_values"
+                op: ANY_IN
+                value: "1,a,1"
+              )pb")
+                  .status(),
+              StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 TEST(AnyInFilterTest, TestInt64) {
-  ASSERT_OK_AND_ASSIGN(
-      std::unique_ptr<FieldFilter> field_filter,
-      FilterFromProtoText(R"pb(
-          name: "a.b.int64_values"
-          op: ANY_IN
-          value: "1,2,1"
-      )pb"));
+  ASSERT_OK_AND_ASSIGN(std::unique_ptr<FieldFilter> field_filter,
+                       FilterFromProtoText(R"pb(
+                         name: "a.b.int64_values"
+                         op: ANY_IN
+                         value: "1,2,1"
+                       )pb"));
 
   TestProto test_proto_1;
   test_proto_1.mutable_a()->mutable_b()->add_int64_values(1);
@@ -143,23 +138,22 @@ TEST(AnyInFilterTest, TestInt64) {
 }
 
 TEST(AnyInFilterTest, TestInt64InvalidValue) {
-  EXPECT_THAT(
-      FilterFromProtoText(R"pb(
-          name: "a.b.int64_values"
-          op: ANY_IN
-          value: "1,a,1"
-      )pb").status(),
-      StatusIs(absl::StatusCode::kInvalidArgument, ""));
+  EXPECT_THAT(FilterFromProtoText(R"pb(
+                name: "a.b.int64_values"
+                op: ANY_IN
+                value: "1,a,1"
+              )pb")
+                  .status(),
+              StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 TEST(AnyInFilterTest, TestUInt32) {
-  ASSERT_OK_AND_ASSIGN(
-      std::unique_ptr<FieldFilter> field_filter,
-      FilterFromProtoText(R"pb(
-          name: "a.b.uint32_values"
-          op: ANY_IN
-          value: "1,2,1"
-      )pb"));
+  ASSERT_OK_AND_ASSIGN(std::unique_ptr<FieldFilter> field_filter,
+                       FilterFromProtoText(R"pb(
+                         name: "a.b.uint32_values"
+                         op: ANY_IN
+                         value: "1,2,1"
+                       )pb"));
 
   TestProto test_proto_1;
   test_proto_1.mutable_a()->mutable_b()->add_uint32_values(1);
@@ -180,23 +174,22 @@ TEST(AnyInFilterTest, TestUInt32) {
 }
 
 TEST(AnyInFilterTest, TestUInt32InvalidValue) {
-  EXPECT_THAT(
-      FilterFromProtoText(R"pb(
-          name: "a.b.uint32_values"
-          op: ANY_IN
-          value: "1,a,1"
-      )pb").status(),
-      StatusIs(absl::StatusCode::kInvalidArgument, ""));
+  EXPECT_THAT(FilterFromProtoText(R"pb(
+                name: "a.b.uint32_values"
+                op: ANY_IN
+                value: "1,a,1"
+              )pb")
+                  .status(),
+              StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 TEST(AnyInFilterTest, TestUInt64) {
-  ASSERT_OK_AND_ASSIGN(
-      std::unique_ptr<FieldFilter> field_filter,
-      FilterFromProtoText(R"pb(
-          name: "a.b.uint64_values"
-          op: ANY_IN
-          value: "1,2,1"
-      )pb"));
+  ASSERT_OK_AND_ASSIGN(std::unique_ptr<FieldFilter> field_filter,
+                       FilterFromProtoText(R"pb(
+                         name: "a.b.uint64_values"
+                         op: ANY_IN
+                         value: "1,2,1"
+                       )pb"));
 
   TestProto test_proto_1;
   test_proto_1.mutable_a()->mutable_b()->add_uint64_values(1);
@@ -217,23 +210,22 @@ TEST(AnyInFilterTest, TestUInt64) {
 }
 
 TEST(AnyInFilterTest, TestUInt64InvalidValue) {
-  EXPECT_THAT(
-      FilterFromProtoText(R"pb(
-          name: "a.b.uint64_values"
-          op: ANY_IN
-          value: "1,a,1"
-      )pb").status(),
-      StatusIs(absl::StatusCode::kInvalidArgument, ""));
+  EXPECT_THAT(FilterFromProtoText(R"pb(
+                name: "a.b.uint64_values"
+                op: ANY_IN
+                value: "1,a,1"
+              )pb")
+                  .status(),
+              StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 TEST(AnyInFilterTest, TestBool) {
-  ASSERT_OK_AND_ASSIGN(
-      std::unique_ptr<FieldFilter> field_filter,
-      FilterFromProtoText(R"pb(
-          name: "a.b.bool_values"
-          op: ANY_IN
-          value: "true,true"
-      )pb"));
+  ASSERT_OK_AND_ASSIGN(std::unique_ptr<FieldFilter> field_filter,
+                       FilterFromProtoText(R"pb(
+                         name: "a.b.bool_values"
+                         op: ANY_IN
+                         value: "true,true"
+                       )pb"));
 
   TestProto test_proto_1;
   test_proto_1.mutable_a()->mutable_b()->add_bool_values(true);
@@ -249,23 +241,22 @@ TEST(AnyInFilterTest, TestBool) {
 }
 
 TEST(AnyInFilterTest, TestBoolInvalidValue) {
-  EXPECT_THAT(
-      FilterFromProtoText(R"pb(
-          name: "a.b.bool_values"
-          op: ANY_IN
-          value: "true,a"
-      )pb").status(),
-      StatusIs(absl::StatusCode::kInvalidArgument, ""));
+  EXPECT_THAT(FilterFromProtoText(R"pb(
+                name: "a.b.bool_values"
+                op: ANY_IN
+                value: "true,a"
+              )pb")
+                  .status(),
+              StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 TEST(AnyInFilterTest, TestEnumName) {
-  ASSERT_OK_AND_ASSIGN(
-      std::unique_ptr<FieldFilter> field_filter,
-      FilterFromProtoText(R"pb(
-          name: "a.b.enum_values"
-          op: ANY_IN
-          value: "TEST_ENUM_1,TEST_ENUM_2,TEST_ENUM_1"
-      )pb"));
+  ASSERT_OK_AND_ASSIGN(std::unique_ptr<FieldFilter> field_filter,
+                       FilterFromProtoText(R"pb(
+                         name: "a.b.enum_values"
+                         op: ANY_IN
+                         value: "TEST_ENUM_1,TEST_ENUM_2,TEST_ENUM_1"
+                       )pb"));
 
   TestProto test_proto_1;
   test_proto_1.mutable_a()->mutable_b()->add_enum_values(
@@ -294,9 +285,7 @@ TEST(AnyInFilterTest, TestEnumNumber) {
   ASSERT_OK_AND_ASSIGN(
       std::unique_ptr<FieldFilter> field_filter,
       FilterFromProtoText(R"pb(
-          name: "a.b.enum_values"
-          op: ANY_IN
-          value: "1,2,1"
+        name: "a.b.enum_values" op: ANY_IN value: "1,2,1"
       )pb"));
 
   TestProto test_proto_1;
@@ -323,13 +312,12 @@ TEST(AnyInFilterTest, TestEnumNumber) {
 }
 
 TEST(AnyInFilterTest, TestMixedEnumNameNumber) {
-  ASSERT_OK_AND_ASSIGN(
-      std::unique_ptr<FieldFilter> field_filter,
-      FilterFromProtoText(R"pb(
-          name: "a.b.enum_values"
-          op: ANY_IN
-          value: "TEST_ENUM_1,2,1,TEST_ENUM_2"
-      )pb"));
+  ASSERT_OK_AND_ASSIGN(std::unique_ptr<FieldFilter> field_filter,
+                       FilterFromProtoText(R"pb(
+                         name: "a.b.enum_values"
+                         op: ANY_IN
+                         value: "TEST_ENUM_1,2,1,TEST_ENUM_2"
+                       )pb"));
 
   TestProto test_proto_1;
   test_proto_1.mutable_a()->mutable_b()->add_enum_values(
@@ -357,21 +345,19 @@ TEST(AnyInFilterTest, TestMixedEnumNameNumber) {
 TEST(AnyInFilterTest, TestEnumInvalidValue) {
   EXPECT_THAT(
       FilterFromProtoText(R"pb(
-          name: "a.b.enum_values"
-          op: ANY_IN
-          value: "1,a,1"
-      )pb").status(),
+        name: "a.b.enum_values" op: ANY_IN value: "1,a,1"
+      )pb")
+          .status(),
       StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 TEST(AnyInFilterTest, TestString) {
-  ASSERT_OK_AND_ASSIGN(
-      std::unique_ptr<FieldFilter> field_filter,
-      FilterFromProtoText(R"pb(
-          name: "a.b.string_values"
-          op: ANY_IN
-          value: "a,b,a"
-      )pb"));
+  ASSERT_OK_AND_ASSIGN(std::unique_ptr<FieldFilter> field_filter,
+                       FilterFromProtoText(R"pb(
+                         name: "a.b.string_values"
+                         op: ANY_IN
+                         value: "a,b,a"
+                       )pb"));
 
   TestProto test_proto_1;
   test_proto_1.mutable_a()->mutable_b()->add_string_values("a");
@@ -395,9 +381,7 @@ TEST(AnyInFilterTest, TestEmptyString) {
   ASSERT_OK_AND_ASSIGN(
       std::unique_ptr<FieldFilter> field_filter,
       FilterFromProtoText(R"pb(
-          name: "a.b.string_values"
-          op: ANY_IN
-          value: ""
+        name: "a.b.string_values" op: ANY_IN value: ""
       )pb"));
 
   TestProto test_proto_1;
@@ -417,9 +401,7 @@ TEST(AnyInFilterTest, TestQuoteString) {
   ASSERT_OK_AND_ASSIGN(
       std::unique_ptr<FieldFilter> field_filter,
       FilterFromProtoText(R"pb(
-          name: "a.b.string_values"
-          op: ANY_IN
-          value: "\""
+        name: "a.b.string_values" op: ANY_IN value: "\""
       )pb"));
 
   TestProto test_proto_1;

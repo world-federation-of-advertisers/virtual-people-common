@@ -31,87 +31,83 @@ using ::wfa_virtual_people::test::TestProto;
 
 TEST(GtFilterTest, TestNoName) {
   FieldFilterProto field_filter_proto;
-  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
-      op: GT
-      value: "1"
-  )pb", &field_filter_proto));
-  EXPECT_THAT(
-      FieldFilter::New(TestProto().GetDescriptor(),
-                       field_filter_proto).status(),
-      StatusIs(absl::StatusCode::kInvalidArgument, ""));
+  ASSERT_TRUE(
+      google::protobuf::TextFormat::ParseFromString(R"pb(
+                                                      op: GT value: "1"
+                                                    )pb",
+                                                    &field_filter_proto));
+  EXPECT_THAT(FieldFilter::New(TestProto().GetDescriptor(), field_filter_proto)
+                  .status(),
+              StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 TEST(GtFilterTest, TestNotIntegerField) {
   FieldFilterProto field_filter_proto;
-  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
-      name: "a.b.float_value"
-      op: GT
-      value: "1"
-  )pb", &field_filter_proto));
-  EXPECT_THAT(
-      FieldFilter::New(TestProto().GetDescriptor(),
-                       field_filter_proto).status(),
-      StatusIs(absl::StatusCode::kInvalidArgument, ""));
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(
+      R"pb(
+        name: "a.b.float_value" op: GT value: "1"
+      )pb",
+      &field_filter_proto));
+  EXPECT_THAT(FieldFilter::New(TestProto().GetDescriptor(), field_filter_proto)
+                  .status(),
+              StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 TEST(GtFilterTest, TestDisallowedRepeated) {
   FieldFilterProto field_filter_proto;
-  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
-      name: "a.b.int32_values"
-      op: GT
-      value: "1"
-  )pb", &field_filter_proto));
-  EXPECT_THAT(
-      FieldFilter::New(TestProto().GetDescriptor(),
-                       field_filter_proto).status(),
-      StatusIs(absl::StatusCode::kInvalidArgument, ""));
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(
+      R"pb(
+        name: "a.b.int32_values" op: GT value: "1"
+      )pb",
+      &field_filter_proto));
+  EXPECT_THAT(FieldFilter::New(TestProto().GetDescriptor(), field_filter_proto)
+                  .status(),
+              StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 TEST(GtFilterTest, TestDisallowedRepeatedInThePath) {
   FieldFilterProto field_filter_proto;
-  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
-      name: "repeated_proto_a.b.int32_value"
-      op: GT
-      value: "1"
-  )pb", &field_filter_proto));
-  EXPECT_THAT(
-      FieldFilter::New(TestProto().GetDescriptor(),
-                       field_filter_proto).status(),
-      StatusIs(absl::StatusCode::kInvalidArgument, ""));
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(
+      R"pb(
+        name: "repeated_proto_a.b.int32_value" op: GT value: "1"
+      )pb",
+      &field_filter_proto));
+  EXPECT_THAT(FieldFilter::New(TestProto().GetDescriptor(), field_filter_proto)
+                  .status(),
+              StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 TEST(GtFilterTest, TestNoValue) {
   FieldFilterProto field_filter_proto;
-  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
-      name: "a.b.int32_value"
-      op: GT
-  )pb", &field_filter_proto));
-  EXPECT_THAT(
-      FieldFilter::New(TestProto().GetDescriptor(),
-                       field_filter_proto).status(),
-      StatusIs(absl::StatusCode::kInvalidArgument, ""));
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(
+      R"pb(
+        name: "a.b.int32_value" op: GT
+      )pb",
+      &field_filter_proto));
+  EXPECT_THAT(FieldFilter::New(TestProto().GetDescriptor(), field_filter_proto)
+                  .status(),
+              StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 TEST(GtFilterTest, TestValueNotInteger) {
   FieldFilterProto field_filter_proto;
-  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
-      name: "a.b.int32_value"
-      op: GT
-      value: "10.5"
-  )pb", &field_filter_proto));
-  EXPECT_THAT(
-      FieldFilter::New(TestProto().GetDescriptor(),
-                       field_filter_proto).status(),
-      StatusIs(absl::StatusCode::kInvalidArgument, ""));
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(
+      R"pb(
+        name: "a.b.int32_value" op: GT value: "10.5"
+      )pb",
+      &field_filter_proto));
+  EXPECT_THAT(FieldFilter::New(TestProto().GetDescriptor(), field_filter_proto)
+                  .status(),
+              StatusIs(absl::StatusCode::kInvalidArgument, ""));
 }
 
 TEST(GtFilterTest, TestInt32) {
   FieldFilterProto field_filter_proto;
-  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
-      name: "a.b.int32_value"
-      op: GT
-      value: "10"
-  )pb", &field_filter_proto));
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(
+      R"pb(
+        name: "a.b.int32_value" op: GT value: "10"
+      )pb",
+      &field_filter_proto));
   ASSERT_OK_AND_ASSIGN(
       std::unique_ptr<FieldFilter> field_filter,
       FieldFilter::New(TestProto().GetDescriptor(), field_filter_proto));
@@ -131,11 +127,11 @@ TEST(GtFilterTest, TestInt32) {
 
 TEST(GtFilterTest, TestInt64) {
   FieldFilterProto field_filter_proto;
-  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
-      name: "a.b.int64_value"
-      op: GT
-      value: "10"
-  )pb", &field_filter_proto));
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(
+      R"pb(
+        name: "a.b.int64_value" op: GT value: "10"
+      )pb",
+      &field_filter_proto));
   ASSERT_OK_AND_ASSIGN(
       std::unique_ptr<FieldFilter> field_filter,
       FieldFilter::New(TestProto().GetDescriptor(), field_filter_proto));
@@ -155,11 +151,11 @@ TEST(GtFilterTest, TestInt64) {
 
 TEST(GtFilterTest, TestUInt32) {
   FieldFilterProto field_filter_proto;
-  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
-      name: "a.b.uint32_value"
-      op: GT
-      value: "10"
-  )pb", &field_filter_proto));
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(
+      R"pb(
+        name: "a.b.uint32_value" op: GT value: "10"
+      )pb",
+      &field_filter_proto));
   ASSERT_OK_AND_ASSIGN(
       std::unique_ptr<FieldFilter> field_filter,
       FieldFilter::New(TestProto().GetDescriptor(), field_filter_proto));
@@ -179,11 +175,11 @@ TEST(GtFilterTest, TestUInt32) {
 
 TEST(GtFilterTest, TestUInt64) {
   FieldFilterProto field_filter_proto;
-  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(R"pb(
-      name: "a.b.uint64_value"
-      op: GT
-      value: "10"
-  )pb", &field_filter_proto));
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(
+      R"pb(
+        name: "a.b.uint64_value" op: GT value: "10"
+      )pb",
+      &field_filter_proto));
   ASSERT_OK_AND_ASSIGN(
       std::unique_ptr<FieldFilter> field_filter,
       FieldFilter::New(TestProto().GetDescriptor(), field_filter_proto));
