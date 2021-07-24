@@ -1,14 +1,17 @@
 load("@rules_cc//cc:defs.bzl", "cc_library")
 
-package(default_visibility = ["//src/main/cc/wfa/virtual_people/common/field_filter:__subpackages__"])
+package(default_visibility = [
+    "//src/main/cc/wfa/virtual_people/common/field_filter:__subpackages__",
+    "//src/test/cc/wfa/virtual_people/common/field_filter:__subpackages__",
+])
 
 _INCLUDE_PREFIX = "/src/main/cc"
 
 cc_library(
     name = "template_util",
     hdrs = ["template_util.h"],
-    visibility = ["//visibility:public"],
     strip_include_prefix = _INCLUDE_PREFIX,
+    visibility = ["//visibility:public"],
     deps = [
         "@com_google_absl//absl/meta:type_traits",
         "@com_google_protobuf//:protobuf",
@@ -19,8 +22,8 @@ cc_library(
     name = "field_util",
     srcs = ["field_util.cc"],
     hdrs = ["field_util.h"],
-    visibility = ["//visibility:public"],
     strip_include_prefix = _INCLUDE_PREFIX,
+    visibility = ["//visibility:public"],
     deps = [
         ":template_util",
         "@com_google_absl//absl/memory",
@@ -29,21 +32,6 @@ cc_library(
         "@com_google_absl//absl/status:statusor",
         "@com_google_absl//absl/strings",
         "@com_google_protobuf//:protobuf",
-    ],
-)
-
-cc_test(
-    name = "field_util_test",
-    srcs = ["field_util_test.cc"],
-    deps = [
-        ":field_util",
-        "//src/main/cc/wfa/virtual_people/common/field_filter/test:test_cc_proto",
-        "@com_google_absl//absl/status",
-        "@com_google_absl//absl/status:statusor",
-        "@com_google_googletest//:gtest_main",
-        "@com_google_protobuf//:protobuf",
-        "@cross_media_measurement//src/test/cc/testutil:matchers",
-        "@cross_media_measurement//src/test/cc/testutil:status_macros",
     ],
 )
 
@@ -58,19 +46,6 @@ cc_library(
         "@com_google_absl//absl/status:statusor",
         "@com_google_absl//absl/strings",
         "@com_google_protobuf//:protobuf",
-    ],
-)
-
-cc_test(
-    name = "type_convert_util_test",
-    srcs = ["type_convert_util_test.cc"],
-    deps = [
-        ":type_convert_util",
-        "//src/main/cc/wfa/virtual_people/common/field_filter/test:test_cc_proto",
-        "@com_google_absl//absl/status",
-        "@com_google_googletest//:gtest_main",
-        "@com_google_protobuf//:protobuf",
-        "@cross_media_measurement//src/test/cc/testutil:matchers",
     ],
 )
 
@@ -92,21 +67,6 @@ cc_library(
     ],
 )
 
-cc_test(
-    name = "integer_comparator_test",
-    srcs = ["integer_comparator_test.cc"],
-    deps = [
-        ":field_util",
-        ":integer_comparator",
-        "//src/main/cc/wfa/virtual_people/common/field_filter/test:test_cc_proto",
-        "@com_google_absl//absl/status",
-        "@com_google_googletest//:gtest_main",
-        "@com_google_protobuf//:protobuf",
-        "@cross_media_measurement//src/test/cc/testutil:matchers",
-        "@cross_media_measurement//src/test/cc/testutil:status_macros",
-    ],
-)
-
 cc_library(
     name = "message_filter_util",
     srcs = ["message_filter_util.cc"],
@@ -119,20 +79,6 @@ cc_library(
         "@com_google_absl//absl/strings",
         "@com_google_protobuf//:protobuf",
         "@cross_media_measurement//src/main/cc/wfa/measurement/common:macros",
-    ],
-)
-
-cc_test(
-    name = "message_filter_util_test",
-    srcs = ["message_filter_util_test.cc"],
-    deps = [
-        ":message_filter_util",
-        "//src/main/cc/wfa/virtual_people/common/field_filter/test:test_cc_proto",
-        "@com_google_absl//absl/status",
-        "@com_google_googletest//:gtest_main",
-        "@com_google_protobuf//:protobuf",
-        "@cross_media_measurement//src/test/cc/testutil:matchers",
-        "@cross_media_measurement//src/test/cc/testutil:status_macros",
     ],
 )
 
@@ -149,20 +95,5 @@ cc_library(
         "@com_google_absl//absl/strings",
         "@com_google_protobuf//:protobuf",
         "@cross_media_measurement//src/main/cc/wfa/measurement/common:macros",
-    ],
-)
-
-cc_test(
-    name = "values_parser_test",
-    srcs = ["values_parser_test.cc"],
-    deps = [
-        ":values_parser",
-        "//src/main/cc/wfa/virtual_people/common/field_filter/test:test_cc_proto",
-        "@com_google_absl//absl/status",
-        "@com_google_absl//absl/status:statusor",
-        "@com_google_googletest//:gtest_main",
-        "@com_google_protobuf//:protobuf",
-        "@cross_media_measurement//src/test/cc/testutil:matchers",
-        "@cross_media_measurement//src/test/cc/testutil:status_macros",
     ],
 )
