@@ -16,9 +16,9 @@
 
 #include "absl/status/status.h"
 #include "absl/status/statusor.h"
+#include "common_cpp/macros/macros.h"
 #include "google/protobuf/descriptor.h"
 #include "src/main/proto/wfa/virtual_people/common/field_filter.pb.h"
-#include "wfa/measurement/common/macros.h"
 #include "wfa/virtual_people/common/field_filter/and_filter.h"
 #include "wfa/virtual_people/common/field_filter/any_in_filter.h"
 #include "wfa/virtual_people/common/field_filter/equal_filter.h"

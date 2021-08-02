@@ -1,35 +1,17 @@
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
+# Common-cpp
 http_archive(
-    name = "com_google_googletest",
-    urls = ["https://github.com/google/googletest/archive/release-1.10.0.tar.gz"],
-    sha256 = "9dc9157a9a1551ec7a7e43daea9a694a0bb5fb8bec81235d8a1e6ef64c716dcb",
-    strip_prefix = "googletest-release-1.10.0",
+    name = "wfa_common_cpp",
+    sha256 = "63f923b38a3519c57d18db19b799d2040817c636be520c8c82830f7a0d63af47",
+    strip_prefix = "common-cpp-215be9e75b6d9f362d419e21c9804bd0d8d68916",
+    url = "https://github.com/world-federation-of-advertisers/common-cpp/archive/215be9e75b6d9f362d419e21c9804bd0d8d68916.tar.gz",
 )
 
-http_archive(
-    name = "com_google_protobuf",
-    sha256 = "355cf346e6988fd219ff7b18e6e68a742aaef09a400a0cf2860e7841468a12ac",
-    strip_prefix = "protobuf-3.15.7",
-    urls = ["https://github.com/protocolbuffers/protobuf/releases/download/v3.15.7/protobuf-all-3.15.7.tar.gz"],
-)
+load("@wfa_common_cpp//build:common_cpp_repositories.bzl", "common_cpp_repositories")
 
-load("@com_google_protobuf//:protobuf_deps.bzl", "protobuf_deps")
+common_cpp_repositories()
 
-protobuf_deps()
+load("@wfa_common_cpp//build:common_cpp_deps.bzl", "common_cpp_deps")
 
-http_archive(
-    name = "com_google_absl",
-    sha256 = "dd7db6815204c2a62a2160e32c55e97113b0a0178b2f090d6bab5ce36111db4b",
-    strip_prefix = "abseil-cpp-20210324.0",
-    urls = ["https://github.com/abseil/abseil-cpp/archive/refs/tags/20210324.0.tar.gz"],
-)
-
-load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
-
-git_repository(
-    name = "cross_media_measurement",
-    remote = "https://github.com/world-federation-of-advertisers/cross-media-measurement",
-    commit = "a4863588aa84c965e6ec0d0b1d6e535b0d86d388",
-    repo_mapping = {"@googletest": "@com_google_googletest"},
-)
+common_cpp_deps()

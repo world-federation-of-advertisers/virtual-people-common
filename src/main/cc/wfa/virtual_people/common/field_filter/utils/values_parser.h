@@ -19,8 +19,8 @@
 #include "absl/status/statusor.h"
 #include "absl/strings/string_view.h"
 #include "absl/strings/str_split.h"
+#include "common_cpp/macros/macros.h"
 #include "google/protobuf/descriptor.h"
-#include "wfa/measurement/common/macros.h"
 #include "wfa/virtual_people/common/field_filter/utils/template_util.h"
 #include "wfa/virtual_people/common/field_filter/utils/type_convert_util.h"
 

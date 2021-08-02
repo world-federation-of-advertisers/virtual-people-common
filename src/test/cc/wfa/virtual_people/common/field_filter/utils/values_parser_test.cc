@@ -16,12 +16,12 @@
 
 #include "absl/status/status.h"
 #include "absl/status/statusor.h"
+#include "common_cpp/testing/status_macros.h"
+#include "common_cpp/testing/status_matchers.h"
 #include "gmock/gmock.h"
 #include "google/protobuf/descriptor.h"
 #include "google/protobuf/message.h"
 #include "gtest/gtest.h"
-#include "src/test/cc/testutil/matchers.h"
-#include "src/test/cc/testutil/status_macros.h"
 #include "src/test/cc/wfa/virtual_people/common/field_filter/test/test.pb.h"
 
 namespace wfa_virtual_people {
