@@ -53,6 +53,6 @@ bool HasFilter::IsMatch(const google::protobuf::Message& message) const {
     return parent.GetReflection()->FieldSize(parent, field) > 0;
   }
   return parent.GetReflection()->HasField(parent, field);
-};
+}
 
 }  // namespace wfa_virtual_people

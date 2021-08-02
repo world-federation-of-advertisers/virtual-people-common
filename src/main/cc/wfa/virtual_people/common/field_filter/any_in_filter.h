@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef WFA_VIRTUAL_PEOPLE_COMMON_FIELD_FILTER_ANY_IN_FILTER_H_
-#define WFA_VIRTUAL_PEOPLE_COMMON_FIELD_FILTER_ANY_IN_FILTER_H_
+#ifndef SRC_MAIN_CC_WFA_VIRTUAL_PEOPLE_COMMON_FIELD_FILTER_ANY_IN_FILTER_H_
+#define SRC_MAIN_CC_WFA_VIRTUAL_PEOPLE_COMMON_FIELD_FILTER_ANY_IN_FILTER_H_
 
 #include "absl/status/statusor.h"
 #include "google/protobuf/descriptor.h"
@@ -51,8 +51,7 @@ class AnyInFilter : public FieldFilter {
   // Returns true when any value of the repeated field represented by
   // @config.name in @message equals to any value in @config.value.
   // Otherwise, returns false.
-  virtual bool IsMatch(
-      const google::protobuf::Message& message) const override = 0;
+  bool IsMatch(const google::protobuf::Message& message) const override = 0;
 
  protected:
   AnyInFilter(
@@ -64,4 +63,4 @@ class AnyInFilter : public FieldFilter {
 
 }  // namespace wfa_virtual_people
 
-#endif  // WFA_VIRTUAL_PEOPLE_COMMON_FIELD_FILTER_ANY_IN_FILTER_H_
+#endif  // SRC_MAIN_CC_WFA_VIRTUAL_PEOPLE_COMMON_FIELD_FILTER_ANY_IN_FILTER_H_
