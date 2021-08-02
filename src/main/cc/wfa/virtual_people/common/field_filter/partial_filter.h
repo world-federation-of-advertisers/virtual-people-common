@@ -42,9 +42,9 @@ class PartialFilter : public FieldFilter {
 
   explicit PartialFilter(
       std::vector<const google::protobuf::FieldDescriptor*>&& field_descriptors,
-      std::vector<std::unique_ptr<FieldFilter>>&& sub_filters):
-      field_descriptors_(std::move(field_descriptors)),
-      sub_filters_(std::move(sub_filters)) {}
+      std::vector<std::unique_ptr<FieldFilter>>&& sub_filters)
+      : field_descriptors_(std::move(field_descriptors)),
+        sub_filters_(std::move(sub_filters)) {}
 
   PartialFilter(const PartialFilter&) = delete;
   PartialFilter& operator=(const PartialFilter&) = delete;

@@ -40,7 +40,7 @@ absl::StatusOr<std::unique_ptr<PartialFilter>> PartialFilter::New(
   if (config.sub_filters_size() == 0) {
     return absl::InvalidArgumentError(absl::StrCat(
         "sub_filters must be set when op is PARTIAL. Input FieldFilterProto: ",
-         config.DebugString()));
+        config.DebugString()));
   }
 
   // Get the FieldDescriptors to the field represented by @config.name.
@@ -51,7 +51,7 @@ absl::StatusOr<std::unique_ptr<PartialFilter>> PartialFilter::New(
       google::protobuf::FieldDescriptor::CppType::CPPTYPE_MESSAGE) {
     return absl::InvalidArgumentError(absl::StrCat(
         "Name must refer to a message type field. Input FieldFilterProto: ",
-         config.DebugString()));
+        config.DebugString()));
   }
 
   // Build all the sub filters.
@@ -60,19 +60,18 @@ absl::StatusOr<std::unique_ptr<PartialFilter>> PartialFilter::New(
   std::vector<std::unique_ptr<FieldFilter>> sub_filters;
   for (const FieldFilterProto& sub_filter_proto : config.sub_filters()) {
     sub_filters.emplace_back();
-    ASSIGN_OR_RETURN(
-        sub_filters.back(),
-        FieldFilter::New(sub_descriptor, sub_filter_proto));
+    ASSIGN_OR_RETURN(sub_filters.back(),
+                     FieldFilter::New(sub_descriptor, sub_filter_proto));
   }
 
-  return absl::make_unique<PartialFilter>(
-      std::move(field_descriptors), std::move(sub_filters));
+  return absl::make_unique<PartialFilter>(std::move(field_descriptors),
+                                          std::move(sub_filters));
 }
 
 bool PartialFilter::IsMatch(const google::protobuf::Message& message) const {
   const google::protobuf::Message& sub_message =
-      GetValueFromProto<const google::protobuf::Message&>(
-          message, field_descriptors_);
+      GetValueFromProto<const google::protobuf::Message&>(message,
+                                                          field_descriptors_);
   for (auto& filter : sub_filters_) {
     if (!filter->IsMatch(sub_message)) {
       return false;

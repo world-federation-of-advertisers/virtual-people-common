@@ -41,9 +41,8 @@ class EqualFilterImpl : public EqualFilter {
  public:
   explicit EqualFilterImpl(
       std::vector<const google::protobuf::FieldDescriptor*>&& field_descriptors,
-      ValueType value):
-      field_descriptors_(std::move(field_descriptors)),
-      value_(value) {}
+      ValueType value)
+      : field_descriptors_(std::move(field_descriptors)), value_(value) {}
 
   bool IsMatch(const google::protobuf::Message& message) const override;
 
@@ -57,9 +56,8 @@ class EqualFilterImpl<std::string> : public EqualFilter {
  public:
   explicit EqualFilterImpl(
       std::vector<const google::protobuf::FieldDescriptor*>&& field_descriptors,
-      absl::string_view value):
-      field_descriptors_(std::move(field_descriptors)),
-      value_(value) {}
+      absl::string_view value)
+      : field_descriptors_(std::move(field_descriptors)), value_(value) {}
 
   bool IsMatch(const google::protobuf::Message& message) const override;
 
@@ -77,17 +75,16 @@ bool EqualFilterImpl<ValueType>::IsMatch(
 template <>
 bool EqualFilterImpl<const google::protobuf::EnumValueDescriptor*>::IsMatch(
     const google::protobuf::Message& message) const {
-  return (
-      value_->number() ==
-      GetValueFromProto<const google::protobuf::EnumValueDescriptor*>(
-          message, field_descriptors_)->number());
+  return (value_->number() ==
+          GetValueFromProto<const google::protobuf::EnumValueDescriptor*>(
+              message, field_descriptors_)
+              ->number());
 }
 
 bool EqualFilterImpl<std::string>::IsMatch(
     const google::protobuf::Message& message) const {
-  return (
-      value_ ==
-      GetValueFromProto<const std::string&>(message, field_descriptors_));
+  return (value_ ==
+          GetValueFromProto<const std::string&>(message, field_descriptors_));
 }
 
 // NumericType can be
@@ -103,9 +100,9 @@ absl::StatusOr<std::unique_ptr<EqualFilterImpl<NumericType>>> CreateFilter(
   absl::StatusOr<NumericType> value =
       ConvertToNumeric<NumericType>(config.value());
   if (!value.ok()) {
-    return absl::InvalidArgumentError(absl::StrCat(
-        "Value type does not match name. Input FieldFilterProto: ",
-        config.DebugString()));
+    return absl::InvalidArgumentError(
+        absl::StrCat("Value type does not match name. Input FieldFilterProto: ",
+                     config.DebugString()));
   }
   return absl::make_unique<EqualFilterImpl<NumericType>>(
       std::move(field_descriptors), *value);
@@ -141,28 +138,25 @@ absl::StatusOr<std::unique_ptr<EqualFilter>> EqualFilter::New(
       return CreateFilter<uint64_t>(config, std::move(field_descriptors));
     case google::protobuf::FieldDescriptor::CppType::CPPTYPE_BOOL:
       return CreateFilter<bool>(config, std::move(field_descriptors));
-    case google::protobuf::FieldDescriptor::CppType::CPPTYPE_ENUM:
-      {
-        absl::StatusOr<const google::protobuf::EnumValueDescriptor*> value =
-            ConvertToEnum(
-                field_descriptors.back()->enum_type(), config.value());
-        if (!value.ok()) {
-          return absl::InvalidArgumentError(absl::StrCat(
-              "Value type does not match name. Input FieldFilterProto: ",
-              config.DebugString()));
-        }
-        return absl::make_unique<EqualFilterImpl<
-            const google::protobuf::EnumValueDescriptor*>>(
-                std::move(field_descriptors), *value);
+    case google::protobuf::FieldDescriptor::CppType::CPPTYPE_ENUM: {
+      absl::StatusOr<const google::protobuf::EnumValueDescriptor*> value =
+          ConvertToEnum(field_descriptors.back()->enum_type(), config.value());
+      if (!value.ok()) {
+        return absl::InvalidArgumentError(absl::StrCat(
+            "Value type does not match name. Input FieldFilterProto: ",
+            config.DebugString()));
       }
-    case google::protobuf::FieldDescriptor::CppType::CPPTYPE_STRING:
-      {
-        // ValueType must be "std::string" rather than "const std::string&".
-        // Otherwise, value_ would be a reference to config.value(), and when
-        // config is out of scope, value_ would refer to nothing.
-        return absl::make_unique<EqualFilterImpl<std::string>>(
-            std::move(field_descriptors), config.value());
-      }
+      return absl::make_unique<
+          EqualFilterImpl<const google::protobuf::EnumValueDescriptor*>>(
+          std::move(field_descriptors), *value);
+    }
+    case google::protobuf::FieldDescriptor::CppType::CPPTYPE_STRING: {
+      // ValueType must be "std::string" rather than "const std::string&".
+      // Otherwise, value_ would be a reference to config.value(), and when
+      // config is out of scope, value_ would refer to nothing.
+      return absl::make_unique<EqualFilterImpl<std::string>>(
+          std::move(field_descriptors), config.value());
+    }
     default:
       return absl::InvalidArgumentError(absl::StrCat(
           "Unsupported field type for EQUAL filter. Input FieldFilterProto: ",

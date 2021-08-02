@@ -37,9 +37,8 @@ class OrFilter : public FieldFilter {
       const google::protobuf::Descriptor* descriptor,
       const FieldFilterProto& config);
 
-  explicit OrFilter(
-      std::vector<std::unique_ptr<FieldFilter>>&& sub_filters):
-      sub_filters_(std::move(sub_filters)) {}
+  explicit OrFilter(std::vector<std::unique_ptr<FieldFilter>>&& sub_filters)
+      : sub_filters_(std::move(sub_filters)) {}
 
   OrFilter(const OrFilter&) = delete;
   OrFilter& operator=(const OrFilter&) = delete;

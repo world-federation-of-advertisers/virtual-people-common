@@ -32,8 +32,8 @@ class IntegerComparatorImpl : public IntegerComparator {
  public:
   IntegerComparatorImpl(
       std::vector<const google::protobuf::FieldDescriptor*>&& field_descriptors,
-      IntegerType value
-  ): IntegerComparator(std::move(field_descriptors)), value_(value) {}
+      IntegerType value)
+      : IntegerComparator(std::move(field_descriptors)), value_(value) {}
 
   IntegerCompareResult Compare(
       const google::protobuf::Message& message) const override {

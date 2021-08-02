@@ -37,10 +37,9 @@ namespace wfa_virtual_people {
 // The returned FieldDescriptors is in the order of the field name to access the
 // nested field.
 absl::StatusOr<std::vector<const google::protobuf::FieldDescriptor*>>
-GetFieldFromProto(
-    const google::protobuf::Descriptor* descriptor,
-    absl::string_view full_field_name,
-    bool allow_repeated = false);
+GetFieldFromProto(const google::protobuf::Descriptor* descriptor,
+                  absl::string_view full_field_name,
+                  bool allow_repeated = false);
 
 // Gets the parent message of the field represented by @field_descriptors from
 // the @message.
@@ -102,8 +101,7 @@ ValueType GetImmediateValueFromProto(
 template <typename ValueType, EnableIfProtoValueType<ValueType> = true>
 void SetImmediateValueToProto(
     google::protobuf::Message& message,
-    const google::protobuf::FieldDescriptor* field_descriptor,
-    ValueType value);
+    const google::protobuf::FieldDescriptor* field_descriptor, ValueType value);
 
 // Gets the value from the @message, with field path represented by
 // @field_descriptors.
@@ -201,8 +199,7 @@ int GetSizeOfRepeatedProto(
 template <typename ValueType, EnableIfProtoType<ValueType> = true>
 ValueType GetImmediateValueFromRepeatedProto(
     const google::protobuf::Message& message,
-    const google::protobuf::FieldDescriptor* field_descriptor,
-    int index);
+    const google::protobuf::FieldDescriptor* field_descriptor, int index);
 
 // Gets the value from the @message, with repeated field path represented by
 // @field_descriptors, and the index represented by @index.

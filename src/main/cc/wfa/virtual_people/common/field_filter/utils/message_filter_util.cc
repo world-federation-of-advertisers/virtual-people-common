@@ -41,60 +41,49 @@ absl::StatusOr<FieldFilterProto> ConvertFieldToFilter(
   filter.set_name(field_descriptor->name());
   filter.set_op(FieldFilterProto::EQUAL);
   switch (field_descriptor->cpp_type()) {
-    case google::protobuf::FieldDescriptor::CPPTYPE_INT32:
-      {
-        filter.set_value(
-            std::to_string(reflection->GetInt32(message, field_descriptor)));
-        break;
+    case google::protobuf::FieldDescriptor::CPPTYPE_INT32: {
+      filter.set_value(
+          std::to_string(reflection->GetInt32(message, field_descriptor)));
+      break;
+    }
+    case google::protobuf::FieldDescriptor::CPPTYPE_INT64: {
+      filter.set_value(
+          std::to_string(reflection->GetInt64(message, field_descriptor)));
+      break;
+    }
+    case google::protobuf::FieldDescriptor::CPPTYPE_UINT32: {
+      filter.set_value(
+          std::to_string(reflection->GetUInt32(message, field_descriptor)));
+      break;
+    }
+    case google::protobuf::FieldDescriptor::CPPTYPE_UINT64: {
+      filter.set_value(
+          std::to_string(reflection->GetUInt64(message, field_descriptor)));
+      break;
+    }
+    case google::protobuf::FieldDescriptor::CPPTYPE_BOOL: {
+      if (reflection->GetBool(message, field_descriptor)) {
+        filter.set_value("true");
+      } else {
+        filter.set_value("false");
       }
-    case google::protobuf::FieldDescriptor::CPPTYPE_INT64:
-      {
-        filter.set_value(
-            std::to_string(reflection->GetInt64(message, field_descriptor)));
-        break;
-      }
-    case google::protobuf::FieldDescriptor::CPPTYPE_UINT32:
-      {
-        filter.set_value(
-            std::to_string(reflection->GetUInt32(message, field_descriptor)));
-        break;
-      }
-    case google::protobuf::FieldDescriptor::CPPTYPE_UINT64:
-      {
-        filter.set_value(
-            std::to_string(reflection->GetUInt64(message, field_descriptor)));
-        break;
-      }
-    case google::protobuf::FieldDescriptor::CPPTYPE_BOOL:
-      {
-        if (reflection->GetBool(message, field_descriptor)) {
-          filter.set_value("true");
-        } else {
-          filter.set_value("false");
-        }
-        break;
-      }
-    case google::protobuf::FieldDescriptor::CPPTYPE_ENUM:
-      {
-        filter.set_value(
-            reflection->GetEnum(message, field_descriptor)->name());
-        break;
-      }
-    case google::protobuf::FieldDescriptor::CPPTYPE_STRING:
-      {
-        filter.set_value(
-            reflection->GetString(message, field_descriptor));
-        break;
-      }
-    case google::protobuf::FieldDescriptor::CPPTYPE_MESSAGE:
-      {
-        filter.set_op(FieldFilterProto::PARTIAL);
-        ASSIGN_OR_RETURN(
-            *filter.add_sub_filters(),
-            ConvertMessageToFilter(
-                reflection->GetMessage(message, field_descriptor)));
-        break;
-      }
+      break;
+    }
+    case google::protobuf::FieldDescriptor::CPPTYPE_ENUM: {
+      filter.set_value(reflection->GetEnum(message, field_descriptor)->name());
+      break;
+    }
+    case google::protobuf::FieldDescriptor::CPPTYPE_STRING: {
+      filter.set_value(reflection->GetString(message, field_descriptor));
+      break;
+    }
+    case google::protobuf::FieldDescriptor::CPPTYPE_MESSAGE: {
+      filter.set_op(FieldFilterProto::PARTIAL);
+      ASSIGN_OR_RETURN(*filter.add_sub_filters(),
+                       ConvertMessageToFilter(
+                           reflection->GetMessage(message, field_descriptor)));
+      break;
+    }
     default:
       return absl::InvalidArgumentError(absl::StrCat(
           "Unsupported field type converting to FieldFilterProto from: ",
@@ -113,7 +102,7 @@ absl::StatusOr<FieldFilterProto> ConvertMessageToFilter(
   reflection->ListFields(message, &field_descriptors);
 
   for (const google::protobuf::FieldDescriptor* field_descriptor :
-          field_descriptors) {
+       field_descriptors) {
     ASSIGN_OR_RETURN(
         *filter.add_sub_filters(),
         ConvertFieldToFilter(message, reflection, field_descriptor));

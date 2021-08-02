@@ -29,8 +29,7 @@ absl::StatusOr<std::unique_ptr<NotFilter>> NotFilter::New(
     const FieldFilterProto& config) {
   if (config.op() != FieldFilterProto::NOT) {
     return absl::InvalidArgumentError(absl::StrCat(
-        "Op must be NOT. Input FieldFilterProto: ",
-        config.DebugString()));
+        "Op must be NOT. Input FieldFilterProto: ", config.DebugString()));
   }
   if (config.sub_filters_size() == 0) {
     return absl::InvalidArgumentError(absl::StrCat(
@@ -40,9 +39,8 @@ absl::StatusOr<std::unique_ptr<NotFilter>> NotFilter::New(
 
   FieldFilterProto and_filter_config = config;
   and_filter_config.set_op(FieldFilterProto::AND);
-  ASSIGN_OR_RETURN(
-      std::unique_ptr<FieldFilter> and_filter,
-      FieldFilter::New(descriptor, and_filter_config));
+  ASSIGN_OR_RETURN(std::unique_ptr<FieldFilter> and_filter,
+                   FieldFilter::New(descriptor, and_filter_config));
 
   return absl::make_unique<NotFilter>(std::move(and_filter));
 }

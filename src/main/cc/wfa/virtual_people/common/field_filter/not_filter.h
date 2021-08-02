@@ -37,9 +37,8 @@ class NotFilter : public FieldFilter {
       const google::protobuf::Descriptor* descriptor,
       const FieldFilterProto& config);
 
-  explicit NotFilter(
-      std::unique_ptr<FieldFilter> and_filter):
-      and_filter_(std::move(and_filter)) {}
+  explicit NotFilter(std::unique_ptr<FieldFilter> and_filter)
+      : and_filter_(std::move(and_filter)) {}
 
   NotFilter(const NotFilter&) = delete;
   NotFilter& operator=(const NotFilter&) = delete;

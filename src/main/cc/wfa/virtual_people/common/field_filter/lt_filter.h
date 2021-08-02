@@ -43,8 +43,8 @@ class LtFilter : public FieldFilter {
       const google::protobuf::Descriptor* descriptor,
       const FieldFilterProto& config);
 
-  explicit LtFilter(std::unique_ptr<IntegerComparator> comparator):
-      comparator_(std::move(comparator)) {}
+  explicit LtFilter(std::unique_ptr<IntegerComparator> comparator)
+      : comparator_(std::move(comparator)) {}
 
   LtFilter(const LtFilter&) = delete;
   LtFilter& operator=(const LtFilter&) = delete;

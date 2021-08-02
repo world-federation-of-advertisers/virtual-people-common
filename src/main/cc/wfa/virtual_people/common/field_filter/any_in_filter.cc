@@ -46,9 +46,9 @@ class AnyInFilterImpl : public AnyInFilter {
  public:
   explicit AnyInFilterImpl(
       std::vector<const google::protobuf::FieldDescriptor*>&& field_descriptors,
-      ParsedValues<ValueType>&& parsed_values):
-      AnyInFilter(std::move(field_descriptors)),
-      parsed_values_(std::move(parsed_values)) {}
+      ParsedValues<ValueType>&& parsed_values)
+      : AnyInFilter(std::move(field_descriptors)),
+        parsed_values_(std::move(parsed_values)) {}
 
   bool IsMatch(const google::protobuf::Message& message) const override;
 
@@ -61,8 +61,8 @@ bool AnyInFilterImpl<ValueType>::IsMatch(
     const google::protobuf::Message& message) const {
   int size = GetSizeOfRepeatedProto(message, field_descriptors_);
   for (int i = 0; i < size; ++i) {
-    ValueType value = GetValueFromRepeatedProto<ValueType>(
-        message, field_descriptors_, i);
+    ValueType value =
+        GetValueFromRepeatedProto<ValueType>(message, field_descriptors_, i);
     if (parsed_values_.values.find(value) != parsed_values_.values.end()) {
       return true;
     }
@@ -90,23 +90,23 @@ template <typename ValueType>
 absl::StatusOr<std::unique_ptr<AnyInFilterImpl<ValueType>>> CreateFilter(
     std::vector<const google::protobuf::FieldDescriptor*>&& field_descriptors,
     absl::string_view values_str) {
-  ASSIGN_OR_RETURN(
-      ParsedValues<ValueType> parsed_values,
-      ParseValues<ValueType>(values_str));
+  ASSIGN_OR_RETURN(ParsedValues<ValueType> parsed_values,
+                   ParseValues<ValueType>(values_str));
   return absl::make_unique<AnyInFilterImpl<ValueType>>(
       std::move(field_descriptors), std::move(parsed_values));
 }
 
 template <>
-absl::StatusOr<std::unique_ptr<AnyInFilterImpl<
-    const google::protobuf::EnumValueDescriptor*>>> CreateFilter(
+absl::StatusOr<std::unique_ptr<
+    AnyInFilterImpl<const google::protobuf::EnumValueDescriptor*>>>
+CreateFilter(
     std::vector<const google::protobuf::FieldDescriptor*>&& field_descriptors,
     absl::string_view values_str) {
   ASSIGN_OR_RETURN(
       ParsedValues<const google::protobuf::EnumValueDescriptor*> parsed_values,
       ParseEnumValues(field_descriptors.back()->enum_type(), values_str));
-  return absl::make_unique<AnyInFilterImpl<
-      const google::protobuf::EnumValueDescriptor*>>(
+  return absl::make_unique<
+      AnyInFilterImpl<const google::protobuf::EnumValueDescriptor*>>(
       std::move(field_descriptors), std::move(parsed_values));
 }
 
@@ -129,7 +129,7 @@ absl::StatusOr<std::unique_ptr<AnyInFilter>> AnyInFilter::New(
   }
   ASSIGN_OR_RETURN(
       std::vector<const google::protobuf::FieldDescriptor*> field_descriptors,
-      GetFieldFromProto(descriptor, config.name(), /*allow_repeated = */true));
+      GetFieldFromProto(descriptor, config.name(), /*allow_repeated = */ true));
 
   if (!field_descriptors.back()->is_repeated()) {
     return absl::InvalidArgumentError(absl::StrCat(
@@ -139,26 +139,25 @@ absl::StatusOr<std::unique_ptr<AnyInFilter>> AnyInFilter::New(
 
   switch (field_descriptors.back()->cpp_type()) {
     case google::protobuf::FieldDescriptor::CppType::CPPTYPE_INT32:
-      return CreateFilter<int32_t>(
-          std::move(field_descriptors), config.value());
+      return CreateFilter<int32_t>(std::move(field_descriptors),
+                                   config.value());
     case google::protobuf::FieldDescriptor::CppType::CPPTYPE_INT64:
-      return CreateFilter<int64_t>(
-          std::move(field_descriptors), config.value());
+      return CreateFilter<int64_t>(std::move(field_descriptors),
+                                   config.value());
     case google::protobuf::FieldDescriptor::CppType::CPPTYPE_UINT32:
-      return CreateFilter<uint32_t>(
-          std::move(field_descriptors), config.value());
+      return CreateFilter<uint32_t>(std::move(field_descriptors),
+                                    config.value());
     case google::protobuf::FieldDescriptor::CppType::CPPTYPE_UINT64:
-      return CreateFilter<uint64_t>(
-          std::move(field_descriptors), config.value());
+      return CreateFilter<uint64_t>(std::move(field_descriptors),
+                                    config.value());
     case google::protobuf::FieldDescriptor::CppType::CPPTYPE_BOOL:
-      return CreateFilter<bool>(
-          std::move(field_descriptors), config.value());
+      return CreateFilter<bool>(std::move(field_descriptors), config.value());
     case google::protobuf::FieldDescriptor::CppType::CPPTYPE_ENUM:
       return CreateFilter<const google::protobuf::EnumValueDescriptor*>(
           std::move(field_descriptors), config.value());
     case google::protobuf::FieldDescriptor::CppType::CPPTYPE_STRING:
-      return CreateFilter<const std::string&>(
-          std::move(field_descriptors), config.value());
+      return CreateFilter<const std::string&>(std::move(field_descriptors),
+                                              config.value());
     default:
       return absl::InvalidArgumentError(absl::StrCat(
           "Unsupported field type for ANY_IN filter. Input FieldFilterProto: ",

@@ -37,9 +37,8 @@ class AndFilter : public FieldFilter {
       const google::protobuf::Descriptor* descriptor,
       const FieldFilterProto& config);
 
-  explicit AndFilter(
-      std::vector<std::unique_ptr<FieldFilter>>&& sub_filters):
-      sub_filters_(std::move(sub_filters)) {}
+  explicit AndFilter(std::vector<std::unique_ptr<FieldFilter>>&& sub_filters)
+      : sub_filters_(std::move(sub_filters)) {}
 
   AndFilter(const AndFilter&) = delete;
   AndFilter& operator=(const AndFilter&) = delete;

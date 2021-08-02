@@ -53,8 +53,8 @@ class InFilter : public FieldFilter {
 
  protected:
   InFilter(
-      std::vector<const google::protobuf::FieldDescriptor*>&& field_descriptors
-  ): field_descriptors_(std::move(field_descriptors)) {}
+      std::vector<const google::protobuf::FieldDescriptor*>&& field_descriptors)
+      : field_descriptors_(std::move(field_descriptors)) {}
 
   std::vector<const google::protobuf::FieldDescriptor*> field_descriptors_;
 };

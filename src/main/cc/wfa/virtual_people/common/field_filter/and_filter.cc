@@ -29,8 +29,7 @@ absl::StatusOr<std::unique_ptr<AndFilter>> AndFilter::New(
     const FieldFilterProto& config) {
   if (config.op() != FieldFilterProto::AND) {
     return absl::InvalidArgumentError(absl::StrCat(
-        "Op must be AND. Input FieldFilterProto: ",
-        config.DebugString()));
+        "Op must be AND. Input FieldFilterProto: ", config.DebugString()));
   }
   if (config.sub_filters_size() == 0) {
     return absl::InvalidArgumentError(absl::StrCat(
@@ -41,9 +40,8 @@ absl::StatusOr<std::unique_ptr<AndFilter>> AndFilter::New(
   std::vector<std::unique_ptr<FieldFilter>> sub_filters;
   for (const FieldFilterProto& sub_filter_proto : config.sub_filters()) {
     sub_filters.emplace_back();
-    ASSIGN_OR_RETURN(
-        sub_filters.back(),
-        FieldFilter::New(descriptor, sub_filter_proto));
+    ASSIGN_OR_RETURN(sub_filters.back(),
+                     FieldFilter::New(descriptor, sub_filter_proto));
   }
 
   return absl::make_unique<AndFilter>(std::move(sub_filters));

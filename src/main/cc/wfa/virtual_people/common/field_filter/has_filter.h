@@ -39,8 +39,8 @@ class HasFilter : public FieldFilter {
       const FieldFilterProto& config);
 
   explicit HasFilter(
-      std::vector<const google::protobuf::FieldDescriptor*>&& field_descriptors
-  ): field_descriptors_(std::move(field_descriptors)) {}
+      std::vector<const google::protobuf::FieldDescriptor*>&& field_descriptors)
+      : field_descriptors_(std::move(field_descriptors)) {}
 
   HasFilter(const HasFilter&) = delete;
   HasFilter& operator=(const HasFilter&) = delete;
