@@ -14,6 +14,10 @@
 
 #include "wfa/virtual_people/common/field_filter/or_filter.h"
 
+#include <memory>
+#include <utility>
+#include <vector>
+
 #include "absl/status/statusor.h"
 #include "absl/strings/str_cat.h"
 #include "common_cpp/macros/macros.h"

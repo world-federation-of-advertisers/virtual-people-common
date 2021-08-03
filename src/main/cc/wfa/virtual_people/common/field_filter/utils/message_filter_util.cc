@@ -14,6 +14,8 @@
 
 #include "wfa/virtual_people/common/field_filter/utils/message_filter_util.h"
 
+#include <vector>
+
 #include "absl/status/status.h"
 #include "absl/status/statusor.h"
 #include "absl/strings/str_cat.h"

@@ -14,6 +14,10 @@
 
 #include "wfa/virtual_people/common/field_filter/utils/integer_comparator.h"
 
+#include <memory>
+#include <utility>
+#include <vector>
+
 #include "absl/memory/memory.h"
 #include "absl/status/status.h"
 #include "absl/status/statusor.h"

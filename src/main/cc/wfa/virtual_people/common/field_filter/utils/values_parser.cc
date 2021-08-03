@@ -14,6 +14,9 @@
 
 #include "wfa/virtual_people/common/field_filter/utils/values_parser.h"
 
+#include <string>
+#include <vector>
+
 #include "absl/container/flat_hash_set.h"
 #include "absl/status/statusor.h"
 #include "absl/strings/str_split.h"

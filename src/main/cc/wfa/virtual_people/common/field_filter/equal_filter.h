@@ -15,6 +15,8 @@
 #ifndef SRC_MAIN_CC_WFA_VIRTUAL_PEOPLE_COMMON_FIELD_FILTER_EQUAL_FILTER_H_
 #define SRC_MAIN_CC_WFA_VIRTUAL_PEOPLE_COMMON_FIELD_FILTER_EQUAL_FILTER_H_
 
+#include <memory>
+
 #include "absl/status/statusor.h"
 #include "google/protobuf/descriptor.h"
 #include "google/protobuf/message.h"
@@ -48,8 +50,7 @@ class EqualFilter : public FieldFilter {
 
   // Returns true when the field represented by @config.name in @message equals
   // to @config.value. Otherwise, returns false.
-  virtual bool IsMatch(
-      const google::protobuf::Message& message) const override = 0;
+  bool IsMatch(const google::protobuf::Message& message) const override = 0;
 
  protected:
   EqualFilter() = default;

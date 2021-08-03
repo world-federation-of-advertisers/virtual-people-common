@@ -14,6 +14,9 @@
 
 #include "wfa/virtual_people/common/field_filter/utils/field_util.h"
 
+#include <string>
+#include <vector>
+
 #include "absl/memory/memory.h"
 #include "absl/meta/type_traits.h"
 #include "absl/status/status.h"

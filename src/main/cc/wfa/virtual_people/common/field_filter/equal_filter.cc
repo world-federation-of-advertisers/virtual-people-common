@@ -14,6 +14,11 @@
 
 #include "wfa/virtual_people/common/field_filter/equal_filter.h"
 
+#include <memory>
+#include <string>
+#include <utility>
+#include <vector>
+
 #include "absl/memory/memory.h"
 #include "absl/status/statusor.h"
 #include "absl/strings/str_cat.h"

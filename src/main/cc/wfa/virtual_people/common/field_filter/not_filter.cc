@@ -14,6 +14,9 @@
 
 #include "wfa/virtual_people/common/field_filter/not_filter.h"
 
+#include <memory>
+#include <utility>
+
 #include "absl/status/statusor.h"
 #include "absl/strings/str_cat.h"
 #include "common_cpp/macros/macros.h"

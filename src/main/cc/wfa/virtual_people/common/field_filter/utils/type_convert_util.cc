@@ -14,6 +14,8 @@
 
 #include "wfa/virtual_people/common/field_filter/utils/type_convert_util.h"
 
+#include <string>
+
 #include "absl/status/status.h"
 #include "absl/status/statusor.h"
 #include "absl/strings/numbers.h"

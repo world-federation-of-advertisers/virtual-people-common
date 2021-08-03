@@ -15,6 +15,10 @@
 #ifndef SRC_MAIN_CC_WFA_VIRTUAL_PEOPLE_COMMON_FIELD_FILTER_PARTIAL_FILTER_H_
 #define SRC_MAIN_CC_WFA_VIRTUAL_PEOPLE_COMMON_FIELD_FILTER_PARTIAL_FILTER_H_
 
+#include <memory>
+#include <utility>
+#include <vector>
+
 #include "absl/status/statusor.h"
 #include "google/protobuf/descriptor.h"
 #include "google/protobuf/message.h"

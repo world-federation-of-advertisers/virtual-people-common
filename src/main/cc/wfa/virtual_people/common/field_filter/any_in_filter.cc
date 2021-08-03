@@ -14,6 +14,11 @@
 
 #include "wfa/virtual_people/common/field_filter/any_in_filter.h"
 
+#include <memory>
+#include <string>
+#include <utility>
+#include <vector>
+
 #include "absl/container/flat_hash_set.h"
 #include "absl/memory/memory.h"
 #include "absl/status/status.h"

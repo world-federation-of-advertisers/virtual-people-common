@@ -15,6 +15,8 @@
 #ifndef SRC_MAIN_CC_WFA_VIRTUAL_PEOPLE_COMMON_FIELD_FILTER_UTILS_FIELD_UTIL_H_
 #define SRC_MAIN_CC_WFA_VIRTUAL_PEOPLE_COMMON_FIELD_FILTER_UTILS_FIELD_UTIL_H_
 
+#include <vector>
+
 #include "absl/meta/type_traits.h"
 #include "absl/status/statusor.h"
 #include "absl/strings/string_view.h"
