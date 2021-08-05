@@ -14,12 +14,15 @@
 
 #include "wfa/virtual_people/common/field_filter/not_filter.h"
 
+#include <memory>
+#include <utility>
+
 #include "absl/status/statusor.h"
 #include "absl/strings/str_cat.h"
+#include "common_cpp/macros/macros.h"
 #include "google/protobuf/descriptor.h"
 #include "google/protobuf/message.h"
 #include "src/main/proto/wfa/virtual_people/common/field_filter.pb.h"
-#include "wfa/measurement/common/macros.h"
 #include "wfa/virtual_people/common/field_filter/field_filter.h"
 
 namespace wfa_virtual_people {
@@ -29,8 +32,7 @@ absl::StatusOr<std::unique_ptr<NotFilter>> NotFilter::New(
     const FieldFilterProto& config) {
   if (config.op() != FieldFilterProto::NOT) {
     return absl::InvalidArgumentError(absl::StrCat(
-        "Op must be NOT. Input FieldFilterProto: ",
-        config.DebugString()));
+        "Op must be NOT. Input FieldFilterProto: ", config.DebugString()));
   }
   if (config.sub_filters_size() == 0) {
     return absl::InvalidArgumentError(absl::StrCat(
@@ -40,9 +42,8 @@ absl::StatusOr<std::unique_ptr<NotFilter>> NotFilter::New(
 
   FieldFilterProto and_filter_config = config;
   and_filter_config.set_op(FieldFilterProto::AND);
-  ASSIGN_OR_RETURN(
-      std::unique_ptr<FieldFilter> and_filter,
-      FieldFilter::New(descriptor, and_filter_config));
+  ASSIGN_OR_RETURN(std::unique_ptr<FieldFilter> and_filter,
+                   FieldFilter::New(descriptor, and_filter_config));
 
   return absl::make_unique<NotFilter>(std::move(and_filter));
 }

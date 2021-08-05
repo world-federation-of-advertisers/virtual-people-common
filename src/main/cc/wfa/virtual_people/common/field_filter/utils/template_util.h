@@ -12,8 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef WFA_VIRTUAL_PEOPLE_COMMON_FIELD_FILTER_UTILS_TEMPLATE_UTIL_H_
-#define WFA_VIRTUAL_PEOPLE_COMMON_FIELD_FILTER_UTILS_TEMPLATE_UTIL_H_
+#ifndef SRC_MAIN_CC_WFA_VIRTUAL_PEOPLE_COMMON_FIELD_FILTER_UTILS_TEMPLATE_UTIL_H_
+#define SRC_MAIN_CC_WFA_VIRTUAL_PEOPLE_COMMON_FIELD_FILTER_UTILS_TEMPLATE_UTIL_H_
+
+#include <string>
 
 #include "absl/meta/type_traits.h"
 #include "google/protobuf/descriptor.h"
@@ -33,25 +35,22 @@ namespace wfa_virtual_people {
 
 template <typename ValueType>
 using IsIntegerType = absl::disjunction<
-    std::is_same<ValueType, int32_t>,
-    std::is_same<ValueType, int64_t>,
-    std::is_same<ValueType, uint32_t>,
-    std::is_same<ValueType, uint64_t>>;
+    std::is_same<ValueType, int32_t>, std::is_same<ValueType, int64_t>,
+    std::is_same<ValueType, uint32_t>, std::is_same<ValueType, uint64_t>>;
 
 template <typename ValueType>
-using EnableIfIntegerType = absl::enable_if_t<
-    IsIntegerType<ValueType>::value, bool>;
+using EnableIfIntegerType =
+    absl::enable_if_t<IsIntegerType<ValueType>::value, bool>;
 
 template <typename ValueType>
-using IsNumericType = absl::disjunction<
-    IsIntegerType<ValueType>,
-    std::is_same<ValueType, float>,
-    std::is_same<ValueType, double>,
-    std::is_same<ValueType, bool>>;
+using IsNumericType =
+    absl::disjunction<IsIntegerType<ValueType>, std::is_same<ValueType, float>,
+                      std::is_same<ValueType, double>,
+                      std::is_same<ValueType, bool>>;
 
 template <typename ValueType>
-using EnableIfNumericType = absl::enable_if_t<
-    IsNumericType<ValueType>::value, bool>;
+using EnableIfNumericType =
+    absl::enable_if_t<IsNumericType<ValueType>::value, bool>;
 
 template <typename ValueType>
 using IsProtoValueType = absl::disjunction<
@@ -60,24 +59,24 @@ using IsProtoValueType = absl::disjunction<
     std::is_same<ValueType, const std::string&>>;
 
 template <typename ValueType>
-using EnableIfProtoType = absl::enable_if_t<absl::disjunction<
-    IsProtoValueType<ValueType>,
-    std::is_same<ValueType, const google::protobuf::Message&>
->::value, bool>;
+using EnableIfProtoType = absl::enable_if_t<
+    absl::disjunction<
+        IsProtoValueType<ValueType>,
+        std::is_same<ValueType, const google::protobuf::Message&>>::value,
+    bool>;
 
 template <typename ValueType>
-using EnableIfProtoValueType = absl::enable_if_t<
-    IsProtoValueType<ValueType>::value, bool>;
+using EnableIfProtoValueType =
+    absl::enable_if_t<IsProtoValueType<ValueType>::value, bool>;
 
 template <typename ValueType>
-using IsIntBoolStrType = absl::disjunction<
-    IsIntegerType<ValueType>,
-    std::is_same<ValueType, bool>,
-    std::is_same<ValueType, const std::string&>>;
+using IsIntBoolStrType =
+    absl::disjunction<IsIntegerType<ValueType>, std::is_same<ValueType, bool>,
+                      std::is_same<ValueType, const std::string&>>;
 
 template <typename ValueType>
-using EnableIfIntBoolStrType = absl::enable_if_t<
-    IsIntBoolStrType<ValueType>::value, bool>;
+using EnableIfIntBoolStrType =
+    absl::enable_if_t<IsIntBoolStrType<ValueType>::value, bool>;
 
 template <typename ValueType>
 using IsNonFloatProtoValueType = absl::disjunction<
@@ -85,9 +84,9 @@ using IsNonFloatProtoValueType = absl::disjunction<
     std::is_same<ValueType, const google::protobuf::EnumValueDescriptor*>>;
 
 template <typename ValueType>
-using EnableIfNonFloatProtoValueType = absl::enable_if_t<
-    IsNonFloatProtoValueType<ValueType>::value, bool>;
+using EnableIfNonFloatProtoValueType =
+    absl::enable_if_t<IsNonFloatProtoValueType<ValueType>::value, bool>;
 
 }  // namespace wfa_virtual_people
 
-#endif  // WFA_VIRTUAL_PEOPLE_COMMON_FIELD_FILTER_UTILS_TEMPLATE_UTIL_H_
+#endif  // SRC_MAIN_CC_WFA_VIRTUAL_PEOPLE_COMMON_FIELD_FILTER_UTILS_TEMPLATE_UTIL_H_

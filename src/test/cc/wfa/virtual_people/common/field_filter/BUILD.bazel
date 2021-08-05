@@ -9,10 +9,9 @@ cc_test(
         "//src/main/cc/wfa/virtual_people/common/field_filter",
         "//src/test/cc/wfa/virtual_people/common/field_filter/test:test_cc_proto",
         "@com_google_absl//absl/status",
-        "@com_google_googletest//:gtest_main",
         "@com_google_protobuf//:protobuf",
-        "@cross_media_measurement//src/test/cc/testutil:matchers",
-        "@cross_media_measurement//src/test/cc/testutil:status_macros",
+        "@googletest//:gtest_main",
+        "@wfa_common_cpp//src/main/cc/common_cpp/testing:status",
     ],
 )
 
@@ -25,10 +24,9 @@ cc_test(
         "//src/test/cc/wfa/virtual_people/common/field_filter/test:test_cc_proto",
         "@com_google_absl//absl/status",
         "@com_google_absl//absl/status:statusor",
-        "@com_google_googletest//:gtest_main",
         "@com_google_protobuf//:protobuf",
-        "@cross_media_measurement//src/test/cc/testutil:matchers",
-        "@cross_media_measurement//src/test/cc/testutil:status_macros",
+        "@googletest//:gtest_main",
+        "@wfa_common_cpp//src/main/cc/common_cpp/testing:status",
     ],
 )
 
@@ -41,10 +39,9 @@ cc_test(
         "//src/test/cc/wfa/virtual_people/common/field_filter/test:test_cc_proto",
         "@com_google_absl//absl/status",
         "@com_google_absl//absl/status:statusor",
-        "@com_google_googletest//:gtest_main",
         "@com_google_protobuf//:protobuf",
-        "@cross_media_measurement//src/test/cc/testutil:matchers",
-        "@cross_media_measurement//src/test/cc/testutil:status_macros",
+        "@googletest//:gtest_main",
+        "@wfa_common_cpp//src/main/cc/common_cpp/testing:status",
     ],
 )
 
@@ -57,10 +54,9 @@ cc_test(
         "//src/test/cc/wfa/virtual_people/common/field_filter/test:test_cc_proto",
         "@com_google_absl//absl/status",
         "@com_google_absl//absl/status:statusor",
-        "@com_google_googletest//:gtest_main",
         "@com_google_protobuf//:protobuf",
-        "@cross_media_measurement//src/test/cc/testutil:matchers",
-        "@cross_media_measurement//src/test/cc/testutil:status_macros",
+        "@googletest//:gtest_main",
+        "@wfa_common_cpp//src/main/cc/common_cpp/testing:status",
     ],
 )
 
@@ -73,10 +69,9 @@ cc_test(
         "//src/test/cc/wfa/virtual_people/common/field_filter/test:test_cc_proto",
         "@com_google_absl//absl/status",
         "@com_google_absl//absl/status:statusor",
-        "@com_google_googletest//:gtest_main",
         "@com_google_protobuf//:protobuf",
-        "@cross_media_measurement//src/test/cc/testutil:matchers",
-        "@cross_media_measurement//src/test/cc/testutil:status_macros",
+        "@googletest//:gtest_main",
+        "@wfa_common_cpp//src/main/cc/common_cpp/testing:status",
     ],
 )
 
@@ -89,10 +84,9 @@ cc_test(
         "//src/test/cc/wfa/virtual_people/common/field_filter/test:test_cc_proto",
         "@com_google_absl//absl/status",
         "@com_google_absl//absl/status:statusor",
-        "@com_google_googletest//:gtest_main",
         "@com_google_protobuf//:protobuf",
-        "@cross_media_measurement//src/test/cc/testutil:matchers",
-        "@cross_media_measurement//src/test/cc/testutil:status_macros",
+        "@googletest//:gtest_main",
+        "@wfa_common_cpp//src/main/cc/common_cpp/testing:status",
     ],
 )
 
@@ -105,10 +99,9 @@ cc_test(
         "//src/test/cc/wfa/virtual_people/common/field_filter/test:test_cc_proto",
         "@com_google_absl//absl/status",
         "@com_google_absl//absl/status:statusor",
-        "@com_google_googletest//:gtest_main",
         "@com_google_protobuf//:protobuf",
-        "@cross_media_measurement//src/test/cc/testutil:matchers",
-        "@cross_media_measurement//src/test/cc/testutil:status_macros",
+        "@googletest//:gtest_main",
+        "@wfa_common_cpp//src/main/cc/common_cpp/testing:status",
     ],
 )
 
@@ -121,10 +114,9 @@ cc_test(
         "//src/test/cc/wfa/virtual_people/common/field_filter/test:test_cc_proto",
         "@com_google_absl//absl/status",
         "@com_google_absl//absl/status:statusor",
-        "@com_google_googletest//:gtest_main",
         "@com_google_protobuf//:protobuf",
-        "@cross_media_measurement//src/test/cc/testutil:matchers",
-        "@cross_media_measurement//src/test/cc/testutil:status_macros",
+        "@googletest//:gtest_main",
+        "@wfa_common_cpp//src/main/cc/common_cpp/testing:status",
     ],
 )
 
@@ -135,10 +127,11 @@ cc_test(
         "//src/main/cc/wfa/virtual_people/common/field_filter",
         "//src/main/proto/wfa/virtual_people/common:field_filter_cc_proto",
         "//src/test/cc/wfa/virtual_people/common/field_filter/test:test_cc_proto",
+        "@com_google_absl//absl/status",
         "@com_google_absl//absl/status:statusor",
-        "@com_google_googletest//:gtest_main",
-        "@cross_media_measurement//src/test/cc/testutil:matchers",
-        "@cross_media_measurement//src/test/cc/testutil:status_macros",
+        "@com_google_protobuf//:protobuf",
+        "@googletest//:gtest_main",
+        "@wfa_common_cpp//src/main/cc/common_cpp/testing:status",
     ],
 )
 
@@ -151,10 +144,9 @@ cc_test(
         "//src/test/cc/wfa/virtual_people/common/field_filter/test:test_cc_proto",
         "@com_google_absl//absl/status",
         "@com_google_absl//absl/status:statusor",
-        "@com_google_googletest//:gtest_main",
         "@com_google_protobuf//:protobuf",
-        "@cross_media_measurement//src/test/cc/testutil:matchers",
-        "@cross_media_measurement//src/test/cc/testutil:status_macros",
+        "@googletest//:gtest_main",
+        "@wfa_common_cpp//src/main/cc/common_cpp/testing:status",
     ],
 )
 
@@ -167,10 +159,9 @@ cc_test(
         "//src/test/cc/wfa/virtual_people/common/field_filter/test:test_cc_proto",
         "@com_google_absl//absl/status",
         "@com_google_absl//absl/status:statusor",
-        "@com_google_googletest//:gtest_main",
         "@com_google_protobuf//:protobuf",
-        "@cross_media_measurement//src/test/cc/testutil:matchers",
-        "@cross_media_measurement//src/test/cc/testutil:status_macros",
+        "@googletest//:gtest_main",
+        "@wfa_common_cpp//src/main/cc/common_cpp/testing:status",
     ],
 )
 
@@ -183,9 +174,8 @@ cc_test(
         "//src/test/cc/wfa/virtual_people/common/field_filter/test:test_cc_proto",
         "@com_google_absl//absl/status",
         "@com_google_absl//absl/status:statusor",
-        "@com_google_googletest//:gtest_main",
         "@com_google_protobuf//:protobuf",
-        "@cross_media_measurement//src/test/cc/testutil:matchers",
-        "@cross_media_measurement//src/test/cc/testutil:status_macros",
+        "@googletest//:gtest_main",
+        "@wfa_common_cpp//src/main/cc/common_cpp/testing:status",
     ],
 )

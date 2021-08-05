@@ -14,12 +14,16 @@
 
 #include "wfa/virtual_people/common/field_filter/or_filter.h"
 
+#include <memory>
+#include <utility>
+#include <vector>
+
 #include "absl/status/statusor.h"
 #include "absl/strings/str_cat.h"
+#include "common_cpp/macros/macros.h"
 #include "google/protobuf/descriptor.h"
 #include "google/protobuf/message.h"
 #include "src/main/proto/wfa/virtual_people/common/field_filter.pb.h"
-#include "wfa/measurement/common/macros.h"
 #include "wfa/virtual_people/common/field_filter/field_filter.h"
 
 namespace wfa_virtual_people {
@@ -29,8 +33,7 @@ absl::StatusOr<std::unique_ptr<OrFilter>> OrFilter::New(
     const FieldFilterProto& config) {
   if (config.op() != FieldFilterProto::OR) {
     return absl::InvalidArgumentError(absl::StrCat(
-        "Op must be OR. Input FieldFilterProto: ",
-        config.DebugString()));
+        "Op must be OR. Input FieldFilterProto: ", config.DebugString()));
   }
   if (config.sub_filters_size() == 0) {
     return absl::InvalidArgumentError(absl::StrCat(
@@ -41,9 +44,8 @@ absl::StatusOr<std::unique_ptr<OrFilter>> OrFilter::New(
   std::vector<std::unique_ptr<FieldFilter>> sub_filters;
   for (const FieldFilterProto& sub_filter_proto : config.sub_filters()) {
     sub_filters.emplace_back();
-    ASSIGN_OR_RETURN(
-        sub_filters.back(),
-        FieldFilter::New(descriptor, sub_filter_proto));
+    ASSIGN_OR_RETURN(sub_filters.back(),
+                     FieldFilter::New(descriptor, sub_filter_proto));
   }
 
   return absl::make_unique<OrFilter>(std::move(sub_filters));

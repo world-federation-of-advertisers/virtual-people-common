@@ -12,8 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef WFA_VIRTUAL_PEOPLE_COMMON_FIELD_FILTER_NOT_FILTER_H_
-#define WFA_VIRTUAL_PEOPLE_COMMON_FIELD_FILTER_NOT_FILTER_H_
+#ifndef SRC_MAIN_CC_WFA_VIRTUAL_PEOPLE_COMMON_FIELD_FILTER_NOT_FILTER_H_
+#define SRC_MAIN_CC_WFA_VIRTUAL_PEOPLE_COMMON_FIELD_FILTER_NOT_FILTER_H_
+
+#include <memory>
+#include <utility>
 
 #include "absl/status/statusor.h"
 #include "google/protobuf/descriptor.h"
@@ -37,9 +40,8 @@ class NotFilter : public FieldFilter {
       const google::protobuf::Descriptor* descriptor,
       const FieldFilterProto& config);
 
-  explicit NotFilter(
-      std::unique_ptr<FieldFilter> and_filter):
-      and_filter_(std::move(and_filter)) {}
+  explicit NotFilter(std::unique_ptr<FieldFilter> and_filter)
+      : and_filter_(std::move(and_filter)) {}
 
   NotFilter(const NotFilter&) = delete;
   NotFilter& operator=(const NotFilter&) = delete;
@@ -57,4 +59,4 @@ class NotFilter : public FieldFilter {
 
 }  // namespace wfa_virtual_people
 
-#endif  // WFA_VIRTUAL_PEOPLE_COMMON_FIELD_FILTER_NOT_FILTER_H_
+#endif  // SRC_MAIN_CC_WFA_VIRTUAL_PEOPLE_COMMON_FIELD_FILTER_NOT_FILTER_H_

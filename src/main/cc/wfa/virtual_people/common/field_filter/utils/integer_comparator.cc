@@ -14,13 +14,17 @@
 
 #include "wfa/virtual_people/common/field_filter/utils/integer_comparator.h"
 
+#include <memory>
+#include <utility>
+#include <vector>
+
 #include "absl/memory/memory.h"
 #include "absl/status/status.h"
 #include "absl/status/statusor.h"
 #include "absl/strings/string_view.h"
+#include "common_cpp/macros/macros.h"
 #include "google/protobuf/descriptor.h"
 #include "google/protobuf/message.h"
-#include "wfa/measurement/common/macros.h"
 #include "wfa/virtual_people/common/field_filter/utils/field_util.h"
 #include "wfa/virtual_people/common/field_filter/utils/template_util.h"
 #include "wfa/virtual_people/common/field_filter/utils/type_convert_util.h"
@@ -32,8 +36,8 @@ class IntegerComparatorImpl : public IntegerComparator {
  public:
   IntegerComparatorImpl(
       std::vector<const google::protobuf::FieldDescriptor*>&& field_descriptors,
-      IntegerType value
-  ): IntegerComparator(std::move(field_descriptors)), value_(value) {}
+      IntegerType value)
+      : IntegerComparator(std::move(field_descriptors)), value_(value) {}
 
   IntegerCompareResult Compare(
       const google::protobuf::Message& message) const override {

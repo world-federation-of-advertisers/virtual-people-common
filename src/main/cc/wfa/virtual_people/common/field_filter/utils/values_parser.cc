@@ -14,26 +14,27 @@
 
 #include "wfa/virtual_people/common/field_filter/utils/values_parser.h"
 
+#include <string>
+#include <vector>
+
 #include "absl/container/flat_hash_set.h"
 #include "absl/status/statusor.h"
-#include "absl/strings/string_view.h"
 #include "absl/strings/str_split.h"
+#include "absl/strings/string_view.h"
+#include "common_cpp/macros/macros.h"
 #include "google/protobuf/descriptor.h"
-#include "wfa/measurement/common/macros.h"
 #include "wfa/virtual_people/common/field_filter/utils/type_convert_util.h"
 
 namespace wfa_virtual_people {
 
 absl::StatusOr<ParsedValues<const google::protobuf::EnumValueDescriptor*>>
-ParseEnumValues(
-    const google::protobuf::EnumDescriptor* descriptor,
-    absl::string_view values_str) {
+ParseEnumValues(const google::protobuf::EnumDescriptor* descriptor,
+                absl::string_view values_str) {
   std::vector<std::string> values_list = absl::StrSplit(values_str, ',');
   ParsedValues<const google::protobuf::EnumValueDescriptor*> parsed_values;
   for (const std::string& value_str : values_list) {
-    ASSIGN_OR_RETURN(
-        const google::protobuf::EnumValueDescriptor* value,
-        ConvertToEnum(descriptor, value_str));
+    ASSIGN_OR_RETURN(const google::protobuf::EnumValueDescriptor* value,
+                     ConvertToEnum(descriptor, value_str));
     parsed_values.values.insert(value->number());
   }
   return parsed_values;

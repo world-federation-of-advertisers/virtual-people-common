@@ -12,8 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef WFA_VIRTUAL_PEOPLE_COMMON_FIELD_FILTER_HAS_FILTER_H_
-#define WFA_VIRTUAL_PEOPLE_COMMON_FIELD_FILTER_HAS_FILTER_H_
+#ifndef SRC_MAIN_CC_WFA_VIRTUAL_PEOPLE_COMMON_FIELD_FILTER_HAS_FILTER_H_
+#define SRC_MAIN_CC_WFA_VIRTUAL_PEOPLE_COMMON_FIELD_FILTER_HAS_FILTER_H_
+
+#include <memory>
+#include <utility>
+#include <vector>
 
 #include "absl/status/statusor.h"
 #include "google/protobuf/descriptor.h"
@@ -39,8 +43,8 @@ class HasFilter : public FieldFilter {
       const FieldFilterProto& config);
 
   explicit HasFilter(
-      std::vector<const google::protobuf::FieldDescriptor*>&& field_descriptors
-  ): field_descriptors_(std::move(field_descriptors)) {}
+      std::vector<const google::protobuf::FieldDescriptor*>&& field_descriptors)
+      : field_descriptors_(std::move(field_descriptors)) {}
 
   HasFilter(const HasFilter&) = delete;
   HasFilter& operator=(const HasFilter&) = delete;
@@ -56,4 +60,4 @@ class HasFilter : public FieldFilter {
 
 }  // namespace wfa_virtual_people
 
-#endif  // WFA_VIRTUAL_PEOPLE_COMMON_FIELD_FILTER_HAS_FILTER_H_
+#endif  // SRC_MAIN_CC_WFA_VIRTUAL_PEOPLE_COMMON_FIELD_FILTER_HAS_FILTER_H_

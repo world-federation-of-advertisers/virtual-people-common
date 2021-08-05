@@ -12,8 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef WFA_VIRTUAL_PEOPLE_COMMON_FIELD_FILTER_PARTIAL_FILTER_H_
-#define WFA_VIRTUAL_PEOPLE_COMMON_FIELD_FILTER_PARTIAL_FILTER_H_
+#ifndef SRC_MAIN_CC_WFA_VIRTUAL_PEOPLE_COMMON_FIELD_FILTER_PARTIAL_FILTER_H_
+#define SRC_MAIN_CC_WFA_VIRTUAL_PEOPLE_COMMON_FIELD_FILTER_PARTIAL_FILTER_H_
+
+#include <memory>
+#include <utility>
+#include <vector>
 
 #include "absl/status/statusor.h"
 #include "google/protobuf/descriptor.h"
@@ -42,9 +46,9 @@ class PartialFilter : public FieldFilter {
 
   explicit PartialFilter(
       std::vector<const google::protobuf::FieldDescriptor*>&& field_descriptors,
-      std::vector<std::unique_ptr<FieldFilter>>&& sub_filters):
-      field_descriptors_(std::move(field_descriptors)),
-      sub_filters_(std::move(sub_filters)) {}
+      std::vector<std::unique_ptr<FieldFilter>>&& sub_filters)
+      : field_descriptors_(std::move(field_descriptors)),
+        sub_filters_(std::move(sub_filters)) {}
 
   PartialFilter(const PartialFilter&) = delete;
   PartialFilter& operator=(const PartialFilter&) = delete;
@@ -62,4 +66,4 @@ class PartialFilter : public FieldFilter {
 
 }  // namespace wfa_virtual_people
 
-#endif  // WFA_VIRTUAL_PEOPLE_COMMON_FIELD_FILTER_PARTIAL_FILTER_H_
+#endif  // SRC_MAIN_CC_WFA_VIRTUAL_PEOPLE_COMMON_FIELD_FILTER_PARTIAL_FILTER_H_

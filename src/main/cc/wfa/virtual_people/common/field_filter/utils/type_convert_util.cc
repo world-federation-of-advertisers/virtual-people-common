@@ -14,6 +14,8 @@
 
 #include "wfa/virtual_people/common/field_filter/utils/type_convert_util.h"
 
+#include <string>
+
 #include "absl/status/status.h"
 #include "absl/status/statusor.h"
 #include "absl/strings/numbers.h"
@@ -33,8 +35,8 @@ absl::StatusOr<int32_t> ConvertToNumeric<int32_t>(absl::string_view input) {
   if (absl::SimpleAtoi(input, &output)) {
     return output;
   }
-  return absl::InvalidArgumentError(absl::StrCat(
-      "Input cannot be converted to int32_t. Input: ", input));
+  return absl::InvalidArgumentError(
+      absl::StrCat("Input cannot be converted to int32_t. Input: ", input));
 }
 
 template <>
@@ -43,8 +45,8 @@ absl::StatusOr<int64_t> ConvertToNumeric<int64_t>(absl::string_view input) {
   if (absl::SimpleAtoi(input, &output)) {
     return output;
   }
-  return absl::InvalidArgumentError(absl::StrCat(
-      "Input cannot be converted to int64_t. Input: ", input));
+  return absl::InvalidArgumentError(
+      absl::StrCat("Input cannot be converted to int64_t. Input: ", input));
 }
 
 template <>
@@ -53,8 +55,8 @@ absl::StatusOr<uint32_t> ConvertToNumeric<uint32_t>(absl::string_view input) {
   if (absl::SimpleAtoi(input, &output)) {
     return output;
   }
-  return absl::InvalidArgumentError(absl::StrCat(
-      "Input cannot be converted to uint32_t. Input: ", input));
+  return absl::InvalidArgumentError(
+      absl::StrCat("Input cannot be converted to uint32_t. Input: ", input));
 }
 
 template <>
@@ -63,8 +65,8 @@ absl::StatusOr<uint64_t> ConvertToNumeric<uint64_t>(absl::string_view input) {
   if (absl::SimpleAtoi(input, &output)) {
     return output;
   }
-  return absl::InvalidArgumentError(absl::StrCat(
-      "Input cannot be converted to uint64_t. Input: ", input));
+  return absl::InvalidArgumentError(
+      absl::StrCat("Input cannot be converted to uint64_t. Input: ", input));
 }
 
 template <>
@@ -73,8 +75,8 @@ absl::StatusOr<float> ConvertToNumeric<float>(absl::string_view input) {
   if (absl::SimpleAtof(input, &output)) {
     return output;
   }
-  return absl::InvalidArgumentError(absl::StrCat(
-      "Input cannot be converted to float. Input: ", input));
+  return absl::InvalidArgumentError(
+      absl::StrCat("Input cannot be converted to float. Input: ", input));
 }
 
 template <>
@@ -83,8 +85,8 @@ absl::StatusOr<double> ConvertToNumeric<double>(absl::string_view input) {
   if (absl::SimpleAtod(input, &output)) {
     return output;
   }
-  return absl::InvalidArgumentError(absl::StrCat(
-      "Input cannot be converted to double. Input: ", input));
+  return absl::InvalidArgumentError(
+      absl::StrCat("Input cannot be converted to double. Input: ", input));
 }
 
 template <>
@@ -93,8 +95,8 @@ absl::StatusOr<bool> ConvertToNumeric<bool>(absl::string_view input) {
   if (absl::SimpleAtob(input, &output)) {
     return output;
   }
-  return absl::InvalidArgumentError(absl::StrCat(
-      "Input cannot be converted to bool. Input: ", input));
+  return absl::InvalidArgumentError(
+      absl::StrCat("Input cannot be converted to bool. Input: ", input));
 }
 
 absl::StatusOr<const google::protobuf::EnumValueDescriptor*> ConvertToEnum(
@@ -113,8 +115,8 @@ absl::StatusOr<const google::protobuf::EnumValueDescriptor*> ConvertToEnum(
   }
 
   if (enum_value_descriptor == nullptr) {
-    return absl::InvalidArgumentError(absl::StrCat(
-        "Input cannot be converted to enum. Input: ", input));
+    return absl::InvalidArgumentError(
+        absl::StrCat("Input cannot be converted to enum. Input: ", input));
   }
   return enum_value_descriptor;
 }

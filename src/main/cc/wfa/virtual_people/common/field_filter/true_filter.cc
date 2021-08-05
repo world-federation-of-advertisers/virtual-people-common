@@ -14,6 +14,8 @@
 
 #include "wfa/virtual_people/common/field_filter/true_filter.h"
 
+#include <memory>
+
 #include "absl/memory/memory.h"
 #include "absl/status/statusor.h"
 #include "absl/strings/str_cat.h"
@@ -30,19 +32,19 @@ absl::StatusOr<std::unique_ptr<TrueFilter>> TrueFilter::New(
         "Op must be TRUE. Input FieldFilterProto: ", config.DebugString()));
   }
   if (config.has_name()) {
-    return absl::InvalidArgumentError(absl::StrCat(
-        "Name should not be set. Input FieldFilterProto: ",
-        config.DebugString()));
+    return absl::InvalidArgumentError(
+        absl::StrCat("Name should not be set. Input FieldFilterProto: ",
+                     config.DebugString()));
   }
   if (config.has_value()) {
-    return absl::InvalidArgumentError(absl::StrCat(
-        "Value should not be set. Input FieldFilterProto: ",
-        config.DebugString()));
+    return absl::InvalidArgumentError(
+        absl::StrCat("Value should not be set. Input FieldFilterProto: ",
+                     config.DebugString()));
   }
   if (config.sub_filters_size() > 0) {
-    return absl::InvalidArgumentError(absl::StrCat(
-        "sub_filters must be empty. Input FieldFilterProto: ",
-        config.DebugString()));
+    return absl::InvalidArgumentError(
+        absl::StrCat("sub_filters must be empty. Input FieldFilterProto: ",
+                     config.DebugString()));
   }
   return absl::make_unique<TrueFilter>();
 }

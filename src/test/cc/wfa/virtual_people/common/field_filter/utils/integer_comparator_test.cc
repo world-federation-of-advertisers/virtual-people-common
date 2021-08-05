@@ -15,11 +15,11 @@
 #include "wfa/virtual_people/common/field_filter/utils/integer_comparator.h"
 
 #include "absl/status/status.h"
+#include "common_cpp/testing/status_macros.h"
+#include "common_cpp/testing/status_matchers.h"
 #include "gmock/gmock.h"
 #include "google/protobuf/descriptor.h"
 #include "gtest/gtest.h"
-#include "src/test/cc/testutil/matchers.h"
-#include "src/test/cc/testutil/status_macros.h"
 #include "src/test/cc/wfa/virtual_people/common/field_filter/test/test.pb.h"
 #include "wfa/virtual_people/common/field_filter/utils/field_util.h"
 

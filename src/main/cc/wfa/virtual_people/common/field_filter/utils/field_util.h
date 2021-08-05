@@ -12,8 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef WFA_VIRTUAL_PEOPLE_COMMON_FIELD_FILTER_UTILS_FIELD_UTIL_H_
-#define WFA_VIRTUAL_PEOPLE_COMMON_FIELD_FILTER_UTILS_FIELD_UTIL_H_
+#ifndef SRC_MAIN_CC_WFA_VIRTUAL_PEOPLE_COMMON_FIELD_FILTER_UTILS_FIELD_UTIL_H_
+#define SRC_MAIN_CC_WFA_VIRTUAL_PEOPLE_COMMON_FIELD_FILTER_UTILS_FIELD_UTIL_H_
+
+#include <vector>
 
 #include "absl/meta/type_traits.h"
 #include "absl/status/statusor.h"
@@ -37,10 +39,9 @@ namespace wfa_virtual_people {
 // The returned FieldDescriptors is in the order of the field name to access the
 // nested field.
 absl::StatusOr<std::vector<const google::protobuf::FieldDescriptor*>>
-GetFieldFromProto(
-    const google::protobuf::Descriptor* descriptor,
-    absl::string_view full_field_name,
-    bool allow_repeated = false);
+GetFieldFromProto(const google::protobuf::Descriptor* descriptor,
+                  absl::string_view full_field_name,
+                  bool allow_repeated = false);
 
 // Gets the parent message of the field represented by @field_descriptors from
 // the @message.
@@ -102,8 +103,7 @@ ValueType GetImmediateValueFromProto(
 template <typename ValueType, EnableIfProtoValueType<ValueType> = true>
 void SetImmediateValueToProto(
     google::protobuf::Message& message,
-    const google::protobuf::FieldDescriptor* field_descriptor,
-    ValueType value);
+    const google::protobuf::FieldDescriptor* field_descriptor, ValueType value);
 
 // Gets the value from the @message, with field path represented by
 // @field_descriptors.
@@ -201,8 +201,7 @@ int GetSizeOfRepeatedProto(
 template <typename ValueType, EnableIfProtoType<ValueType> = true>
 ValueType GetImmediateValueFromRepeatedProto(
     const google::protobuf::Message& message,
-    const google::protobuf::FieldDescriptor* field_descriptor,
-    int index);
+    const google::protobuf::FieldDescriptor* field_descriptor, int index);
 
 // Gets the value from the @message, with repeated field path represented by
 // @field_descriptors, and the index represented by @index.
@@ -258,4 +257,4 @@ ValueType GetValueFromRepeatedProto(
 
 }  // namespace wfa_virtual_people
 
-#endif  // WFA_VIRTUAL_PEOPLE_COMMON_FIELD_FILTER_UTILS_FIELD_UTIL_H_
+#endif  // SRC_MAIN_CC_WFA_VIRTUAL_PEOPLE_COMMON_FIELD_FILTER_UTILS_FIELD_UTIL_H_

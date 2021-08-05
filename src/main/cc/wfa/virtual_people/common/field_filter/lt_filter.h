@@ -12,8 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef WFA_VIRTUAL_PEOPLE_COMMON_FIELD_FILTER_LT_FILTER_H_
-#define WFA_VIRTUAL_PEOPLE_COMMON_FIELD_FILTER_LT_FILTER_H_
+#ifndef SRC_MAIN_CC_WFA_VIRTUAL_PEOPLE_COMMON_FIELD_FILTER_LT_FILTER_H_
+#define SRC_MAIN_CC_WFA_VIRTUAL_PEOPLE_COMMON_FIELD_FILTER_LT_FILTER_H_
+
+#include <memory>
+#include <utility>
 
 #include "absl/status/statusor.h"
 #include "google/protobuf/descriptor.h"
@@ -43,8 +46,8 @@ class LtFilter : public FieldFilter {
       const google::protobuf::Descriptor* descriptor,
       const FieldFilterProto& config);
 
-  explicit LtFilter(std::unique_ptr<IntegerComparator> comparator):
-      comparator_(std::move(comparator)) {}
+  explicit LtFilter(std::unique_ptr<IntegerComparator> comparator)
+      : comparator_(std::move(comparator)) {}
 
   LtFilter(const LtFilter&) = delete;
   LtFilter& operator=(const LtFilter&) = delete;
@@ -59,4 +62,4 @@ class LtFilter : public FieldFilter {
 
 }  // namespace wfa_virtual_people
 
-#endif  // WFA_VIRTUAL_PEOPLE_COMMON_FIELD_FILTER_LT_FILTER_H_
+#endif  // SRC_MAIN_CC_WFA_VIRTUAL_PEOPLE_COMMON_FIELD_FILTER_LT_FILTER_H_

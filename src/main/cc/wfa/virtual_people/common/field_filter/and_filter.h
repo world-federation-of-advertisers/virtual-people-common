@@ -12,8 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef WFA_VIRTUAL_PEOPLE_COMMON_FIELD_FILTER_AND_FILTER_H_
-#define WFA_VIRTUAL_PEOPLE_COMMON_FIELD_FILTER_AND_FILTER_H_
+#ifndef SRC_MAIN_CC_WFA_VIRTUAL_PEOPLE_COMMON_FIELD_FILTER_AND_FILTER_H_
+#define SRC_MAIN_CC_WFA_VIRTUAL_PEOPLE_COMMON_FIELD_FILTER_AND_FILTER_H_
+
+#include <memory>
+#include <utility>
+#include <vector>
 
 #include "absl/status/statusor.h"
 #include "google/protobuf/descriptor.h"
@@ -37,9 +41,8 @@ class AndFilter : public FieldFilter {
       const google::protobuf::Descriptor* descriptor,
       const FieldFilterProto& config);
 
-  explicit AndFilter(
-      std::vector<std::unique_ptr<FieldFilter>>&& sub_filters):
-      sub_filters_(std::move(sub_filters)) {}
+  explicit AndFilter(std::vector<std::unique_ptr<FieldFilter>>&& sub_filters)
+      : sub_filters_(std::move(sub_filters)) {}
 
   AndFilter(const AndFilter&) = delete;
   AndFilter& operator=(const AndFilter&) = delete;
@@ -53,4 +56,4 @@ class AndFilter : public FieldFilter {
 
 }  // namespace wfa_virtual_people
 
-#endif  // WFA_VIRTUAL_PEOPLE_COMMON_FIELD_FILTER_AND_FILTER_H_
+#endif  // SRC_MAIN_CC_WFA_VIRTUAL_PEOPLE_COMMON_FIELD_FILTER_AND_FILTER_H_

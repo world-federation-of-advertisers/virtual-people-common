@@ -14,13 +14,17 @@
 
 #include "wfa/virtual_people/common/field_filter/has_filter.h"
 
+#include <memory>
+#include <utility>
+#include <vector>
+
 #include "absl/memory/memory.h"
 #include "absl/status/statusor.h"
 #include "absl/strings/str_cat.h"
+#include "common_cpp/macros/macros.h"
 #include "google/protobuf/descriptor.h"
 #include "google/protobuf/message.h"
 #include "src/main/proto/wfa/virtual_people/common/field_filter.pb.h"
-#include "wfa/measurement/common/macros.h"
 #include "wfa/virtual_people/common/field_filter/field_filter.h"
 #include "wfa/virtual_people/common/field_filter/utils/field_util.h"
 
@@ -40,7 +44,8 @@ absl::StatusOr<std::unique_ptr<HasFilter>> HasFilter::New(
 
   ASSIGN_OR_RETURN(
       std::vector<const google::protobuf::FieldDescriptor*> field_descriptors,
-      GetFieldFromProto(descriptor, config.name(), /* allow_repeated = */true));
+      GetFieldFromProto(descriptor, config.name(),
+                        /* allow_repeated = */ true));
   return absl::make_unique<HasFilter>(std::move(field_descriptors));
 }
 
@@ -52,6 +57,6 @@ bool HasFilter::IsMatch(const google::protobuf::Message& message) const {
     return parent.GetReflection()->FieldSize(parent, field) > 0;
   }
   return parent.GetReflection()->HasField(parent, field);
-};
+}
 
 }  // namespace wfa_virtual_people

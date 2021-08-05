@@ -12,8 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef WFA_VIRTUAL_PEOPLE_COMMON_FIELD_FILTER_EQUAL_FILTER_H_
-#define WFA_VIRTUAL_PEOPLE_COMMON_FIELD_FILTER_EQUAL_FILTER_H_
+#ifndef SRC_MAIN_CC_WFA_VIRTUAL_PEOPLE_COMMON_FIELD_FILTER_EQUAL_FILTER_H_
+#define SRC_MAIN_CC_WFA_VIRTUAL_PEOPLE_COMMON_FIELD_FILTER_EQUAL_FILTER_H_
+
+#include <memory>
 
 #include "absl/status/statusor.h"
 #include "google/protobuf/descriptor.h"
@@ -48,8 +50,7 @@ class EqualFilter : public FieldFilter {
 
   // Returns true when the field represented by @config.name in @message equals
   // to @config.value. Otherwise, returns false.
-  virtual bool IsMatch(
-      const google::protobuf::Message& message) const override = 0;
+  bool IsMatch(const google::protobuf::Message& message) const override = 0;
 
  protected:
   EqualFilter() = default;
@@ -57,4 +58,4 @@ class EqualFilter : public FieldFilter {
 
 }  // namespace wfa_virtual_people
 
-#endif  // WFA_VIRTUAL_PEOPLE_COMMON_FIELD_FILTER_EQUAL_FILTER_H_
+#endif  // SRC_MAIN_CC_WFA_VIRTUAL_PEOPLE_COMMON_FIELD_FILTER_EQUAL_FILTER_H_
