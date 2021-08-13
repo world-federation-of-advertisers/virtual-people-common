@@ -91,9 +91,21 @@ google::protobuf::Message& GetMutableParentMessageFromProto(
 // The field must be an immediate field of @message.
 // The corresponding C++ type of the field must be @ValueType.
 template <typename ValueType, EnableIfProtoType<ValueType> = true>
-ValueType GetImmediateValueFromProto(
+ValueType GetImmediateValueFromProtoOrDefault(
     const google::protobuf::Message& message,
     const google::protobuf::FieldDescriptor* field_descriptor);
+
+// Same as GetImmediateValueFromProtoOrDefault, except that returns
+// error status when the field is not set.
+template <typename ValueType, EnableIfProtoType<ValueType> = true>
+absl::StatusOr<ValueType> GetImmediateValueFromProto(
+    const google::protobuf::Message& message,
+    const google::protobuf::FieldDescriptor* field_descriptor) {
+  if (!message.GetReflection()->HasField(message, field_descriptor)) {
+    return absl::InvalidArgumentError("The field is not set in the message.");
+  }
+  return GetImmediateValueFromProtoOrDefault(message, field_descriptor);
+}
 
 // Sets the value to the @message, with field name represented by
 // @field_descriptor.
@@ -108,7 +120,7 @@ void SetImmediateValueToProto(
 // Gets the value from the @message, with field path represented by
 // @field_descriptors.
 //
-// When called with unset field, returns default value.
+// When called with unset field, returns error status.
 //
 // All elements except the last one in @field_descriptors must refer to a
 // protobuf Message. The last one in @field_descriptors must refer to a field
@@ -135,7 +147,7 @@ void SetImmediateValueToProto(
 // And if there is an MsgA object obj_a, to get the value of obj_a.b.c:
 // int32_t output = GetValueFromProto(obj_a, field_descriptors);
 template <typename ValueType, EnableIfProtoType<ValueType> = true>
-ValueType GetValueFromProto(
+absl::StatusOr<ValueType> GetValueFromProto(
     const google::protobuf::Message& message,
     const std::vector<const google::protobuf::FieldDescriptor*>&
         field_descriptors) {
