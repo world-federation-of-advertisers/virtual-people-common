@@ -26,21 +26,12 @@ enum Gender {
 // Represents an age range, e.g. 18-24.
 // The min_age and max_age are inclusive.
 // This can represent single year age too by using min_age = max_age.
-// For open age buckets, e.g. 50 and above, set open_age_bucket.
+// For open age buckets, e.g. 50 and above, set max_age to 1000.
 message AgeRange {
   optional uint32 min_age = 1;
 
-  // Used in the oneof below to indicate that it is an open age bucket,
-  // e.g. 50 and above.
-  message OpenAgeBucket {}
-
-  oneof right_endpoint {
-    // max_age >= min_age
-    uint32 max_age = 2;
-
-    // Set this field if this is an open age bucket.
-    OpenAgeBucket open_age_bucket = 3;
-  }
+  // max_age >= min_age
+  optional uint32 max_age = 2;
 }
 
 // Represents demographic attributes.
