@@ -52,6 +52,7 @@ class InFilter : public FieldFilter {
   // Returns true when the value of the field represented by @config.name in
   // @message equals to any value in @config.value.
   // Otherwise, returns false.
+  // Returns false if the field is not set.
   bool IsMatch(const google::protobuf::Message& message) const override = 0;
 
  protected:

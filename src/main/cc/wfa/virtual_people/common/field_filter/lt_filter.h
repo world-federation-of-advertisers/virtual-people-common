@@ -54,6 +54,7 @@ class LtFilter : public FieldFilter {
 
   // Returns true when the field represented by @config.name in @message is
   // less than @config.value. Otherwise, returns false.
+  // Returns false if the field is not set.
   bool IsMatch(const google::protobuf::Message& message) const override;
 
  private:

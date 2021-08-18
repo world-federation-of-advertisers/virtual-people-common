@@ -129,5 +129,22 @@ TEST(PartialFilterTest, TestNotMatch) {
   EXPECT_FALSE(field_filter->IsMatch(test_proto));
 }
 
+TEST(PartialFilterTest, TestNotSet) {
+  FieldFilterProto field_filter_proto;
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(
+      R"pb(
+        name: "a.b"
+        op: PARTIAL
+        sub_filters { name: "int32_value" op: EQUAL value: "0" }
+      )pb",
+      &field_filter_proto));
+  ASSERT_OK_AND_ASSIGN(
+      std::unique_ptr<FieldFilter> field_filter,
+      FieldFilter::New(TestProto().GetDescriptor(), field_filter_proto));
+
+  TestProto test_proto;
+  EXPECT_FALSE(field_filter->IsMatch(test_proto));
+}
+
 }  // namespace
 }  // namespace wfa_virtual_people

@@ -74,22 +74,27 @@ class EqualFilterImpl<std::string> : public EqualFilter {
 template <typename ValueType>
 bool EqualFilterImpl<ValueType>::IsMatch(
     const google::protobuf::Message& message) const {
-  return value_ == GetValueFromProto<ValueType>(message, field_descriptors_);
+  ProtoFieldValue<ValueType> proto_field_value =
+      GetValueFromProto<ValueType>(message, field_descriptors_);
+  return proto_field_value.is_set && value_ == proto_field_value.value;
 }
 
 template <>
 bool EqualFilterImpl<const google::protobuf::EnumValueDescriptor*>::IsMatch(
     const google::protobuf::Message& message) const {
-  return (value_->number() ==
-          GetValueFromProto<const google::protobuf::EnumValueDescriptor*>(
-              message, field_descriptors_)
-              ->number());
+  ProtoFieldValue<const google::protobuf::EnumValueDescriptor*>
+  proto_field_value =
+      GetValueFromProto<const google::protobuf::EnumValueDescriptor*>(
+          message, field_descriptors_);
+  return (proto_field_value.is_set &&
+          value_->number() == proto_field_value.value->number());
 }
 
 bool EqualFilterImpl<std::string>::IsMatch(
     const google::protobuf::Message& message) const {
-  return (value_ ==
-          GetValueFromProto<const std::string&>(message, field_descriptors_));
+  ProtoFieldValue<const std::string&> proto_field_value =
+      GetValueFromProto<const std::string&>(message, field_descriptors_);
+  return proto_field_value.is_set && value_ == proto_field_value.value;
 }
 
 // NumericType can be

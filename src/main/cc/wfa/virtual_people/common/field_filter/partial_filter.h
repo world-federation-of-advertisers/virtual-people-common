@@ -57,6 +57,7 @@ class PartialFilter : public FieldFilter {
   // false.
   // The @config.sub_filters are applied to the message object refered by
   // @config.name.
+  // Returns false if the message object is not set.
   bool IsMatch(const google::protobuf::Message& message) const override;
 
  private:

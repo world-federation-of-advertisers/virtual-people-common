@@ -109,6 +109,18 @@ TEST(EqualFilterTest, TestInt32) {
   EXPECT_FALSE(field_filter->IsMatch(test_proto_2));
 }
 
+TEST(EqualFilterTest, TestInt32NotSet) {
+  ASSERT_OK_AND_ASSIGN(
+      std::unique_ptr<FieldFilter> field_filter,
+      FilterFromProtoText(R"pb(
+        name: "a.b.int32_value" op: EQUAL value: "0"
+      )pb"));
+
+  // Return false when the field is not set.
+  TestProto test_proto;
+  EXPECT_FALSE(field_filter->IsMatch(test_proto));
+}
+
 TEST(EqualFilterTest, TestInt64) {
   ASSERT_OK_AND_ASSIGN(
       std::unique_ptr<FieldFilter> field_filter,
@@ -129,6 +141,18 @@ TEST(EqualFilterTest, TestInt64) {
                                                     )pb",
                                                     &test_proto_2));
   EXPECT_FALSE(field_filter->IsMatch(test_proto_2));
+}
+
+TEST(EqualFilterTest, TestInt64NotSet) {
+  ASSERT_OK_AND_ASSIGN(
+      std::unique_ptr<FieldFilter> field_filter,
+      FilterFromProtoText(R"pb(
+        name: "a.b.int64_value" op: EQUAL value: "0"
+      )pb"));
+
+  // Return false when the field is not set.
+  TestProto test_proto;
+  EXPECT_FALSE(field_filter->IsMatch(test_proto));
 }
 
 TEST(EqualFilterTest, TestUInt32) {
@@ -153,6 +177,18 @@ TEST(EqualFilterTest, TestUInt32) {
   EXPECT_FALSE(field_filter->IsMatch(test_proto_2));
 }
 
+TEST(EqualFilterTest, TestUInt32NotSet) {
+  ASSERT_OK_AND_ASSIGN(
+      std::unique_ptr<FieldFilter> field_filter,
+      FilterFromProtoText(R"pb(
+        name: "a.b.uint32_value" op: EQUAL value: "0"
+      )pb"));
+
+  // Return false when the field is not set.
+  TestProto test_proto;
+  EXPECT_FALSE(field_filter->IsMatch(test_proto));
+}
+
 TEST(EqualFilterTest, TestUInt64) {
   ASSERT_OK_AND_ASSIGN(
       std::unique_ptr<FieldFilter> field_filter,
@@ -175,6 +211,18 @@ TEST(EqualFilterTest, TestUInt64) {
   EXPECT_FALSE(field_filter->IsMatch(test_proto_2));
 }
 
+TEST(EqualFilterTest, TestUInt64NotSet) {
+  ASSERT_OK_AND_ASSIGN(
+      std::unique_ptr<FieldFilter> field_filter,
+      FilterFromProtoText(R"pb(
+        name: "a.b.uint64_value" op: EQUAL value: "0"
+      )pb"));
+
+  // Return false when the field is not set.
+  TestProto test_proto;
+  EXPECT_FALSE(field_filter->IsMatch(test_proto));
+}
+
 TEST(EqualFilterTest, TestBool) {
   ASSERT_OK_AND_ASSIGN(
       std::unique_ptr<FieldFilter> field_filter,
@@ -195,6 +243,18 @@ TEST(EqualFilterTest, TestBool) {
       )pb",
       &test_proto_2));
   EXPECT_FALSE(field_filter->IsMatch(test_proto_2));
+}
+
+TEST(EqualFilterTest, TestBoolNotSet) {
+  ASSERT_OK_AND_ASSIGN(
+      std::unique_ptr<FieldFilter> field_filter,
+      FilterFromProtoText(R"pb(
+        name: "a.b.bool_value" op: EQUAL value: "false"
+      )pb"));
+
+  // Return false when the field is not set.
+  TestProto test_proto;
+  EXPECT_FALSE(field_filter->IsMatch(test_proto));
 }
 
 TEST(EqualFilterTest, TestEnum) {
@@ -220,6 +280,18 @@ TEST(EqualFilterTest, TestEnum) {
   EXPECT_FALSE(field_filter->IsMatch(test_proto_2));
 }
 
+TEST(EqualFilterTest, TestEnumNotSet) {
+  ASSERT_OK_AND_ASSIGN(
+      std::unique_ptr<FieldFilter> field_filter,
+      FilterFromProtoText(R"pb(
+        name: "a.b.enum_value" op: EQUAL value: "INVALID"
+      )pb"));
+
+  // Return false when the field is not set.
+  TestProto test_proto;
+  EXPECT_FALSE(field_filter->IsMatch(test_proto));
+}
+
 TEST(EqualFilterTest, TestString) {
   ASSERT_OK_AND_ASSIGN(std::unique_ptr<FieldFilter> field_filter,
                        FilterFromProtoText(R"pb(
@@ -241,6 +313,18 @@ TEST(EqualFilterTest, TestString) {
       )pb",
       &test_proto_2));
   EXPECT_FALSE(field_filter->IsMatch(test_proto_2));
+}
+
+TEST(EqualFilterTest, TestStringNotSet) {
+  ASSERT_OK_AND_ASSIGN(
+      std::unique_ptr<FieldFilter> field_filter,
+      FilterFromProtoText(R"pb(
+        name: "a.b.string_value" op: EQUAL value: ""
+      )pb"));
+
+  // Return false when the field is not set.
+  TestProto test_proto;
+  EXPECT_FALSE(field_filter->IsMatch(test_proto));
 }
 
 }  // namespace

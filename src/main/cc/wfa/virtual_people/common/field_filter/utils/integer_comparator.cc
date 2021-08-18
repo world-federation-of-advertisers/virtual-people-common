@@ -41,12 +41,15 @@ class IntegerComparatorImpl : public IntegerComparator {
 
   IntegerCompareResult Compare(
       const google::protobuf::Message& message) const override {
-    IntegerType field_value =
+    ProtoFieldValue<IntegerType> field_value =
         GetValueFromProto<IntegerType>(message, field_descriptors_);
-    if (field_value > value_) {
+    if (!field_value.is_set) {
+      return IntegerCompareResult::INVALID;
+    }
+    if (field_value.value > value_) {
       return IntegerCompareResult::GREATER_THAN;
     }
-    if (field_value < value_) {
+    if (field_value.value < value_) {
       return IntegerCompareResult::LESS_THAN;
     }
     return IntegerCompareResult::EQUAL;

@@ -26,6 +26,14 @@
 
 namespace wfa_virtual_people {
 
+// A container for value of protobuf field.
+// @is_set indicates whether the field is set.
+template <typename ValueType, EnableIfProtoType<ValueType> = true>
+struct ProtoFieldValue {
+	bool is_set;
+	ValueType value;
+};
+
 // In the protobuf message represented by @descriptor, get the field descriptors
 // of the field, the path of which is represented by @full_field_name.
 //
@@ -95,16 +103,16 @@ ValueType GetImmediateValueFromProtoOrDefault(
     const google::protobuf::Message& message,
     const google::protobuf::FieldDescriptor* field_descriptor);
 
-// Same as GetImmediateValueFromProtoOrDefault, except that returns
-// error status when the field is not set.
+// Same as GetImmediateValueFromProtoOrDefault, except that returns a
+// ProtoFieldValue, which also indicates whether the field is set.
 template <typename ValueType, EnableIfProtoType<ValueType> = true>
-absl::StatusOr<ValueType> GetImmediateValueFromProto(
+ProtoFieldValue<ValueType> GetImmediateValueFromProto(
     const google::protobuf::Message& message,
     const google::protobuf::FieldDescriptor* field_descriptor) {
-  if (!message.GetReflection()->HasField(message, field_descriptor)) {
-    return absl::InvalidArgumentError("The field is not set in the message.");
-  }
-  return GetImmediateValueFromProtoOrDefault(message, field_descriptor);
+  return ProtoFieldValue<ValueType>({
+      message.GetReflection()->HasField(message, field_descriptor),
+      GetImmediateValueFromProtoOrDefault<ValueType>(message, field_descriptor)
+  });
 }
 
 // Sets the value to the @message, with field name represented by
@@ -120,7 +128,9 @@ void SetImmediateValueToProto(
 // Gets the value from the @message, with field path represented by
 // @field_descriptors.
 //
-// When called with unset field, returns error status.
+// @is_set of the return indicates whether the field is set.
+// @value of the return is the value of the field, and will be the default value
+// when @is_set is false.
 //
 // All elements except the last one in @field_descriptors must refer to a
 // protobuf Message. The last one in @field_descriptors must refer to a field
@@ -147,12 +157,10 @@ void SetImmediateValueToProto(
 // And if there is an MsgA object obj_a, to get the value of obj_a.b.c:
 // int32_t output = GetValueFromProto(obj_a, field_descriptors);
 template <typename ValueType, EnableIfProtoType<ValueType> = true>
-absl::StatusOr<ValueType> GetValueFromProto(
+ProtoFieldValue<ValueType> GetValueFromProto(
     const google::protobuf::Message& message,
     const std::vector<const google::protobuf::FieldDescriptor*>&
         field_descriptors) {
-  // TODO(@tcsnfkx): Handles the case that the field is not set rather than
-  //                 returning the default value.
   return GetImmediateValueFromProto<ValueType>(
       GetParentMessageFromProto(message, field_descriptors),
       field_descriptors.back());

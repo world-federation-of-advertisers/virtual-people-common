@@ -50,6 +50,7 @@ class EqualFilter : public FieldFilter {
 
   // Returns true when the field represented by @config.name in @message equals
   // to @config.value. Otherwise, returns false.
+  // Returns false when the field is not set.
   bool IsMatch(const google::protobuf::Message& message) const override = 0;
 
  protected:

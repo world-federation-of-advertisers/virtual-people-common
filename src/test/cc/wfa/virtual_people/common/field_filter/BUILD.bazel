@@ -10,7 +10,7 @@ cc_test(
         "//src/test/cc/wfa/virtual_people/common/field_filter/test:test_cc_proto",
         "@com_google_absl//absl/status",
         "@com_google_protobuf//:protobuf",
-        "@googletest//:gtest_main",
+        "@com_google_googletest//:gtest_main",
         "@wfa_common_cpp//src/main/cc/common_cpp/testing:status",
     ],
 )
@@ -25,7 +25,7 @@ cc_test(
         "@com_google_absl//absl/status",
         "@com_google_absl//absl/status:statusor",
         "@com_google_protobuf//:protobuf",
-        "@googletest//:gtest_main",
+        "@com_google_googletest//:gtest_main",
         "@wfa_common_cpp//src/main/cc/common_cpp/testing:status",
     ],
 )
@@ -40,7 +40,7 @@ cc_test(
         "@com_google_absl//absl/status",
         "@com_google_absl//absl/status:statusor",
         "@com_google_protobuf//:protobuf",
-        "@googletest//:gtest_main",
+        "@com_google_googletest//:gtest_main",
         "@wfa_common_cpp//src/main/cc/common_cpp/testing:status",
     ],
 )
@@ -55,7 +55,7 @@ cc_test(
         "@com_google_absl//absl/status",
         "@com_google_absl//absl/status:statusor",
         "@com_google_protobuf//:protobuf",
-        "@googletest//:gtest_main",
+        "@com_google_googletest//:gtest_main",
         "@wfa_common_cpp//src/main/cc/common_cpp/testing:status",
     ],
 )
@@ -70,7 +70,7 @@ cc_test(
         "@com_google_absl//absl/status",
         "@com_google_absl//absl/status:statusor",
         "@com_google_protobuf//:protobuf",
-        "@googletest//:gtest_main",
+        "@com_google_googletest//:gtest_main",
         "@wfa_common_cpp//src/main/cc/common_cpp/testing:status",
     ],
 )
@@ -85,7 +85,7 @@ cc_test(
         "@com_google_absl//absl/status",
         "@com_google_absl//absl/status:statusor",
         "@com_google_protobuf//:protobuf",
-        "@googletest//:gtest_main",
+        "@com_google_googletest//:gtest_main",
         "@wfa_common_cpp//src/main/cc/common_cpp/testing:status",
     ],
 )
@@ -100,7 +100,7 @@ cc_test(
         "@com_google_absl//absl/status",
         "@com_google_absl//absl/status:statusor",
         "@com_google_protobuf//:protobuf",
-        "@googletest//:gtest_main",
+        "@com_google_googletest//:gtest_main",
         "@wfa_common_cpp//src/main/cc/common_cpp/testing:status",
     ],
 )
@@ -115,7 +115,7 @@ cc_test(
         "@com_google_absl//absl/status",
         "@com_google_absl//absl/status:statusor",
         "@com_google_protobuf//:protobuf",
-        "@googletest//:gtest_main",
+        "@com_google_googletest//:gtest_main",
         "@wfa_common_cpp//src/main/cc/common_cpp/testing:status",
     ],
 )
@@ -130,7 +130,7 @@ cc_test(
         "@com_google_absl//absl/status",
         "@com_google_absl//absl/status:statusor",
         "@com_google_protobuf//:protobuf",
-        "@googletest//:gtest_main",
+        "@com_google_googletest//:gtest_main",
         "@wfa_common_cpp//src/main/cc/common_cpp/testing:status",
     ],
 )
@@ -145,7 +145,7 @@ cc_test(
         "@com_google_absl//absl/status",
         "@com_google_absl//absl/status:statusor",
         "@com_google_protobuf//:protobuf",
-        "@googletest//:gtest_main",
+        "@com_google_googletest//:gtest_main",
         "@wfa_common_cpp//src/main/cc/common_cpp/testing:status",
     ],
 )
@@ -160,7 +160,7 @@ cc_test(
         "@com_google_absl//absl/status",
         "@com_google_absl//absl/status:statusor",
         "@com_google_protobuf//:protobuf",
-        "@googletest//:gtest_main",
+        "@com_google_googletest//:gtest_main",
         "@wfa_common_cpp//src/main/cc/common_cpp/testing:status",
     ],
 )
@@ -175,7 +175,7 @@ cc_test(
         "@com_google_absl//absl/status",
         "@com_google_absl//absl/status:statusor",
         "@com_google_protobuf//:protobuf",
-        "@googletest//:gtest_main",
+        "@com_google_googletest//:gtest_main",
         "@wfa_common_cpp//src/main/cc/common_cpp/testing:status",
     ],
 )
