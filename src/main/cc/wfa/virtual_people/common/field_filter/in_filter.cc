@@ -68,19 +68,19 @@ bool InFilterImpl<ValueType>::IsMatch(
       GetValueFromProto<ValueType>(message, field_descriptors_);
   return (proto_field_value.is_set &&
           parsed_values_.values.find(proto_field_value.value) !=
-          parsed_values_.values.end());
+              parsed_values_.values.end());
 }
 
 template <>
 bool InFilterImpl<const google::protobuf::EnumValueDescriptor*>::IsMatch(
     const google::protobuf::Message& message) const {
   ProtoFieldValue<const google::protobuf::EnumValueDescriptor*>
-  proto_field_value =
-      GetValueFromProto<const google::protobuf::EnumValueDescriptor*>(
-          message, field_descriptors_);
+      proto_field_value =
+          GetValueFromProto<const google::protobuf::EnumValueDescriptor*>(
+              message, field_descriptors_);
   return (proto_field_value.is_set &&
           parsed_values_.values.find(proto_field_value.value->number()) !=
-          parsed_values_.values.end());
+              parsed_values_.values.end());
 }
 
 template <typename ValueType>

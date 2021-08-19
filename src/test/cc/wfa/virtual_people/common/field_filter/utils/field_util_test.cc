@@ -138,10 +138,9 @@ TEST(FieldUtilTest, GetFieldAndValue) {
   // Test Message.
   field_descriptors = GetFieldFromProto(test_proto_1.GetDescriptor(), "a.b");
   EXPECT_THAT(field_descriptors, IsOk());
-  EXPECT_THAT(
-      GetValueFromProto<const google::protobuf::Message&>(
-          test_proto_2, *field_descriptors),
-      FieldsAre(true, EqualsProto(test_proto_2.a().b())));
+  EXPECT_THAT(GetValueFromProto<const google::protobuf::Message&>(
+                  test_proto_2, *field_descriptors),
+              FieldsAre(true, EqualsProto(test_proto_2.a().b())));
 }
 
 TEST(FieldUtilTest, GetValueForUnsetField) {
@@ -208,10 +207,9 @@ TEST(FieldUtilTest, GetValueForUnsetField) {
   // Test Message.
   field_descriptors = GetFieldFromProto(TestProto().GetDescriptor(), "a.b");
   EXPECT_THAT(field_descriptors, IsOk());
-  EXPECT_THAT(
-      GetValueFromProto<const google::protobuf::Message&>(
-          test_proto, *field_descriptors),
-      FieldsAre(false, EqualsProto(TestProtoB())));
+  EXPECT_THAT(GetValueFromProto<const google::protobuf::Message&>(
+                  test_proto, *field_descriptors),
+              FieldsAre(false, EqualsProto(TestProtoB())));
 }
 
 TEST(FieldUtilTest, GetFieldAndSetValue) {

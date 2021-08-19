@@ -30,8 +30,8 @@ namespace wfa_virtual_people {
 // @is_set indicates whether the field is set.
 template <typename ValueType, EnableIfProtoType<ValueType> = true>
 struct ProtoFieldValue {
-	bool is_set;
-	ValueType value;
+  bool is_set;
+  ValueType value;
 };
 
 // In the protobuf message represented by @descriptor, get the field descriptors
@@ -109,10 +109,10 @@ template <typename ValueType, EnableIfProtoType<ValueType> = true>
 ProtoFieldValue<ValueType> GetImmediateValueFromProto(
     const google::protobuf::Message& message,
     const google::protobuf::FieldDescriptor* field_descriptor) {
-  return ProtoFieldValue<ValueType>({
-      message.GetReflection()->HasField(message, field_descriptor),
-      GetImmediateValueFromProtoOrDefault<ValueType>(message, field_descriptor)
-  });
+  return ProtoFieldValue<ValueType>(
+      {message.GetReflection()->HasField(message, field_descriptor),
+       GetImmediateValueFromProtoOrDefault<ValueType>(message,
+                                                      field_descriptor)});
 }
 
 // Sets the value to the @message, with field name represented by

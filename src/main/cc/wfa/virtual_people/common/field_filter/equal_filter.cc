@@ -83,9 +83,9 @@ template <>
 bool EqualFilterImpl<const google::protobuf::EnumValueDescriptor*>::IsMatch(
     const google::protobuf::Message& message) const {
   ProtoFieldValue<const google::protobuf::EnumValueDescriptor*>
-  proto_field_value =
-      GetValueFromProto<const google::protobuf::EnumValueDescriptor*>(
-          message, field_descriptors_);
+      proto_field_value =
+          GetValueFromProto<const google::protobuf::EnumValueDescriptor*>(
+              message, field_descriptors_);
   return (proto_field_value.is_set &&
           value_->number() == proto_field_value.value->number());
 }
