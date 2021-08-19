@@ -28,6 +28,8 @@ namespace wfa_virtual_people {
 
 // A container for value of protobuf field.
 // @is_set indicates whether the field is set.
+// @value is the return of the getter of protobuf reflection. Will be the
+// default value of the field when the field is not set.
 template <typename ValueType, EnableIfProtoType<ValueType> = true>
 struct ProtoFieldValue {
   bool is_set;
