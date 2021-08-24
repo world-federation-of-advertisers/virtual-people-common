@@ -31,7 +31,6 @@ namespace {
 
 using ::google::protobuf::FieldDescriptor;
 using ::google::protobuf::Message;
-using ::testing::Eq;
 using ::testing::FieldsAre;
 using ::wfa::EqualsProto;
 using ::wfa::IsOk;
@@ -82,7 +81,7 @@ TEST(FieldUtilTest, GetFieldAndValue) {
           GetFieldFromProto(test_proto_1.GetDescriptor(), "a.b.int32_value");
   EXPECT_THAT(field_descriptors, IsOk());
   EXPECT_THAT(GetValueFromProto<int32_t>(test_proto_2, *field_descriptors),
-              FieldsAre(Eq(true), Eq(2)));
+              FieldsAre(true, 2));
   // Test int64.
   field_descriptors =
       GetFieldFromProto(test_proto_1.GetDescriptor(), "a.b.int64_value");
