@@ -129,7 +129,7 @@ TEST(PartialFilterTest, TestNotMatch) {
   EXPECT_FALSE(field_filter->IsMatch(test_proto));
 }
 
-TEST(PartialFilterTest, TestNotSet) {
+TEST(PartialFilterTest, TestFieldNotSet) {
   FieldFilterProto field_filter_proto;
   ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(
       R"pb(
