@@ -89,7 +89,7 @@ TEST(IntegerComparatorTest, TestInt32) {
   test_3.mutable_a()->mutable_b()->set_int32_value(9);
   EXPECT_EQ(comparator->Compare(test_3), IntegerCompareResult::LESS_THAN);
 
-  // Return false when the field is not set.
+  // Return INVALID when the field is not set.
   TestProto test_4;
   EXPECT_EQ(comparator->Compare(test_4), IntegerCompareResult::INVALID);
 }
@@ -114,7 +114,7 @@ TEST(IntegerComparatorTest, TestInt64) {
   test_3.mutable_a()->mutable_b()->set_int64_value(9);
   EXPECT_EQ(comparator->Compare(test_3), IntegerCompareResult::LESS_THAN);
 
-  // Return false when the field is not set.
+  // Return INVALID when the field is not set.
   TestProto test_4;
   EXPECT_EQ(comparator->Compare(test_4), IntegerCompareResult::INVALID);
 }
@@ -139,7 +139,7 @@ TEST(IntegerComparatorTest, TestUInt32) {
   test_3.mutable_a()->mutable_b()->set_uint32_value(9);
   EXPECT_EQ(comparator->Compare(test_3), IntegerCompareResult::LESS_THAN);
 
-  // Return false when the field is not set.
+  // Return INVALID when the field is not set.
   TestProto test_4;
   EXPECT_EQ(comparator->Compare(test_4), IntegerCompareResult::INVALID);
 }
@@ -164,7 +164,7 @@ TEST(IntegerComparatorTest, TestUInt64) {
   test_3.mutable_a()->mutable_b()->set_uint64_value(9);
   EXPECT_EQ(comparator->Compare(test_3), IntegerCompareResult::LESS_THAN);
 
-  // Return false when the field is not set.
+  // Return INVALID when the field is not set.
   TestProto test_4;
   EXPECT_EQ(comparator->Compare(test_4), IntegerCompareResult::INVALID);
 }
