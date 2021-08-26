@@ -16,7 +16,7 @@ syntax = "proto3";
 
 package wfa_virtual_people;
 
-import "src/main/proto/wfa/virtual_people/common/demographic.proto";
+import "wfa/virtual_people/common/demographic.proto";
 
 message PanelistId {
   // Identifier of the panelist who produces this data entry.

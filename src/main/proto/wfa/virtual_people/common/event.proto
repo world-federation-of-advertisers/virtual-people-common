@@ -16,10 +16,10 @@ syntax = "proto3";
 
 package wfa_virtual_people;
 
-import "src/main/proto/wfa/virtual_people/common/demographic.proto";
-import "src/main/proto/wfa/virtual_people/common/geo_location.proto";
-import "src/main/proto/wfa/virtual_people/common/label.proto";
-import "src/main/proto/wfa/virtual_people/common/panel_data.proto";
+import "wfa/virtual_people/common/demographic.proto";
+import "wfa/virtual_people/common/geo_location.proto";
+import "wfa/virtual_people/common/label.proto";
+import "wfa/virtual_people/common/panel_data.proto";
 
 // EventId is a unique identifier across all event data provider logs.
 message EventId {

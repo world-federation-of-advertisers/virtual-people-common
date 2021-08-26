@@ -17,7 +17,7 @@
 
 #include "absl/status/statusor.h"
 #include "google/protobuf/message.h"
-#include "src/main/proto/wfa/virtual_people/common/field_filter.pb.h"
+#include "wfa/virtual_people/common/field_filter.pb.h"
 
 namespace wfa_virtual_people {
 

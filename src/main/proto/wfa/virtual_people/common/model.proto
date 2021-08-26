@@ -17,10 +17,10 @@ syntax = "proto3";
 package wfa_virtual_people;
 
 import "google/protobuf/field_mask.proto";
-import "src/main/proto/wfa/virtual_people/common/demographic.proto";
-import "src/main/proto/wfa/virtual_people/common/event.proto";
-import "src/main/proto/wfa/virtual_people/common/field_filter.proto";
-import "src/main/proto/wfa/virtual_people/common/label.proto";
+import "wfa/virtual_people/common/demographic.proto";
+import "wfa/virtual_people/common/event.proto";
+import "wfa/virtual_people/common/field_filter.proto";
+import "wfa/virtual_people/common/label.proto";
 
 // The node of the VID model tree.
 message CompiledNode {
