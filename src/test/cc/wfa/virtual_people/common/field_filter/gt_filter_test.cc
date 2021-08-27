@@ -125,6 +125,22 @@ TEST(GtFilterTest, TestInt32) {
   EXPECT_FALSE(field_filter->IsMatch(test_3));
 }
 
+TEST(GtFilterTest, TestInt32NotSet) {
+  FieldFilterProto field_filter_proto;
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(
+      R"pb(
+        name: "a.b.int32_value" op: GT value: "-1"
+      )pb",
+      &field_filter_proto));
+  ASSERT_OK_AND_ASSIGN(
+      std::unique_ptr<FieldFilter> field_filter,
+      FieldFilter::New(TestProto().GetDescriptor(), field_filter_proto));
+
+  // Return false when the field is not set.
+  TestProto test_proto;
+  EXPECT_FALSE(field_filter->IsMatch(test_proto));
+}
+
 TEST(GtFilterTest, TestInt64) {
   FieldFilterProto field_filter_proto;
   ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(
@@ -147,6 +163,22 @@ TEST(GtFilterTest, TestInt64) {
   TestProto test_3;
   test_3.mutable_a()->mutable_b()->set_int64_value(9);
   EXPECT_FALSE(field_filter->IsMatch(test_3));
+}
+
+TEST(GtFilterTest, TestInt64NotSet) {
+  FieldFilterProto field_filter_proto;
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(
+      R"pb(
+        name: "a.b.int64_value" op: GT value: "-1"
+      )pb",
+      &field_filter_proto));
+  ASSERT_OK_AND_ASSIGN(
+      std::unique_ptr<FieldFilter> field_filter,
+      FieldFilter::New(TestProto().GetDescriptor(), field_filter_proto));
+
+  // Return false when the field is not set.
+  TestProto test_proto;
+  EXPECT_FALSE(field_filter->IsMatch(test_proto));
 }
 
 TEST(GtFilterTest, TestUInt32) {
@@ -173,6 +205,22 @@ TEST(GtFilterTest, TestUInt32) {
   EXPECT_FALSE(field_filter->IsMatch(test_3));
 }
 
+TEST(GtFilterTest, TestUInt32NotSet) {
+  FieldFilterProto field_filter_proto;
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(
+      R"pb(
+        name: "a.b.uint32_value" op: GT value: "0"
+      )pb",
+      &field_filter_proto));
+  ASSERT_OK_AND_ASSIGN(
+      std::unique_ptr<FieldFilter> field_filter,
+      FieldFilter::New(TestProto().GetDescriptor(), field_filter_proto));
+
+  // Return false when the field is not set.
+  TestProto test_proto;
+  EXPECT_FALSE(field_filter->IsMatch(test_proto));
+}
+
 TEST(GtFilterTest, TestUInt64) {
   FieldFilterProto field_filter_proto;
   ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(
@@ -195,6 +243,22 @@ TEST(GtFilterTest, TestUInt64) {
   TestProto test_3;
   test_3.mutable_a()->mutable_b()->set_uint64_value(9);
   EXPECT_FALSE(field_filter->IsMatch(test_3));
+}
+
+TEST(GtFilterTest, TestUInt64NotSet) {
+  FieldFilterProto field_filter_proto;
+  ASSERT_TRUE(google::protobuf::TextFormat::ParseFromString(
+      R"pb(
+        name: "a.b.uint64_value" op: GT value: "0"
+      )pb",
+      &field_filter_proto));
+  ASSERT_OK_AND_ASSIGN(
+      std::unique_ptr<FieldFilter> field_filter,
+      FieldFilter::New(TestProto().GetDescriptor(), field_filter_proto));
+
+  // Return false when the field is not set.
+  TestProto test_proto;
+  EXPECT_FALSE(field_filter->IsMatch(test_proto));
 }
 
 }  // namespace

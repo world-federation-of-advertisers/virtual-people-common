@@ -31,8 +31,10 @@ namespace {
 
 using ::google::protobuf::FieldDescriptor;
 using ::google::protobuf::Message;
+using ::testing::FieldsAre;
 using ::wfa::EqualsProto;
 using ::wfa::IsOk;
+using ::wfa::IsOkAndHolds;
 using ::wfa::StatusIs;
 using ::wfa_virtual_people::test::TestProto;
 using ::wfa_virtual_people::test::TestProtoB;
@@ -78,58 +80,66 @@ TEST(FieldUtilTest, GetFieldAndValue) {
       field_descriptors =
           GetFieldFromProto(test_proto_1.GetDescriptor(), "a.b.int32_value");
   EXPECT_THAT(field_descriptors, IsOk());
-  EXPECT_EQ(GetValueFromProto<int32_t>(test_proto_2, *field_descriptors), 2);
+  EXPECT_THAT(GetValueFromProto<int32_t>(test_proto_2, *field_descriptors),
+              FieldsAre(true, 2));
   // Test int64.
   field_descriptors =
       GetFieldFromProto(test_proto_1.GetDescriptor(), "a.b.int64_value");
   EXPECT_THAT(field_descriptors, IsOk());
-  EXPECT_EQ(GetValueFromProto<int64_t>(test_proto_2, *field_descriptors), 2);
+  EXPECT_THAT(GetValueFromProto<int64_t>(test_proto_2, *field_descriptors),
+              FieldsAre(true, 2));
   // Test uint32.
   field_descriptors =
       GetFieldFromProto(test_proto_1.GetDescriptor(), "a.b.uint32_value");
   EXPECT_THAT(field_descriptors, IsOk());
-  EXPECT_EQ(GetValueFromProto<uint32_t>(test_proto_2, *field_descriptors), 2);
+  EXPECT_THAT(GetValueFromProto<uint32_t>(test_proto_2, *field_descriptors),
+              FieldsAre(true, 2));
   // Test uint64.
   field_descriptors =
       GetFieldFromProto(test_proto_1.GetDescriptor(), "a.b.uint64_value");
   EXPECT_THAT(field_descriptors, IsOk());
-  EXPECT_EQ(GetValueFromProto<uint64_t>(test_proto_2, *field_descriptors), 2);
+  EXPECT_THAT(GetValueFromProto<uint64_t>(test_proto_2, *field_descriptors),
+              FieldsAre(true, 2));
   // Test float.
   field_descriptors =
       GetFieldFromProto(test_proto_1.GetDescriptor(), "a.b.float_value");
   EXPECT_THAT(field_descriptors, IsOk());
-  EXPECT_EQ(GetValueFromProto<float>(test_proto_2, *field_descriptors), 2.0);
+  EXPECT_THAT(GetValueFromProto<float>(test_proto_2, *field_descriptors),
+              FieldsAre(true, 2.0));
   // Test double.
   field_descriptors =
       GetFieldFromProto(test_proto_1.GetDescriptor(), "a.b.double_value");
   EXPECT_THAT(field_descriptors, IsOk());
-  EXPECT_EQ(GetValueFromProto<double>(test_proto_2, *field_descriptors), 2.0);
+  EXPECT_THAT(GetValueFromProto<double>(test_proto_2, *field_descriptors),
+              FieldsAre(true, 2.0));
   // Test bool.
   field_descriptors =
       GetFieldFromProto(test_proto_1.GetDescriptor(), "a.b.bool_value");
   EXPECT_THAT(field_descriptors, IsOk());
-  EXPECT_FALSE(GetValueFromProto<bool>(test_proto_2, *field_descriptors));
+  EXPECT_THAT(GetValueFromProto<bool>(test_proto_2, *field_descriptors),
+              FieldsAre(true, false));
   // Test enum.
   field_descriptors =
       GetFieldFromProto(test_proto_1.GetDescriptor(), "a.b.enum_value");
   EXPECT_THAT(field_descriptors, IsOk());
-  EXPECT_EQ(GetValueFromProto<const google::protobuf::EnumValueDescriptor*>(
-                test_proto_2, *field_descriptors)
-                ->number(),
-            2);
+  ProtoFieldValue<const google::protobuf::EnumValueDescriptor*> enum_value =
+      GetValueFromProto<const google::protobuf::EnumValueDescriptor*>(
+          test_proto_2, *field_descriptors);
+  EXPECT_TRUE(enum_value.is_set);
+  EXPECT_EQ(enum_value.value->number(), 2);
   // Test string.
   field_descriptors =
       GetFieldFromProto(test_proto_1.GetDescriptor(), "a.b.string_value");
   EXPECT_THAT(field_descriptors, IsOk());
-  EXPECT_EQ(
+  EXPECT_THAT(
       GetValueFromProto<const std::string&>(test_proto_2, *field_descriptors),
-      "string2");
+      FieldsAre(true, "string2"));
   // Test Message.
   field_descriptors = GetFieldFromProto(test_proto_1.GetDescriptor(), "a.b");
   EXPECT_THAT(field_descriptors, IsOk());
   EXPECT_THAT(GetValueFromProto<const google::protobuf::Message&>(
                   test_proto_2, *field_descriptors),
-              EqualsProto(test_proto_2.a().b()));
+              FieldsAre(true, EqualsProto(test_proto_2.a().b())));
 }
 
 TEST(FieldUtilTest, GetValueForUnsetField) {
@@ -139,58 +149,66 @@ TEST(FieldUtilTest, GetValueForUnsetField) {
       field_descriptors =
           GetFieldFromProto(TestProto().GetDescriptor(), "a.b.int32_value");
   EXPECT_THAT(field_descriptors, IsOk());
-  EXPECT_EQ(GetValueFromProto<int32_t>(test_proto, *field_descriptors), 0);
+  EXPECT_THAT(GetValueFromProto<int32_t>(test_proto, *field_descriptors),
+              FieldsAre(false, 0));
   // Test int64.
   field_descriptors =
       GetFieldFromProto(TestProto().GetDescriptor(), "a.b.int64_value");
   EXPECT_THAT(field_descriptors, IsOk());
-  EXPECT_EQ(GetValueFromProto<int64_t>(test_proto, *field_descriptors), 0);
+  EXPECT_THAT(GetValueFromProto<int64_t>(test_proto, *field_descriptors),
+              FieldsAre(false, 0));
   // Test uint32.
   field_descriptors =
       GetFieldFromProto(TestProto().GetDescriptor(), "a.b.uint32_value");
   EXPECT_THAT(field_descriptors, IsOk());
-  EXPECT_EQ(GetValueFromProto<uint32_t>(test_proto, *field_descriptors), 0);
+  EXPECT_THAT(GetValueFromProto<uint32_t>(test_proto, *field_descriptors),
+              FieldsAre(false, 0));
   // Test uint64.
   field_descriptors =
       GetFieldFromProto(TestProto().GetDescriptor(), "a.b.uint64_value");
   EXPECT_THAT(field_descriptors, IsOk());
-  EXPECT_EQ(GetValueFromProto<uint64_t>(test_proto, *field_descriptors), 0);
+  EXPECT_THAT(GetValueFromProto<uint64_t>(test_proto, *field_descriptors),
+              FieldsAre(false, 0));
   // Test float.
   field_descriptors =
       GetFieldFromProto(TestProto().GetDescriptor(), "a.b.float_value");
   EXPECT_THAT(field_descriptors, IsOk());
-  EXPECT_EQ(GetValueFromProto<float>(test_proto, *field_descriptors), 0);
+  EXPECT_THAT(GetValueFromProto<float>(test_proto, *field_descriptors),
+              FieldsAre(false, 0));
   // Test double.
   field_descriptors =
       GetFieldFromProto(TestProto().GetDescriptor(), "a.b.double_value");
   EXPECT_THAT(field_descriptors, IsOk());
-  EXPECT_EQ(GetValueFromProto<double>(test_proto, *field_descriptors), 0);
+  EXPECT_THAT(GetValueFromProto<double>(test_proto, *field_descriptors),
+              FieldsAre(false, 0));
   // Test bool.
   field_descriptors =
       GetFieldFromProto(TestProto().GetDescriptor(), "a.b.bool_value");
   EXPECT_THAT(field_descriptors, IsOk());
-  EXPECT_FALSE(GetValueFromProto<bool>(test_proto, *field_descriptors));
+  EXPECT_THAT(GetValueFromProto<bool>(test_proto, *field_descriptors),
+              FieldsAre(false, false));
   // Test enum.
   field_descriptors =
       GetFieldFromProto(TestProto().GetDescriptor(), "a.b.enum_value");
   EXPECT_THAT(field_descriptors, IsOk());
-  EXPECT_EQ(GetValueFromProto<const google::protobuf::EnumValueDescriptor*>(
-                test_proto, *field_descriptors)
-                ->number(),
-            0);
+  ProtoFieldValue<const google::protobuf::EnumValueDescriptor*> enum_value =
+      GetValueFromProto<const google::protobuf::EnumValueDescriptor*>(
+          test_proto, *field_descriptors);
+  EXPECT_FALSE(enum_value.is_set);
+  EXPECT_EQ(enum_value.value->number(), 0);
   // Test string.
   field_descriptors =
       GetFieldFromProto(TestProto().GetDescriptor(), "a.b.string_value");
   EXPECT_THAT(field_descriptors, IsOk());
-  EXPECT_EQ(
+  EXPECT_THAT(
       GetValueFromProto<const std::string&>(test_proto, *field_descriptors),
-      "");
+      FieldsAre(false, ""));
   // Test Message.
   field_descriptors = GetFieldFromProto(TestProto().GetDescriptor(), "a.b");
   EXPECT_THAT(field_descriptors, IsOk());
   EXPECT_THAT(GetValueFromProto<const google::protobuf::Message&>(
                   test_proto, *field_descriptors),
-              EqualsProto(test_proto.a().b()));
+              FieldsAre(false, EqualsProto(TestProtoB())));
 }
 
 TEST(FieldUtilTest, GetFieldAndSetValue) {

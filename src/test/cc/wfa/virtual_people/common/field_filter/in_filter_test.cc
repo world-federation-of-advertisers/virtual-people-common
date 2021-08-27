@@ -93,9 +93,18 @@ TEST(InFilterTest, TestInt32) {
   TestProto test_proto_3;
   test_proto_3.mutable_a()->mutable_b()->set_int32_value(3);
   EXPECT_FALSE(field_filter->IsMatch(test_proto_3));
+}
 
-  TestProto test_proto_4;
-  EXPECT_FALSE(field_filter->IsMatch(test_proto_4));
+TEST(InFilterTest, TestInt32NotSet) {
+  ASSERT_OK_AND_ASSIGN(
+      std::unique_ptr<FieldFilter> field_filter,
+      FilterFromProtoText(R"pb(
+        name: "a.b.int32_value" op: IN value: "0"
+      )pb"));
+
+  // Return false when the field is not set.
+  TestProto test_proto;
+  EXPECT_FALSE(field_filter->IsMatch(test_proto));
 }
 
 TEST(InFilterTest, TestInt32InvalidValue) {
@@ -125,9 +134,18 @@ TEST(InFilterTest, TestInt64) {
   TestProto test_proto_3;
   test_proto_3.mutable_a()->mutable_b()->set_int64_value(3);
   EXPECT_FALSE(field_filter->IsMatch(test_proto_3));
+}
 
-  TestProto test_proto_4;
-  EXPECT_FALSE(field_filter->IsMatch(test_proto_4));
+TEST(InFilterTest, TestInt64NotSet) {
+  ASSERT_OK_AND_ASSIGN(
+      std::unique_ptr<FieldFilter> field_filter,
+      FilterFromProtoText(R"pb(
+        name: "a.b.int64_value" op: IN value: "0"
+      )pb"));
+
+  // Return false when the field is not set.
+  TestProto test_proto;
+  EXPECT_FALSE(field_filter->IsMatch(test_proto));
 }
 
 TEST(InFilterTest, TestInt64InvalidValue) {
@@ -157,9 +175,18 @@ TEST(InFilterTest, TestUInt32) {
   TestProto test_proto_3;
   test_proto_3.mutable_a()->mutable_b()->set_uint32_value(3);
   EXPECT_FALSE(field_filter->IsMatch(test_proto_3));
+}
 
-  TestProto test_proto_4;
-  EXPECT_FALSE(field_filter->IsMatch(test_proto_4));
+TEST(InFilterTest, TestUInt32NotSet) {
+  ASSERT_OK_AND_ASSIGN(
+      std::unique_ptr<FieldFilter> field_filter,
+      FilterFromProtoText(R"pb(
+        name: "a.b.uint32_value" op: IN value: "0"
+      )pb"));
+
+  // Return false when the field is not set.
+  TestProto test_proto;
+  EXPECT_FALSE(field_filter->IsMatch(test_proto));
 }
 
 TEST(InFilterTest, TestUInt32InvalidValue) {
@@ -189,9 +216,18 @@ TEST(InFilterTest, TestUInt64) {
   TestProto test_proto_3;
   test_proto_3.mutable_a()->mutable_b()->set_uint64_value(3);
   EXPECT_FALSE(field_filter->IsMatch(test_proto_3));
+}
 
-  TestProto test_proto_4;
-  EXPECT_FALSE(field_filter->IsMatch(test_proto_4));
+TEST(InFilterTest, TestUInt64NotSet) {
+  ASSERT_OK_AND_ASSIGN(
+      std::unique_ptr<FieldFilter> field_filter,
+      FilterFromProtoText(R"pb(
+        name: "a.b.uint64_value" op: IN value: "0"
+      )pb"));
+
+  // Return false when the field is not set.
+  TestProto test_proto;
+  EXPECT_FALSE(field_filter->IsMatch(test_proto));
 }
 
 TEST(InFilterTest, TestUInt64InvalidValue) {
@@ -217,9 +253,18 @@ TEST(InFilterTest, TestBool) {
   TestProto test_proto_2;
   test_proto_2.mutable_a()->mutable_b()->set_bool_value(false);
   EXPECT_FALSE(field_filter->IsMatch(test_proto_2));
+}
 
-  TestProto test_proto_3;
-  EXPECT_FALSE(field_filter->IsMatch(test_proto_3));
+TEST(InFilterTest, TestBoolNotSet) {
+  ASSERT_OK_AND_ASSIGN(
+      std::unique_ptr<FieldFilter> field_filter,
+      FilterFromProtoText(R"pb(
+        name: "a.b.bool_value" op: IN value: "false"
+      )pb"));
+
+  // Return false when the field is not set.
+  TestProto test_proto;
+  EXPECT_FALSE(field_filter->IsMatch(test_proto));
 }
 
 TEST(InFilterTest, TestBoolInvalidValue) {
@@ -253,9 +298,6 @@ TEST(InFilterTest, TestEnumName) {
   test_proto_3.mutable_a()->mutable_b()->set_enum_value(
       TestProtoB::TEST_ENUM_3);
   EXPECT_FALSE(field_filter->IsMatch(test_proto_3));
-
-  TestProto test_proto_4;
-  EXPECT_FALSE(field_filter->IsMatch(test_proto_4));
 }
 
 TEST(InFilterTest, TestEnumNumber) {
@@ -279,9 +321,6 @@ TEST(InFilterTest, TestEnumNumber) {
   test_proto_3.mutable_a()->mutable_b()->set_enum_value(
       TestProtoB::TEST_ENUM_3);
   EXPECT_FALSE(field_filter->IsMatch(test_proto_3));
-
-  TestProto test_proto_4;
-  EXPECT_FALSE(field_filter->IsMatch(test_proto_4));
 }
 
 TEST(InFilterTest, TestMixedEnumNameNumber) {
@@ -306,9 +345,18 @@ TEST(InFilterTest, TestMixedEnumNameNumber) {
   test_proto_3.mutable_a()->mutable_b()->set_enum_value(
       TestProtoB::TEST_ENUM_3);
   EXPECT_FALSE(field_filter->IsMatch(test_proto_3));
+}
 
-  TestProto test_proto_4;
-  EXPECT_FALSE(field_filter->IsMatch(test_proto_4));
+TEST(InFilterTest, TestEnumNotSet) {
+  ASSERT_OK_AND_ASSIGN(
+      std::unique_ptr<FieldFilter> field_filter,
+      FilterFromProtoText(R"pb(
+        name: "a.b.enum_value" op: IN value: "INVALID"
+      )pb"));
+
+  // Return false when the field is not set.
+  TestProto test_proto;
+  EXPECT_FALSE(field_filter->IsMatch(test_proto));
 }
 
 TEST(InFilterTest, TestEnumInvalidValue) {
@@ -360,6 +408,18 @@ TEST(InFilterTest, TestQuoteString) {
 
   TestProto test_proto_3;
   EXPECT_FALSE(field_filter->IsMatch(test_proto_3));
+}
+
+TEST(InFilterTest, TestStringNotSet) {
+  ASSERT_OK_AND_ASSIGN(
+      std::unique_ptr<FieldFilter> field_filter,
+      FilterFromProtoText(R"pb(
+        name: "a.b.string_value" op: IN value: ""
+      )pb"));
+
+  // Return false when the field is not set.
+  TestProto test_proto;
+  EXPECT_FALSE(field_filter->IsMatch(test_proto));
 }
 
 }  // namespace

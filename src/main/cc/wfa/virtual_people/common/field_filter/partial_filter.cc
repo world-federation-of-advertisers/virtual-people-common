@@ -73,11 +73,11 @@ absl::StatusOr<std::unique_ptr<PartialFilter>> PartialFilter::New(
 }
 
 bool PartialFilter::IsMatch(const google::protobuf::Message& message) const {
-  const google::protobuf::Message& sub_message =
+  ProtoFieldValue<const google::protobuf::Message&> sub_message =
       GetValueFromProto<const google::protobuf::Message&>(message,
                                                           field_descriptors_);
   for (auto& filter : sub_filters_) {
-    if (!filter->IsMatch(sub_message)) {
+    if (!sub_message.is_set || !filter->IsMatch(sub_message.value)) {
       return false;
     }
   }

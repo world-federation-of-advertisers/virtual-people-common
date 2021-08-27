@@ -98,54 +98,54 @@ google::protobuf::Message& GetMutableParentMessageFromProto(
 }
 
 template <typename ValueType, EnableIfProtoType<ValueType>>
-ValueType GetImmediateValueFromProto(
+ValueType GetImmediateValueFromProtoOrDefault(
     const google::protobuf::Message& message,
     const google::protobuf::FieldDescriptor* field_descriptor);
 
 template <>
-int32_t GetImmediateValueFromProto<int32_t>(
+int32_t GetImmediateValueFromProtoOrDefault<int32_t>(
     const google::protobuf::Message& message,
     const google::protobuf::FieldDescriptor* field_descriptor) {
   return message.GetReflection()->GetInt32(message, field_descriptor);
 }
 
 template <>
-int64_t GetImmediateValueFromProto<int64_t>(
+int64_t GetImmediateValueFromProtoOrDefault<int64_t>(
     const google::protobuf::Message& message,
     const google::protobuf::FieldDescriptor* field_descriptor) {
   return message.GetReflection()->GetInt64(message, field_descriptor);
 }
 
 template <>
-uint32_t GetImmediateValueFromProto<uint32_t>(
+uint32_t GetImmediateValueFromProtoOrDefault<uint32_t>(
     const google::protobuf::Message& message,
     const google::protobuf::FieldDescriptor* field_descriptor) {
   return message.GetReflection()->GetUInt32(message, field_descriptor);
 }
 
 template <>
-uint64_t GetImmediateValueFromProto<uint64_t>(
+uint64_t GetImmediateValueFromProtoOrDefault<uint64_t>(
     const google::protobuf::Message& message,
     const google::protobuf::FieldDescriptor* field_descriptor) {
   return message.GetReflection()->GetUInt64(message, field_descriptor);
 }
 
 template <>
-float GetImmediateValueFromProto<float>(
+float GetImmediateValueFromProtoOrDefault<float>(
     const google::protobuf::Message& message,
     const google::protobuf::FieldDescriptor* field_descriptor) {
   return message.GetReflection()->GetFloat(message, field_descriptor);
 }
 
 template <>
-double GetImmediateValueFromProto<double>(
+double GetImmediateValueFromProtoOrDefault<double>(
     const google::protobuf::Message& message,
     const google::protobuf::FieldDescriptor* field_descriptor) {
   return message.GetReflection()->GetDouble(message, field_descriptor);
 }
 
 template <>
-bool GetImmediateValueFromProto<bool>(
+bool GetImmediateValueFromProtoOrDefault<bool>(
     const google::protobuf::Message& message,
     const google::protobuf::FieldDescriptor* field_descriptor) {
   return message.GetReflection()->GetBool(message, field_descriptor);
@@ -153,7 +153,8 @@ bool GetImmediateValueFromProto<bool>(
 
 template <>
 const google::protobuf::EnumValueDescriptor*
-GetImmediateValueFromProto<const google::protobuf::EnumValueDescriptor*>(
+GetImmediateValueFromProtoOrDefault<
+    const google::protobuf::EnumValueDescriptor*>(
     const google::protobuf::Message& message,
     const google::protobuf::FieldDescriptor* field_descriptor) {
   return message.GetReflection()->GetEnum(message, field_descriptor);
@@ -161,7 +162,7 @@ GetImmediateValueFromProto<const google::protobuf::EnumValueDescriptor*>(
 
 // The field referred by @field_descriptor must be a string field.
 template <>
-const std::string& GetImmediateValueFromProto<const std::string&>(
+const std::string& GetImmediateValueFromProtoOrDefault<const std::string&>(
     const google::protobuf::Message& message,
     const google::protobuf::FieldDescriptor* field_descriptor) {
   // As long as the @field_descriptor refers to a string field, scratch is not
@@ -173,7 +174,7 @@ const std::string& GetImmediateValueFromProto<const std::string&>(
 
 template <>
 const google::protobuf::Message&
-GetImmediateValueFromProto<const google::protobuf::Message&>(
+GetImmediateValueFromProtoOrDefault<const google::protobuf::Message&>(
     const google::protobuf::Message& message,
     const google::protobuf::FieldDescriptor* field_descriptor) {
   return message.GetReflection()->GetMessage(message, field_descriptor);

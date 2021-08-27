@@ -27,6 +27,7 @@
 namespace wfa_virtual_people {
 
 enum IntegerCompareResult {
+  INVALID = 0,
   GREATER_THAN = 1,
   EQUAL = 2,
   LESS_THAN = 3,
@@ -100,6 +101,7 @@ class IntegerComparator {
   // Returns GREATER_THAN if the field in @message is greater than @value.
   // Returns EQUAL if the field in @message is equal to @value.
   // Returns LESS_THAN if the field in @message is less than @value.
+  // Returns INVALID if the field in @message is not set.
   //
   // @field_descriptors must represent a valid path in @message to an integer
   // field.
