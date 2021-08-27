@@ -247,15 +247,22 @@ message Multiplicity {
     // multiplicity value.
     string expected_multiplicity_field = 2;
   }
+
   // The maximum allowed value stored in expected_multiplicity_field.
   optional double max_value = 3;
+
   // If true, cap the multiplicity value at max_value.
   // Otherwise, return error if the value exceeds max_value.
   optional bool cap_at_max = 4;
+
   // The name of a field in LabelerEvent.
   // Must be a singular signed int type field.
   // This field is used as virtual person index at this multiplicity node.
   optional string person_index_field = 5;
+
+  // The random seed used to compute multiplicity for a given event.
+  // It is also used to modify the acting_fingerprint for event clones.
+  optional string random_seed = 6;
 }
 
 // Event and attributes produced by labeler. @labeler_input is the original
@@ -298,4 +305,14 @@ message LabelerEvent {
   // user id. If there are multiple user ids, the model has embedded logic to
   // choose which id to use.
   optional uint64 acting_fingerprint = 9;
+
+  // The default field to extract multiplicity from.
+  // If a model has more than one multiplicity nodes along a path, they should
+  // use different fields.
+  optional double expected_multiplicity = 10;
+
+  // The default field to set/get multiplicity person index.
+  // If a model has more than one multiplicity nodes along a path, they should
+  // use different fields.
+  optional int32 multiplicity_person_index = 11;
 }
