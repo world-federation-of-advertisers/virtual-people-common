@@ -24,7 +24,7 @@
 #include "common_cpp/macros/macros.h"
 #include "google/protobuf/descriptor.h"
 #include "google/protobuf/message.h"
-#include "src/main/proto/wfa/virtual_people/common/field_filter.pb.h"
+#include "wfa/virtual_people/common/field_filter.pb.h"
 #include "wfa/virtual_people/common/field_filter/field_filter.h"
 #include "wfa/virtual_people/common/field_filter/utils/field_util.h"
 

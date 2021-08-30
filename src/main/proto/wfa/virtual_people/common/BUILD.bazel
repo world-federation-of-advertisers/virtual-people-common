@@ -3,9 +3,12 @@ load("@rules_proto//proto:defs.bzl", "proto_library")
 
 package(default_visibility = ["//visibility:public"])
 
+_IMPORT_PREFIX = "/src/main/proto"
+
 proto_library(
     name = "model_proto",
     srcs = ["model.proto"],
+    strip_import_prefix = _IMPORT_PREFIX,
     deps = [
         ":demographic_proto",
         ":event_proto",
@@ -23,6 +26,7 @@ cc_proto_library(
 proto_library(
     name = "event_proto",
     srcs = ["event.proto"],
+    strip_import_prefix = _IMPORT_PREFIX,
     deps = [
         ":demographic_proto",
         ":geo_location_proto",
@@ -39,6 +43,7 @@ cc_proto_library(
 proto_library(
     name = "label_proto",
     srcs = ["label.proto"],
+    strip_import_prefix = _IMPORT_PREFIX,
     deps = [
         ":demographic_proto",
     ],
@@ -52,6 +57,7 @@ cc_proto_library(
 proto_library(
     name = "demographic_proto",
     srcs = ["demographic.proto"],
+    strip_import_prefix = _IMPORT_PREFIX,
 )
 
 cc_proto_library(
@@ -62,6 +68,7 @@ cc_proto_library(
 proto_library(
     name = "geo_location_proto",
     srcs = ["geo_location.proto"],
+    strip_import_prefix = _IMPORT_PREFIX,
 )
 
 cc_proto_library(
@@ -72,6 +79,7 @@ cc_proto_library(
 proto_library(
     name = "panel_data_proto",
     srcs = ["panel_data.proto"],
+    strip_import_prefix = _IMPORT_PREFIX,
     deps = [
         ":demographic_proto",
     ],
@@ -85,6 +93,7 @@ cc_proto_library(
 proto_library(
     name = "field_filter_proto",
     srcs = ["field_filter.proto"],
+    strip_import_prefix = _IMPORT_PREFIX,
 )
 
 cc_proto_library(
