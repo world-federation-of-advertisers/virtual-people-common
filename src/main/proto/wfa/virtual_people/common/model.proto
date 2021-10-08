@@ -315,4 +315,13 @@ message LabelerEvent {
   // If a model has more than one multiplicity nodes along a path, they should
   // use different fields.
   optional int32 multiplicity_person_index = 11;
+
+  oneof person_label {
+    // Quantum label. Will be collapsed before the model populates
+    // LabelerOutput.
+    QuantumLabel quantum_label = 2;
+
+    // Person attributes. Will be used when not using quantum labels.
+    PersonLabelAttributes label = 3;
+  }
 }
