@@ -319,9 +319,9 @@ message LabelerEvent {
   oneof person_label {
     // Quantum label. Will be collapsed before the model populates
     // LabelerOutput.
-    QuantumLabel quantum_label = 2;
+    QuantumLabel quantum_label = 12;
 
     // Person attributes. Will be used when not using quantum labels.
-    PersonLabelAttributes label = 3;
+    PersonLabelAttributes label = 13;
   }
 }
