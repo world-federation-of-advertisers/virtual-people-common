@@ -297,6 +297,9 @@ message LabelerEvent {
   optional DemoBucket acting_demo = 6;
   optional string acting_demo_id_space = 7;
 
+  // TODO(@tcsnfkx): Deprecate corrected_demo when all tests are migrated to
+  //                 label.
+  // Never use this field. Use label or quantum_label instead.
   optional DemoBucket corrected_demo = 8;
 
   // The fingerprint to be used as part of the random seed.
@@ -315,4 +318,13 @@ message LabelerEvent {
   // If a model has more than one multiplicity nodes along a path, they should
   // use different fields.
   optional int32 multiplicity_person_index = 11;
+
+  oneof person_label {
+    // Quantum label. Will be collapsed before the model populates
+    // LabelerOutput.
+    QuantumLabel quantum_label = 12;
+
+    // Person attributes. Will be used when not using quantum labels.
+    PersonLabelAttributes label = 13;
+  }
 }
