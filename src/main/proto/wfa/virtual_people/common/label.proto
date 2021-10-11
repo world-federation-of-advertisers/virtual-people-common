@@ -42,11 +42,13 @@ message QuantumLabel {
 }
 
 // Represents a list of quantum labels, each of which is for an independent
-// attribute.
+// attribute (or multiple attributes).
 // When collapsed, each quantum label is collapsed independently, and the
 // outputs are merged into single PersonLabelAttributes.
+// The label field represents the attributes that do not need to be collapsed.
 message IndependentQuantumLabels {
   repeated QuantumLabel quantum_labels = 1;
+  PersonLabelAttributes label = 2;
 }
 
 // Represents a single virtual person.
@@ -58,7 +60,7 @@ message VirtualPersonActivity {
   oneof person_label {
     // Quantum label. This is only for debugging purposes.
     // It will be collapsed before the model populates LabelerOutput.
-    QuantumLabel quantum_label = 2;
+    IndependentQuantumLabels quantum_labels = 2;
 
     // Person attributes.
     // Could be the result of the collapse of quantum_label.

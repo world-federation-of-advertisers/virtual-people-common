@@ -319,10 +319,8 @@ message LabelerEvent {
   // use different fields.
   optional int32 multiplicity_person_index = 11;
 
-  // Quantum labels. Will be collapsed and merged with label below before the
-  // model populates LabelerOutput.
+  // Quantum labels. Will be collapsed before the model populates LabelerOutput.
+  // Can also represent classic label when only the quantum_labels.label field
+  // is set.
   optional IndependentQuantumLabels quantum_labels = 12;
-
-  // Classic label for person attributes.
-  optional PersonLabelAttributes label = 13;
 }
