@@ -68,9 +68,21 @@ message ProfileInfo {
   // Information for phone id.
   optional UserInfo phone_user_info = 2;
 
+  // TODO(@wliue): Deprecate proprietary_id_space_1_user_info when
+  // all usages are migrated.
   // Information for proprietary id 1.
   // The exact content may differ from publisher to publisher.
   optional UserInfo proprietary_id_space_1_user_info = 3;
+
+  // Information for logged-in id if the event has one.
+  // The id space may differ from publisher to publisher. Need to use together
+  // with the publisher field in EventId.
+  optional UserInfo logged_in_id_user_info = 4;
+
+  // Information for logged-out id if the event has one.
+  // The id space may differ from publisher to publisher. Need to use together
+  // with the publisher field in EventId.
+  optional UserInfo logged_out_id_user_info = 5;
 }
 
 // Represents input to the labeler.
@@ -85,6 +97,7 @@ message LabelerInput {
   // Required. When this event occurs in microseconds since epoch.
   optional int64 timestamp_usec = 2;
 
+  // TODO(@wliue): Deprecate user_agent when all usages are migrated.
   // User agent string. Labeler uses this to compute device type.
   optional string user_agent = 3;
 
@@ -93,6 +106,10 @@ message LabelerInput {
 
   // Profile data for all user ids.
   optional ProfileInfo profile_info = 5;
+
+  // Device type string. Computed from user agent string using a library
+  // function.
+  optional string device_type = 6;
 }
 
 // LogEvent contains all attributes in LabelerInput, as well as other
