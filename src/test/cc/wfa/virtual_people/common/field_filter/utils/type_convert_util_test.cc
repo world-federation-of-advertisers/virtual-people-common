@@ -106,7 +106,7 @@ TEST(ConvertToEnumTest, TestEnumName) {
   const google::protobuf::FieldDescriptor* field_descriptor =
       TestProtoB().GetDescriptor()->FindFieldByName("enum_value");
   auto output = ConvertToEnum(field_descriptor->enum_type(), "TEST_ENUM_1");
-  EXPECT_THAT(output, IsOk());
+  EXPECT_THAT(output.status(), IsOk());
   EXPECT_EQ((*output)->number(), 1);
 }
 
@@ -114,7 +114,7 @@ TEST(ConvertToEnumTest, TestEnumNumber) {
   const google::protobuf::FieldDescriptor* field_descriptor =
       TestProtoB().GetDescriptor()->FindFieldByName("enum_value");
   auto output = ConvertToEnum(field_descriptor->enum_type(), "1");
-  EXPECT_THAT(output, IsOk());
+  EXPECT_THAT(output.status(), IsOk());
   EXPECT_EQ((*output)->number(), 1);
 }
 
