@@ -34,7 +34,6 @@ using ::google::protobuf::Message;
 using ::testing::FieldsAre;
 using ::wfa::EqualsProto;
 using ::wfa::IsOk;
-using ::wfa::IsOkAndHolds;
 using ::wfa::StatusIs;
 using ::wfa_virtual_people::test::TestProto;
 using ::wfa_virtual_people::test::TestProtoB;
