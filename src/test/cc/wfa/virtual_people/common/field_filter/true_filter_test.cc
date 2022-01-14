@@ -27,6 +27,7 @@ namespace wfa_virtual_people {
 namespace {
 
 using ::wfa::StatusIs;
+using ::wfa_virtual_people::test::TestProto;
 
 TEST(TrueFilterTest, TestIsMatch) {
   FieldFilterProto field_filter_proto;
@@ -47,7 +48,7 @@ TEST(TrueFilterTest, TestIsMatchNotEmptyEvent) {
       FieldFilter::New(TestProto().GetDescriptor(), field_filter_proto));
 
   TestProto test_proto;
-  test_proto.set_person_country_code("COUNTRY_1");
+  test_proto.mutable_a()->mutable_b()->set_string_value("a");
   EXPECT_TRUE(field_filter->IsMatch(test_proto));
 }
 

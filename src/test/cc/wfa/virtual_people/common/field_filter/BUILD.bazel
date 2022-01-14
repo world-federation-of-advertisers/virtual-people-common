@@ -122,7 +122,7 @@ cc_test(
 
 cc_test(
     name = "true_filter_test",
-    srcs = ["and_filter_test.cc"],
+    srcs = ["true_filter_test.cc"],
     deps = [
         "//src/main/cc/wfa/virtual_people/common/field_filter",
         "//src/main/proto/wfa/virtual_people/common:field_filter_cc_proto",
