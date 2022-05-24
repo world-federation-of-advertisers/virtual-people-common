@@ -16,6 +16,9 @@ syntax = "proto3";
 
 package wfa_virtual_people;
 
+option java_package = "org.wfanet.virtualpeople.common";
+option java_multiple_files = true;
+
 // Represents geographic data, e.g. country/region/city.
 // The meaning of these ids are specific to each event data provider.
 // The ids used in model training must be consistent with the ids used in
