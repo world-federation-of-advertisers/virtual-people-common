@@ -15,12 +15,16 @@
 #ifndef SRC_MAIN_CC_WFA_VIRTUAL_PEOPLE_COMMON_INTEGRATION_TESTING_FRAMEWORK_GOLDEN_GENERATOR_H_
 #define SRC_MAIN_CC_WFA_VIRTUAL_PEOPLE_COMMON_INTEGRATION_TESTING_FRAMEWORK_GOLDEN_GENERATOR_H_
 
-#include "wfa/virtual_people/common/config_proto.pb.h"
+#include <string>
+#include <vector>
+
+#include "wfa/virtual_people/common/config.pb.h"
 
 namespace wfa_virtual_people {
 
-// Generates golden files for binaries based on input config.
-void GoldenGenerator(const IntegrationTestList config);
+// Generates CLI commands to generate golden files of binaries based on input
+// config.
+std::vector<std::string> GoldenGenerator(const IntegrationTestList config);
 
 }  // namespace wfa_virtual_people
 

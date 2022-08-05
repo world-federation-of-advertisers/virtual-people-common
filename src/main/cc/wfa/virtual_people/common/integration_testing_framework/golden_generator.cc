@@ -14,13 +14,21 @@
 
 #include "wfa/virtual_people/common/integration_testing_framework/golden_generator.h"
 
+#include <string>
+#include <vector>
+
 #include "tools/cpp/runfiles/runfiles.h"
 #include "wfa/virtual_people/common/config.pb.h"
 
+using bazel::tools::cpp::runfiles::Runfiles;
+
 namespace wfa_virtual_people {
 
-// Generates golden files for binaries based on input config.
-void GoldenGenerator(const IntegrationTestList config) {
+// Generates CLI commands to generate golden files of binaries based on input
+// config.
+std::vector<std::string> GoldenGenerator(const IntegrationTestList config) {
+  std::unique_ptr<Runfiles> runfiles(Runfiles::CreateForTest());
+  std::vector<std::string> executeVector;
   std::string execute;
 
   for (int testIndex = 0; testIndex < config.tests_size(); testIndex++) {
@@ -41,9 +49,11 @@ void GoldenGenerator(const IntegrationTestList config) {
           execute += bp.golden();
         }
       }
-      std::system(execute.c_str());
+      executeVector.push_back(execute);
     }
   }
+
+  return executeVector;
 }
 
 }  // namespace wfa_virtual_people

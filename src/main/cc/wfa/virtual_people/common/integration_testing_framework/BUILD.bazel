@@ -9,6 +9,7 @@ _INCLUDE_PREFIX = "/src/main/cc"
 
 cc_library(
     name = "golden_generator",
+    srcs = ["golden_generator.cc"],
     hdrs = ["golden_generator.h"],
     strip_include_prefix = _INCLUDE_PREFIX,
     deps = [
