@@ -14,6 +14,7 @@
 
 #include "wfa/virtual_people/common/integration_testing_framework/golden_generator.h"
 
+#include <memory>
 #include <string>
 #include <vector>
 

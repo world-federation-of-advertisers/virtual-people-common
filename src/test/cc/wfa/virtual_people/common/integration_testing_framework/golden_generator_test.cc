@@ -26,10 +26,10 @@ namespace wfa_virtual_people {
 namespace {
 
 TEST(GoldenGeneratorTest, EmptyConfig) {
-    IntegrationTestList config;
-    std::vector<std::string> executeVector(GoldenGenerator(config));
+  IntegrationTestList config;
+  std::vector<std::string> executeVector(GoldenGenerator(config));
 
-    EXPECT_THAT(executeVector, ::testing::IsEmpty());
+  EXPECT_THAT(executeVector, ::testing::IsEmpty());
 }
 
 TEST(GoldenGeneratorTest, ExpectedConfig) {
