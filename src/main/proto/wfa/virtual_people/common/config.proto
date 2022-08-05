@@ -34,7 +34,7 @@ message TestCase {
   string name = 1;
 
   repeated BinaryParameter binary_parameters = 2;
-} 
+}
 
 message IntegrationTest {
   string name = 1;
