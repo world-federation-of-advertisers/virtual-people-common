@@ -1,0 +1,13 @@
+load("@rules_cc//cc:defs.bzl", "cc_test")
+
+package(default_visibility = ["//visibility:private"])
+
+cc_test(
+    name = "golden_generator_test",
+    srcs = ["golden_generator_test.cc"],
+    deps = [
+        "//src/main/cc/wfa/virtual_people/common/integration_testing_framework:golden_generator",
+        "//src/main/proto/wfa/virtual_people/common:config_cc_proto",
+        "@com_google_googletest//:gtest_main",
+    ]
+)

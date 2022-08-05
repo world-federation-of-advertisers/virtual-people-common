@@ -12,16 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef SRC_MAIN_CC_WFA_VIRTUAL_PEOPLE_COMMON_INTEGRATION_TESTING_FRAMEWORK_GOLDEN_GENERATOR_H_
-#define SRC_MAIN_CC_WFA_VIRTUAL_PEOPLE_COMMON_INTEGRATION_TESTING_FRAMEWORK_GOLDEN_GENERATOR_H_
-
-#include "wfa/virtual_people/common/config_proto.pb.h"
+#include "gtest/gtest.h"
+#include "wfa/virtual_people/common/config.pb.h"
 
 namespace wfa_virtual_people {
+namespace {
 
-// Generates golden files for binaries based on input config.
-void GoldenGenerator(const IntegrationTestList config);
+TEST(GoldenGeneratorTest, Test) { ASSERT_TRUE(true); }
 
-}  // namespace wfa_virtual_people
-
-#endif  // SRC_MAIN_CC_WFA_VIRTUAL_PEOPLE_COMMON_INTEGRATION_TESTING_FRAMEWORK_GOLDEN_GENERATOR_H_
+} // namespace
+} // namespace wfa_virtual_people
