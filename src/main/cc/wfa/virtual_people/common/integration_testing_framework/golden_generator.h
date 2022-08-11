@@ -24,7 +24,7 @@ namespace wfa_virtual_people {
 
 // Generates CLI commands to generate golden files of binaries based on input
 // config.
-std::vector<std::string> GoldenGenerator(const IntegrationTestList config);
+std::vector<std::string> GoldenGenerator(const IntegrationTestList& config);
 
 }  // namespace wfa_virtual_people
 

@@ -12,38 +12,73 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// Example:
+//
+// tests {
+//   name: "binary"
+//   binary: "workspace_name/path/to/binary"
+//   test_cases {
+//       name: "name"
+//       binary_parameters {
+//           name: "input_path"
+//           value: "path/to/input.textproto"
+//       }
+//       binary_parameters {
+//           name: "output_path"
+//           value: "path/to/output.textproto"
+//           golden: "path/to/golden.textproto"
+//           proto: "path/to/proto.proto"
+//           proto_dependencies: "path/to/proto/dependencies.proto"
+//           proto_type: "ProtoType"
+//       }
+//   }
+// }
+
 syntax = "proto3";
 
 package wfa_virtual_people;
 
+// BinaryParameter type contains information about each CLI flag.
 message BinaryParameter {
   string name = 1;
 
   string value = 2;
 
+  // Path to golden output.
   optional string golden = 3;
 
+  // Path to proto file that contains type to be compared against.
   optional string proto = 4;
 
+  // Paths to all protos that above proto file depends on.
   repeated string proto_dependencies = 5;
 
+  // Proto type to be compared against.
   optional string proto_type = 6;
 }
 
+// TestCase type contains information about the test case and list of parameters
+// to run per test case.
 message TestCase {
   string name = 1;
 
   repeated BinaryParameter binary_parameters = 2;
 }
 
+// IntegrationTest type contains information about the binary and list of test
+// cases to run on it.
 message IntegrationTest {
   string name = 1;
 
+  // File path must be prefixed with workspace name.
+  // Example: workspace_name/path/to/binary
   string binary = 2;
 
   repeated TestCase test_cases = 3;
 }
 
+// IntegrationTestList type contains list of integration tests for a given
+// binary.
 message IntegrationTestList {
   repeated IntegrationTest tests = 1;
 }

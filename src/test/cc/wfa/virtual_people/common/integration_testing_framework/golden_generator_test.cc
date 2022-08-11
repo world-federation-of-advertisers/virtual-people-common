@@ -25,11 +25,13 @@
 namespace wfa_virtual_people {
 namespace {
 
+constexpr char bazelOut[] = "bazel-out";
+
 TEST(GoldenGeneratorTest, EmptyConfig) {
   IntegrationTestList config;
-  std::vector<std::string> executeVector(GoldenGenerator(config));
+  std::vector<std::string> execute_vector(GoldenGenerator(config));
 
-  EXPECT_THAT(executeVector, ::testing::IsEmpty());
+  EXPECT_THAT(execute_vector, ::testing::IsEmpty());
 }
 
 TEST(GoldenGeneratorTest, ExpectedConfig) {
@@ -102,15 +104,15 @@ TEST(GoldenGeneratorTest, ExpectedConfig) {
         }
       )pb",
       &config));
-  std::vector<std::string> executeVector(GoldenGenerator(config));
+  std::vector<std::string> execute_vector(GoldenGenerator(config));
 
-  for (int i = 0; i < executeVector.size(); i++) {
-    int index = executeVector[i].find("bazel-out");
-    executeVector[i].erase(0, index);
+  for (int i = 0; i < execute_vector.size(); i++) {
+    int index = execute_vector[i].find(bazelOut);
+    execute_vector[i].erase(0, index);
   }
 
   EXPECT_THAT(
-      executeVector,
+      execute_vector,
       ::testing::ElementsAre(
           "bazel-out/k8-fastbuild/bin/src/test/cc/wfa/virtual_people/common/"
           "integration_testing_framework/golden_generator_test.runfiles/"

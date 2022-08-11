@@ -18,6 +18,7 @@
 #include <string>
 #include <vector>
 
+#include "absl/strings/str_cat.h"
 #include "tools/cpp/runfiles/runfiles.h"
 #include "wfa/virtual_people/common/config.pb.h"
 
@@ -27,34 +28,34 @@ namespace wfa_virtual_people {
 
 // Generates CLI commands to generate golden files of binaries based on input
 // config.
-std::vector<std::string> GoldenGenerator(const IntegrationTestList config) {
+std::vector<std::string> GoldenGenerator(const IntegrationTestList& config) {
   std::unique_ptr<Runfiles> runfiles(Runfiles::CreateForTest());
-  std::vector<std::string> executeVector;
+  std::vector<std::string> execute_vector;
   std::string execute;
 
-  for (int testIndex = 0; testIndex < config.tests_size(); testIndex++) {
-    IntegrationTest it = config.tests().at(testIndex);
+  for (int test_index = 0; test_index < config.tests_size(); test_index++) {
+    const IntegrationTest& it = config.tests().at(test_index);
     std::string binaryPath = runfiles->Rlocation(it.binary());
-    for (int testCaseIndex = 0; testCaseIndex < it.test_cases_size();
-         testCaseIndex++) {
-      TestCase tc = it.test_cases().at(testCaseIndex);
+    for (int test_case_index = 0; test_case_index < it.test_cases_size();
+         test_case_index++) {
+      const TestCase& tc = it.test_cases().at(test_case_index);
       execute = binaryPath;
-      for (int binaryParameterIndex = 0;
-           binaryParameterIndex < tc.binary_parameters_size();
-           binaryParameterIndex++) {
-        BinaryParameter bp = tc.binary_parameters().at(binaryParameterIndex);
-        execute += " --" + bp.name() + "=";
+      for (int binary_parameter_index = 0;
+           binary_parameter_index < tc.binary_parameters_size();
+           binary_parameter_index++) {
+        BinaryParameter bp = tc.binary_parameters().at(binary_parameter_index);
+        execute = absl::StrCat(execute, " --", bp.name(), "=");
         if (bp.golden().empty()) {
-          execute += bp.value();
+          absl::StrAppend(&execute, bp.value());
         } else {
-          execute += bp.golden();
+          absl::StrAppend(&execute, bp.golden());
         }
       }
-      executeVector.push_back(execute);
+      execute_vector.push_back(execute);
     }
   }
 
-  return executeVector;
+  return execute_vector;
 }
 
 }  // namespace wfa_virtual_people
