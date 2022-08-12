@@ -18,19 +18,21 @@
 //   name: "binary"
 //   binary: "workspace_name/path/to/binary"
 //   test_cases {
-//       name: "name"
-//       binary_parameters {
-//           name: "input_path"
-//           value: "path/to/input.textproto"
+//     name: "name"
+//     binary_parameters {
+//       name: "input_path"
+//       value: "path/to/input.textproto"
+//     }
+//     binary_parameters {
+//       name: "output_path"
+//       value: "path/to/output.textproto"
+//       golden {
+//         golden_path: "path/to/golden.textproto"
+//         proto_path: "path/to/proto.proto"
+//         proto_dependencies: "path/to/proto/dependencies.proto"
+//         proto_type: "ProtoType"
 //       }
-//       binary_parameters {
-//           name: "output_path"
-//           value: "path/to/output.textproto"
-//           golden: "path/to/golden.textproto"
-//           proto: "path/to/proto.proto"
-//           proto_dependencies: "path/to/proto/dependencies.proto"
-//           proto_type: "ProtoType"
-//       }
+//     }
 //   }
 // }
 
@@ -38,23 +40,31 @@ syntax = "proto3";
 
 package wfa_virtual_people;
 
-// BinaryParameter type contains information about each CLI flag.
+// Golden type contains information about the golden file and its proto
+// dependencies.
+message Golden {
+  // Path to golden output.
+  optional string golden_path = 1;
+
+  // Path to proto file that contains type to be compared against.
+  optional string proto_path = 2;
+
+  // Paths to all protos that the above proto file depends on.
+  repeated string proto_dependencies = 3;
+
+  // Proto type to be compared against.
+  optional string proto_type = 4;
+}
+
+// BinaryParameter type contains information about each CLI flag. If the
+// BinaryParameter is an output parameter then contain information regarding
+// it's golden counterpart.
 message BinaryParameter {
   string name = 1;
 
   string value = 2;
 
-  // Path to golden output.
-  optional string golden = 3;
-
-  // Path to proto file that contains type to be compared against.
-  optional string proto = 4;
-
-  // Paths to all protos that above proto file depends on.
-  repeated string proto_dependencies = 5;
-
-  // Proto type to be compared against.
-  optional string proto_type = 6;
+  optional Golden golden = 3;
 }
 
 // TestCase type contains information about the test case and list of parameters

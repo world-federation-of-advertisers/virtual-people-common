@@ -45,10 +45,10 @@ std::vector<std::string> GoldenGenerator(const IntegrationTestList& config) {
            binary_parameter_index++) {
         BinaryParameter bp = tc.binary_parameters().at(binary_parameter_index);
         execute = absl::StrCat(execute, " --", bp.name(), "=");
-        if (bp.golden().empty()) {
+        if (bp.golden().golden_path().empty()) {
           absl::StrAppend(&execute, bp.value());
         } else {
-          absl::StrAppend(&execute, bp.golden());
+          absl::StrAppend(&execute, bp.golden().golden_path());
         }
       }
       execute_vector.push_back(execute);

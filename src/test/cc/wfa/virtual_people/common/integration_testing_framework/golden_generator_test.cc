@@ -50,10 +50,12 @@ TEST(GoldenGeneratorTest, ExpectedConfig) {
             binary_parameters {
               name: "output_path"
               value: "src/test/cc/wfa/virtual_people/training/model_compiler/compiled_node_for_population_node.textproto"
-              golden: "src/test/cc/wfa/virtual_people/training/model_compiler/test_data/compiled_node_for_population_node.textproto"
-              proto: "virtual_people_common/src/main/proto/wfa/virtual_people/common/_virtual_imports/model_proto/wfa/virtual_people/common/model.proto"
-              proto_dependencies: "virtual_people_common/src/main/proto/wfa/virtual_people/common/_virtual_imports/field_filter_proto/wfa/virtual_people/common/field_filter.proto"
-              proto_type: "CompiledNode"
+              golden {
+                golden_path: "src/test/cc/wfa/virtual_people/training/model_compiler/test_data/compiled_node_for_population_node.textproto"
+                proto_path: "virtual_people_common/src/main/proto/wfa/virtual_people/common/_virtual_imports/model_proto/wfa/virtual_people/common/model.proto"
+                proto_dependencies: "virtual_people_common/src/main/proto/wfa/virtual_people/common/_virtual_imports/field_filter_proto/wfa/virtual_people/common/field_filter.proto"
+                proto_type: "CompiledNode"
+              }
             }
           }
           test_cases {
@@ -65,10 +67,12 @@ TEST(GoldenGeneratorTest, ExpectedConfig) {
             binary_parameters {
               name: "output_path"
               value: "src/test/cc/wfa/virtual_people/training/model_compiler/compiled_node_for_population_node_redistribute_probabilities_for_empty_pools.textproto"
-              golden: "src/test/cc/wfa/virtual_people/training/model_compiler/test_data/compiled_node_for_population_node_redistribute_probabilities_for_empty_pools.textproto"
-              proto: "virtual_people_common/src/main/proto/wfa/virtual_people/common/_virtual_imports/model_proto/wfa/virtual_people/common/model.proto"
-              proto_dependencies: "virtual_people_common/src/main/proto/wfa/virtual_people/common/_virtual_imports/field_filter_proto/wfa/virtual_people/common/field_filter.proto"
-              proto_type: "CompiledNode"
+              golden {
+                golden_path: "src/test/cc/wfa/virtual_people/training/model_compiler/test_data/compiled_node_for_population_node_redistribute_probabilities_for_empty_pools.textproto"
+                proto_path: "virtual_people_common/src/main/proto/wfa/virtual_people/common/_virtual_imports/model_proto/wfa/virtual_people/common/model.proto"
+                proto_dependencies: "virtual_people_common/src/main/proto/wfa/virtual_people/common/_virtual_imports/field_filter_proto/wfa/virtual_people/common/field_filter.proto"
+                proto_type: "CompiledNode"  
+              }
             }
           }
           test_cases {
@@ -80,10 +84,12 @@ TEST(GoldenGeneratorTest, ExpectedConfig) {
             binary_parameters {
               name: "output_path"
               value: "src/test/cc/wfa/virtual_people/training/model_compiler/compiled_node_for_population_node_kappa_less_than_one.textproto"
-              golden: "src/test/cc/wfa/virtual_people/training/model_compiler/test_data/compiled_node_for_population_node_kappa_less_than_one.textproto"
-              proto: "virtual_people_common/src/main/proto/wfa/virtual_people/common/_virtual_imports/model_proto/wfa/virtual_people/common/model.proto"
-              proto_dependencies: "virtual_people_common/src/main/proto/wfa/virtual_people/common/_virtual_imports/field_filter_proto/wfa/virtual_people/common/field_filter.proto"
-              proto_type: "CompiledNode"
+              golden {
+                golden_path: "src/test/cc/wfa/virtual_people/training/model_compiler/test_data/compiled_node_for_population_node_kappa_less_than_one.textproto"
+                proto_path: "virtual_people_common/src/main/proto/wfa/virtual_people/common/_virtual_imports/model_proto/wfa/virtual_people/common/model.proto"
+                proto_dependencies: "virtual_people_common/src/main/proto/wfa/virtual_people/common/_virtual_imports/field_filter_proto/wfa/virtual_people/common/field_filter.proto"
+                proto_type: "CompiledNode"
+              }
             }
           }
           test_cases {
@@ -95,10 +101,12 @@ TEST(GoldenGeneratorTest, ExpectedConfig) {
             binary_parameters {
               name: "output_path"
               value: "src/test/cc/wfa/virtual_people/training/model_compiler/compiled_node_for_population_node_discretization.textproto"
-              golden: "src/test/cc/wfa/virtual_people/training/model_compiler/test_data/compiled_node_for_population_node_discretization.textproto"
-              proto: "virtual_people_common/src/main/proto/wfa/virtual_people/common/_virtual_imports/model_proto/wfa/virtual_people/common/model.proto"
-              proto_dependencies: "virtual_people_common/src/main/proto/wfa/virtual_people/common/_virtual_imports/field_filter_proto/wfa/virtual_people/common/field_filter.proto"
-              proto_type: "CompiledNode"
+              golden {
+                golden_path: "src/test/cc/wfa/virtual_people/training/model_compiler/test_data/compiled_node_for_population_node_discretization.textproto"
+                proto_path: "virtual_people_common/src/main/proto/wfa/virtual_people/common/_virtual_imports/model_proto/wfa/virtual_people/common/model.proto"
+                proto_dependencies: "virtual_people_common/src/main/proto/wfa/virtual_people/common/_virtual_imports/field_filter_proto/wfa/virtual_people/common/field_filter.proto"
+                proto_type: "CompiledNode"
+              }
             }
           }
         }
