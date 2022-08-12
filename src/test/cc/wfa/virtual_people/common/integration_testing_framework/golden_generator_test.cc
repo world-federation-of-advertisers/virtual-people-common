@@ -71,7 +71,7 @@ TEST(GoldenGeneratorTest, ExpectedConfig) {
                 golden_path: "src/test/cc/wfa/virtual_people/training/model_compiler/test_data/compiled_node_for_population_node_redistribute_probabilities_for_empty_pools.textproto"
                 proto_path: "virtual_people_common/src/main/proto/wfa/virtual_people/common/_virtual_imports/model_proto/wfa/virtual_people/common/model.proto"
                 proto_dependencies: "virtual_people_common/src/main/proto/wfa/virtual_people/common/_virtual_imports/field_filter_proto/wfa/virtual_people/common/field_filter.proto"
-                proto_type: "CompiledNode"  
+                proto_type: "CompiledNode"
               }
             }
           }
