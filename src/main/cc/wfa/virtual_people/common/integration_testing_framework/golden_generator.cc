@@ -33,7 +33,7 @@ std::vector<std::string> GoldenGenerator(const IntegrationTestList& config) {
   std::vector<std::string> execute_vector;
   std::string execute;
 
-  for (int test_index = 0; test_index < config.tests_size(); test_index++) {
+  for (int test_index = 0; test_index < config.tests_size(); ++test_index) {
     const IntegrationTest& it = config.tests().at(test_index);
     std::string binaryPath = runfiles->Rlocation(it.binary());
     for (int test_case_index = 0; test_case_index < it.test_cases_size();

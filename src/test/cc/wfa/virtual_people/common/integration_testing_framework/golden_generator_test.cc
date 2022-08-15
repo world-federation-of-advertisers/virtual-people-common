@@ -119,50 +119,52 @@ TEST(GoldenGeneratorTest, ExpectedConfig) {
     execute_vector[i].erase(0, index);
   }
 
-  EXPECT_THAT(
-      execute_vector,
-      ::testing::ElementsAre(
-          "bazel-out/k8-fastbuild/bin/src/test/cc/wfa/virtual_people/common/"
-          "integration_testing_framework/golden_generator_test.runfiles/"
-          "virtual_people_training/src/main/cc/wfa/virtual_people/training/"
-          "model_compiler/compiler_main "
-          "--input_path=src/test/cc/wfa/virtual_people/training/model_compiler/"
-          "test_data/model_node_config_population_node.textproto "
-          "--output_path=src/test/cc/wfa/virtual_people/training/"
-          "model_compiler/test_data/"
-          "compiled_node_for_population_node.textproto",
-          "bazel-out/k8-fastbuild/bin/src/test/cc/wfa/virtual_people/common/"
-          "integration_testing_framework/golden_generator_test.runfiles/"
-          "virtual_people_training/src/main/cc/wfa/virtual_people/training/"
-          "model_compiler/compiler_main "
-          "--input_path=src/test/cc/wfa/virtual_people/training/model_compiler/"
-          "test_data/"
-          "model_node_config_population_node_redistribute_probabilities_for_"
-          "empty_pools.textproto "
-          "--output_path=src/test/cc/wfa/virtual_people/training/"
-          "model_compiler/test_data/"
-          "compiled_node_for_population_node_redistribute_probabilities_for_"
-          "empty_pools.textproto",
-          "bazel-out/k8-fastbuild/bin/src/test/cc/wfa/virtual_people/common/"
-          "integration_testing_framework/golden_generator_test.runfiles/"
-          "virtual_people_training/src/main/cc/wfa/virtual_people/training/"
-          "model_compiler/compiler_main "
-          "--input_path=src/test/cc/wfa/virtual_people/training/model_compiler/"
-          "test_data/"
-          "model_node_config_population_node_kappa_less_than_one.textproto "
-          "--output_path=src/test/cc/wfa/virtual_people/training/"
-          "model_compiler/test_data/"
-          "compiled_node_for_population_node_kappa_less_than_one.textproto",
-          "bazel-out/k8-fastbuild/bin/src/test/cc/wfa/virtual_people/common/"
-          "integration_testing_framework/golden_generator_test.runfiles/"
-          "virtual_people_training/src/main/cc/wfa/virtual_people/training/"
-          "model_compiler/compiler_main "
-          "--input_path=src/test/cc/wfa/virtual_people/training/model_compiler/"
-          "test_data/"
-          "model_node_config_population_node_discretization.textproto "
-          "--output_path=src/test/cc/wfa/virtual_people/training/"
-          "model_compiler/test_data/"
-          "compiled_node_for_population_node_discretization.textproto"));
+  std::string element_1 =
+      "bazel-out/k8-fastbuild/bin/src/test/cc/wfa/virtual_people/common/"
+      "integration_testing_framework/golden_generator_test.runfiles/"
+      "virtual_people_training/src/main/cc/wfa/virtual_people/training/"
+      "model_compiler/compiler_main "
+      "--input_path=src/test/cc/wfa/virtual_people/training/model_compiler/"
+      "test_data/model_node_config_population_node.textproto "
+      "--output_path=src/test/cc/wfa/virtual_people/training/model_compiler/"
+      "test_data/compiled_node_for_population_node.textproto";
+  std::string element_2 =
+      "bazel-out/k8-fastbuild/bin/src/test/cc/wfa/virtual_people/common/"
+      "integration_testing_framework/golden_generator_test.runfiles/"
+      "virtual_people_training/src/main/cc/wfa/virtual_people/training/"
+      "model_compiler/compiler_main "
+      "--input_path=src/test/cc/wfa/virtual_people/training/model_compiler/"
+      "test_data/"
+      "model_node_config_population_node_redistribute_probabilities_for_"
+      "empty_pools.textproto "
+      "--output_path=src/test/cc/wfa/virtual_people/training/"
+      "model_compiler/test_data/"
+      "compiled_node_for_population_node_redistribute_probabilities_for_"
+      "empty_pools.textproto";
+  std::string element_3 =
+      "bazel-out/k8-fastbuild/bin/src/test/cc/wfa/virtual_people/common/"
+      "integration_testing_framework/golden_generator_test.runfiles/"
+      "virtual_people_training/src/main/cc/wfa/virtual_people/training/"
+      "model_compiler/compiler_main "
+      "--input_path=src/test/cc/wfa/virtual_people/training/model_compiler/"
+      "test_data/"
+      "model_node_config_population_node_kappa_less_than_one.textproto "
+      "--output_path=src/test/cc/wfa/virtual_people/training/"
+      "model_compiler/test_data/"
+      "compiled_node_for_population_node_kappa_less_than_one.textproto";
+  std::string element_4 =
+      "bazel-out/k8-fastbuild/bin/src/test/cc/wfa/virtual_people/common/"
+      "integration_testing_framework/golden_generator_test.runfiles/"
+      "virtual_people_training/src/main/cc/wfa/virtual_people/training/"
+      "model_compiler/compiler_main "
+      "--input_path=src/test/cc/wfa/virtual_people/training/model_compiler/"
+      "test_data/"
+      "model_node_config_population_node_discretization.textproto "
+      "--output_path=src/test/cc/wfa/virtual_people/training/"
+      "model_compiler/test_data/"
+      "compiled_node_for_population_node_discretization.textproto";
+  EXPECT_THAT(execute_vector, ::testing::ElementsAre(element_1, element_2,
+                                                     element_3, element_4));
 }
 
 }  // namespace
