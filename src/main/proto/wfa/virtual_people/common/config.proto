@@ -1,0 +1,94 @@
+// Copyright 2022 The Cross-Media Measurement Authors
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+// Example:
+//
+// tests {
+//   name: "binary"
+//   binary: "workspace_name/path/to/binary"
+//   test_cases {
+//     name: "name"
+//     binary_parameters {
+//       name: "input_path"
+//       value: "path/to/input.textproto"
+//     }
+//     binary_parameters {
+//       name: "output_path"
+//       value: "path/to/output.textproto"
+//       golden {
+//         golden_path: "path/to/golden.textproto"
+//         proto_path: "path/to/proto.proto"
+//         proto_dependencies: "path/to/proto/dependencies.proto"
+//         proto_type: "ProtoType"
+//       }
+//     }
+//   }
+// }
+
+syntax = "proto3";
+
+package wfa_virtual_people;
+
+// Golden type contains information about the golden file and its proto
+// dependencies.
+message Golden {
+  // Path to golden output.
+  optional string golden_path = 1;
+
+  // Path to proto file that contains type to be compared against.
+  optional string proto_path = 2;
+
+  // Paths to all protos that the above proto file depends on.
+  repeated string proto_dependencies = 3;
+
+  // Proto type to be compared against.
+  optional string proto_type = 4;
+}
+
+// BinaryParameter type contains information about each CLI flag. If the
+// BinaryParameter is an output parameter then contain information regarding
+// it's golden counterpart.
+message BinaryParameter {
+  string name = 1;
+
+  string value = 2;
+
+  optional Golden golden = 3;
+}
+
+// TestCase type contains information about the test case and list of parameters
+// to run per test case.
+message TestCase {
+  string name = 1;
+
+  repeated BinaryParameter binary_parameters = 2;
+}
+
+// IntegrationTest type contains information about the binary and list of test
+// cases to run on it.
+message IntegrationTest {
+  string name = 1;
+
+  // File path must be prefixed with workspace name.
+  // Example: workspace_name/path/to/binary
+  string binary = 2;
+
+  repeated TestCase test_cases = 3;
+}
+
+// IntegrationTestList type contains list of integration tests for a given
+// binary.
+message IntegrationTestList {
+  repeated IntegrationTest tests = 1;
+}
