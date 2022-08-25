@@ -16,13 +16,13 @@ syntax = "proto3";
 
 package wfa_virtual_people;
 
-option java_package = "org.wfanet.virtualpeople.common";
-option java_multiple_files = true;
-
 import "wfa/virtual_people/common/demographic.proto";
 import "wfa/virtual_people/common/geo_location.proto";
 import "wfa/virtual_people/common/label.proto";
 import "wfa/virtual_people/common/panel_data.proto";
+
+option java_package = "org.wfanet.virtualpeople.common";
+option java_multiple_files = true;
 
 // EventId is a unique identifier across all event data provider logs.
 message EventId {
@@ -71,12 +71,6 @@ message ProfileInfo {
   // Information for phone id.
   optional UserInfo phone_user_info = 2;
 
-  // TODO(@wliue): Deprecate proprietary_id_space_1_user_info when
-  // all usages are migrated.
-  // Information for proprietary id 1.
-  // The exact content may differ from publisher to publisher.
-  optional UserInfo proprietary_id_space_1_user_info = 3;
-
   // Information for logged-in id if the event has one.
   // The id space may differ from publisher to publisher. Need to use together
   // with the publisher field in EventId.
@@ -86,6 +80,21 @@ message ProfileInfo {
   // The id space may differ from publisher to publisher. Need to use together
   // with the publisher field in EventId.
   optional UserInfo logged_out_id_user_info = 5;
+
+  // About proprietary_id_space_NNN_user_info below:
+  // These are intended to provide a way to digest arbitrary identifiers that
+  // don't fit semantically into the existing fields, but it is not yet
+  // justified to add dedicated fields for them.
+  optional UserInfo proprietary_id_space_1_user_info = 3;
+  optional UserInfo proprietary_id_space_2_user_info = 6;
+  optional UserInfo proprietary_id_space_3_user_info = 7;
+  optional UserInfo proprietary_id_space_4_user_info = 8;
+  optional UserInfo proprietary_id_space_5_user_info = 9;
+  optional UserInfo proprietary_id_space_6_user_info = 10;
+  optional UserInfo proprietary_id_space_7_user_info = 11;
+  optional UserInfo proprietary_id_space_8_user_info = 12;
+  optional UserInfo proprietary_id_space_9_user_info = 13;
+  optional UserInfo proprietary_id_space_10_user_info = 14;
 }
 
 // Represents input to the labeler.
