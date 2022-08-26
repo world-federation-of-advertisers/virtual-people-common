@@ -1,0 +1,12 @@
+load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
+
+package(default_visibility = ["//visibility:public"])
+
+kt_jvm_library(
+    name = "utils",
+    srcs = glob(["*.kt"]),
+    deps = [
+        "//src/main/proto/wfa/virtual_people/common:field_filter_kt_jvm_proto",
+        "@wfa_common_jvm//imports/java/com/google/protobuf",
+    ],
+)
