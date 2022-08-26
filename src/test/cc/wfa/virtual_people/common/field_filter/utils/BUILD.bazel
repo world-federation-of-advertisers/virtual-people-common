@@ -7,7 +7,7 @@ cc_test(
     srcs = ["field_util_test.cc"],
     deps = [
         "//src/main/cc/wfa/virtual_people/common/field_filter/utils:field_util",
-        "//src/test/cc/wfa/virtual_people/common/field_filter/test:test_cc_proto",
+        "//src/main/proto/wfa/virtual_people/common/field_filter/test:test_cc_proto",
         "@com_google_absl//absl/status",
         "@com_google_absl//absl/status:statusor",
         "@com_google_googletest//:gtest_main",
@@ -22,7 +22,7 @@ cc_test(
     srcs = ["type_convert_util_test.cc"],
     deps = [
         "//src/main/cc/wfa/virtual_people/common/field_filter/utils:type_convert_util",
-        "//src/test/cc/wfa/virtual_people/common/field_filter/test:test_cc_proto",
+        "//src/main/proto/wfa/virtual_people/common/field_filter/test:test_cc_proto",
         "@com_google_absl//absl/status",
         "@com_google_absl//absl/status:statusor",
         "@com_google_googletest//:gtest_main",
@@ -37,7 +37,7 @@ cc_test(
     deps = [
         "//src/main/cc/wfa/virtual_people/common/field_filter/utils:field_util",
         "//src/main/cc/wfa/virtual_people/common/field_filter/utils:integer_comparator",
-        "//src/test/cc/wfa/virtual_people/common/field_filter/test:test_cc_proto",
+        "//src/main/proto/wfa/virtual_people/common/field_filter/test:test_cc_proto",
         "@com_google_absl//absl/status",
         "@com_google_googletest//:gtest_main",
         "@com_google_protobuf//:protobuf",
@@ -50,7 +50,7 @@ cc_test(
     srcs = ["message_filter_util_test.cc"],
     deps = [
         "//src/main/cc/wfa/virtual_people/common/field_filter/utils:message_filter_util",
-        "//src/test/cc/wfa/virtual_people/common/field_filter/test:test_cc_proto",
+        "//src/main/proto/wfa/virtual_people/common/field_filter/test:test_cc_proto",
         "@com_google_absl//absl/status",
         "@com_google_googletest//:gtest_main",
         "@com_google_protobuf//:protobuf",
@@ -64,7 +64,7 @@ cc_test(
     srcs = ["values_parser_test.cc"],
     deps = [
         "//src/main/cc/wfa/virtual_people/common/field_filter/utils:values_parser",
-        "//src/test/cc/wfa/virtual_people/common/field_filter/test:test_cc_proto",
+        "//src/main/proto/wfa/virtual_people/common/field_filter/test:test_cc_proto",
         "@com_google_absl//absl/status",
         "@com_google_absl//absl/status:statusor",
         "@com_google_googletest//:gtest_main",
