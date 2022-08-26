@@ -1,5 +1,7 @@
 load("@rules_cc//cc:defs.bzl", "cc_proto_library")
 load("@rules_proto//proto:defs.bzl", "proto_library")
+load("@rules_java//java:defs.bzl", "java_proto_library")
+load("@wfa_common_jvm//build/kt_jvm_proto:defs.bzl", "kt_jvm_proto_library")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -99,6 +101,17 @@ proto_library(
 cc_proto_library(
     name = "field_filter_cc_proto",
     deps = [":field_filter_proto"],
+)
+
+java_proto_library(
+    name = "field_filter_java_proto",
+    deps = [":field_filter_proto"],
+)
+
+kt_jvm_proto_library(
+    name = "field_filter_kt_jvm_proto",
+    srcs = [":field_filter_proto"],
+    deps = [":field_filter_java_proto"],
 )
 
 proto_library(
