@@ -1,0 +1,30 @@
+load("@rules_cc//cc:defs.bzl", "cc_proto_library")
+load("@rules_proto//proto:defs.bzl", "proto_library")
+load("@rules_java//java:defs.bzl", "java_proto_library")
+load("@wfa_common_jvm//build/kt_jvm_proto:defs.bzl", "kt_jvm_proto_library")
+
+package(default_visibility = ["//src/test:__subpackages__"])
+
+_IMPORT_PREFIX = "/src/main/proto"
+
+proto_library(
+    name = "test_proto",
+    srcs = ["test.proto"],
+    strip_import_prefix = _IMPORT_PREFIX,
+)
+
+cc_proto_library(
+    name = "test_cc_proto",
+    deps = [":test_proto"],
+)
+
+java_proto_library(
+    name = "test_java_proto",
+    deps = [":test_proto"],
+)
+
+kt_jvm_proto_library(
+    name = "test_kt_jvm_proto",
+    srcs = [":test_proto"],
+    deps = [":test_java_proto"],
+)
