@@ -40,7 +40,7 @@ sealed interface FieldFilter {
       @Suppress("WHEN_ENUM_CAN_BE_NULL_IN_JAVA") // Proto enum fields are never null.
       return when (config.op) {
         Op.HAS -> HasFilter(descriptor, config)
-        Op.EQUAL,
+        Op.EQUAL -> EqualFilter(descriptor, config)
         Op.GT,
         Op.LT,
         Op.IN,
