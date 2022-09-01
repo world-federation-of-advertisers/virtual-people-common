@@ -24,7 +24,7 @@ import org.wfanet.virtualpeople.common.fieldfilter.utils.getParentMessageFromPro
 /**
  * The implementation of [FieldFilter] when op is HAS in config.
  *
- * Always use [FieldFilter.create] Users should never construct a [HasFilter] directly.
+ * Always use [FieldFilter.create]. Users should never construct a [HasFilter] directly.
  */
 internal class HasFilter(descriptor: Descriptors.Descriptor, config: FieldFilterProto) :
   FieldFilter {
