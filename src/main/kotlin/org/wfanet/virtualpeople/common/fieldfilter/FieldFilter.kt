@@ -41,13 +41,13 @@ sealed interface FieldFilter {
       return when (config.op) {
         Op.HAS -> HasFilter(descriptor, config)
         Op.EQUAL -> EqualFilter(descriptor, config)
+        Op.AND -> AndFilter(descriptor, config)
+        Op.OR -> OrFilter(descriptor, config)
         Op.ANY_IN -> AnyInFilter.create(descriptor, config)
         Op.GT,
         Op.LT,
         Op.IN,
         Op.REGEXP,
-        Op.OR,
-        Op.AND,
         Op.NOT,
         Op.PARTIAL,
         Op.TRUE -> TODO("Not yet implemented")
