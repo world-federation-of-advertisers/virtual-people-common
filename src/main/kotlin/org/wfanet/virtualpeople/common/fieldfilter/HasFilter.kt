@@ -12,17 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package src.main.kotlin.org.wfanet.virtualpeople.common.fieldfilter
+package org.wfanet.virtualpeople.common.fieldfilter
 
 import com.google.protobuf.Descriptors
 import com.google.protobuf.Descriptors.FieldDescriptor
-import com.google.protobuf.Message
+import com.google.protobuf.MessageOrBuilder
 import org.wfanet.virtualpeople.common.FieldFilterProto
+import org.wfanet.virtualpeople.common.fieldfilter.utils.getFieldFromProto
+import org.wfanet.virtualpeople.common.fieldfilter.utils.getParentMessageFromProto
 
+/**
+ * The implementation of [FieldFilter] when op is HAS in config.
+ *
+ * Always use [FieldFilter.create]. Users should never construct a [HasFilter] directly.
+ */
 internal class HasFilter(descriptor: Descriptors.Descriptor, config: FieldFilterProto) :
   FieldFilter {
 
-  private val fieldDescriptor: List<FieldDescriptor>
+  private val fieldDescriptors: List<FieldDescriptor>
 
   init {
     if (config.op != FieldFilterProto.Op.HAS) {
@@ -31,11 +38,20 @@ internal class HasFilter(descriptor: Descriptors.Descriptor, config: FieldFilter
     if (!config.hasName()) {
       error("Name must be set. Input FieldFilterProto: $config")
     }
-    // TODO(@wangyaopw): Build fieldDescriptor from descriptor and config
-    fieldDescriptor = listOf()
+    fieldDescriptors = getFieldFromProto(descriptor, config.name, allowRepeated = true)
   }
 
-  override fun matches(message: Message) {
-    TODO("Not yet implemented")
+  /**
+   * Returns true if any of the following is true. 1. The field is not repeated, and is set in
+   * [messageOrBuilder]. 2. The field is repeated, and is not empty in [messageOrBuilder].
+   */
+  override fun matches(messageOrBuilder: MessageOrBuilder): Boolean {
+    val parent = getParentMessageFromProto(messageOrBuilder, fieldDescriptors)
+    val lastDescriptor = fieldDescriptors.last()
+    return if (lastDescriptor.isRepeated) {
+      parent.getRepeatedFieldCount(lastDescriptor) > 0
+    } else {
+      parent.hasField(lastDescriptor)
+    }
   }
 }

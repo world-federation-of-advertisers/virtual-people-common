@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package src.main.kotlin.org.wfanet.virtualpeople.common.fieldfilter
+package org.wfanet.virtualpeople.common.fieldfilter
 
 import com.google.protobuf.Descriptors.Descriptor
-import com.google.protobuf.Message
+import com.google.protobuf.MessageOrBuilder
 import org.wfanet.virtualpeople.common.FieldFilterProto
 import org.wfanet.virtualpeople.common.FieldFilterProto.Op
 
@@ -28,12 +28,12 @@ import org.wfanet.virtualpeople.common.FieldFilterProto.Op
  * This is the interface for all FieldFilter classes. Never add any behavior here.
  */
 sealed interface FieldFilter {
-  /** Returns true if the @message satisfies the condition described by the FieldFilter */
-  fun matches(message: Message)
+  /** Returns true if the [messageOrBuilder] satisfies the condition described by the FieldFilter */
+  fun matches(messageOrBuilder: MessageOrBuilder): Boolean
 
   companion object {
     /**
-     * Always use the constructor of FieldFilter to get a FieldFilter object. Users should never
+     * Always use the constructor of [FieldFilter] to get a [FieldFilter] object. Users should never
      * call the factory functions or the constructors of the derived classes.
      */
     fun create(descriptor: Descriptor, config: FieldFilterProto): FieldFilter {
@@ -57,12 +57,12 @@ sealed interface FieldFilter {
     }
 
     /**
-     * Creates a FieldFilter, which checks the equality of all the fields set in the input @message,
-     * including nested fields.
+     * Creates a [FieldFilter], which checks the equality of all the fields set in the input
+     * [messageOrBuilder], including nested fields.
      *
      * Float and double fields are not supported. Any repeated field is not supported.
      */
-    fun create(message: Message): FieldFilter {
+    fun create(messageOrBuilder: MessageOrBuilder): FieldFilter {
       TODO("Not yet implemented")
     }
   }
