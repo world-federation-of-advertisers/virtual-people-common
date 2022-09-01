@@ -41,12 +41,12 @@ sealed interface FieldFilter {
       return when (config.op) {
         Op.HAS -> HasFilter(descriptor, config)
         Op.EQUAL -> EqualFilter(descriptor, config)
+        Op.AND -> AndFilter(descriptor, config)
         Op.GT,
         Op.LT,
         Op.IN,
         Op.REGEXP,
         Op.OR,
-        Op.AND,
         Op.NOT,
         Op.PARTIAL,
         Op.TRUE,
