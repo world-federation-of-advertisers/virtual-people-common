@@ -27,6 +27,7 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import org.wfanet.virtualpeople.common.test.TestProto
 import org.wfanet.virtualpeople.common.test.TestProtoB
+import org.wfanet.virtualpeople.common.test.TestProtoB.TestEnum
 import org.wfanet.virtualpeople.common.test.testProto
 import org.wfanet.virtualpeople.common.test.testProtoA
 import org.wfanet.virtualpeople.common.test.testProtoB
@@ -570,6 +571,86 @@ class FieldUtilTest {
     assertEquals(
       testProto.getRepeatedProtoA(1),
       getValueFromRepeatedProto(testProto, messageValueFields, 1)
+    )
+  }
+
+  @Test
+  fun `get all repeated filed and value`() {
+    val testProto = testProto {
+      a = testProtoA {
+        b = testProtoB {
+          int32Values.add(1)
+          int32Values.add(2)
+          int64Values.add(1L)
+          int64Values.add(2L)
+          uint32Values.add(1)
+          uint32Values.add(2)
+          uint64Values.add(1L)
+          uint64Values.add(2L)
+          floatValues.add(1.0f)
+          floatValues.add(2.0f)
+          doubleValues.add(1.0)
+          doubleValues.add(2.0)
+          boolValues.add(true)
+          boolValues.add(false)
+          enumValues.add(TestProtoB.TestEnum.TEST_ENUM_1)
+          enumValues.add(TestProtoB.TestEnum.TEST_ENUM_2)
+          stringValues.add("string1")
+          stringValues.add("string2")
+        }
+      }
+      repeatedProtoA.add(testProtoA { b = testProtoB { int32Value = 1 } })
+      repeatedProtoA.add(testProtoA { b = testProtoB { int32Value = 2 } })
+    }
+
+    /** Test int32. */
+    val int32ValueFields =
+      getFieldFromProto(testProto.descriptorForType, "a.b.int32_values", allowRepeated = true)
+    assertEquals(listOf(1, 2), getAllValuesFromRepeatedProto(testProto, int32ValueFields))
+    /** Test int64. */
+    val int64ValueFields =
+      getFieldFromProto(testProto.descriptorForType, "a.b.int64_values", allowRepeated = true)
+    assertEquals(listOf(1L, 2L), getAllValuesFromRepeatedProto(testProto, int64ValueFields))
+    /** Test uint32. */
+    val uint32ValueFields =
+      getFieldFromProto(testProto.descriptorForType, "a.b.uint32_values", allowRepeated = true)
+    assertEquals(listOf(1, 2), getAllValuesFromRepeatedProto(testProto, uint32ValueFields))
+    /** Test uint64. */
+    val uint64ValueFields =
+      getFieldFromProto(testProto.descriptorForType, "a.b.uint64_values", allowRepeated = true)
+    assertEquals(listOf(1L, 2L), getAllValuesFromRepeatedProto(testProto, uint64ValueFields))
+    /** Test float. */
+    val floatValueFields =
+      getFieldFromProto(testProto.descriptorForType, "a.b.float_values", allowRepeated = true)
+    assertEquals(listOf(1.0f, 2.0f), getAllValuesFromRepeatedProto(testProto, floatValueFields))
+    /** Test double. */
+    val doubleValueFields =
+      getFieldFromProto(testProto.descriptorForType, "a.b.double_values", allowRepeated = true)
+    assertEquals(listOf(1.0, 2.0), getAllValuesFromRepeatedProto(testProto, doubleValueFields))
+    /** Test bool. */
+    val booleanValueFields =
+      getFieldFromProto(testProto.descriptorForType, "a.b.bool_values", allowRepeated = true)
+    assertEquals(listOf(true, false), getAllValuesFromRepeatedProto(testProto, booleanValueFields))
+    /** Test enum. */
+    val enumValueFields =
+      getFieldFromProto(testProto.descriptorForType, "a.b.enum_values", allowRepeated = true)
+    assertEquals(
+      listOf(TestEnum.TEST_ENUM_1.valueDescriptor, TestEnum.TEST_ENUM_2.valueDescriptor),
+      getAllValuesFromRepeatedProto<EnumValueDescriptor>(testProto, enumValueFields)
+    )
+    /** Test string. */
+    val stringValueFields =
+      getFieldFromProto(testProto.descriptorForType, "a.b.string_values", allowRepeated = true)
+    assertEquals(
+      listOf("string1", "string2"),
+      getAllValuesFromRepeatedProto(testProto, stringValueFields)
+    )
+    /** Test message. */
+    val messageValueFields =
+      getFieldFromProto(testProto.descriptorForType, "repeated_proto_a", allowRepeated = true)
+    assertEquals(
+      listOf(testProto.getRepeatedProtoA(0), testProto.getRepeatedProtoA(1)),
+      getAllValuesFromRepeatedProto(testProto, messageValueFields)
     )
   }
 }

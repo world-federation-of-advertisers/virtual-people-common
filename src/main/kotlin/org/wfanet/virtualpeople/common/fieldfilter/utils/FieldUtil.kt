@@ -296,3 +296,43 @@ inline fun <reified ValueType> getValueFromRepeatedProto(
     index
   )
 }
+
+/**
+ * Gets all values from the [message], with repeated field name represented by [fieldDescriptor]
+ *
+ * The field must be an immediate field of [message]. The corresponding type of the field must be
+ * [ValueType].
+ */
+inline fun <reified ValueType> getAllImmediateValuesFromRepeatedProto(
+  message: MessageOrBuilder,
+  fieldDescriptor: FieldDescriptor,
+): List<ValueType> {
+  return (0 until message.getRepeatedFieldCount(fieldDescriptor))
+    .map {
+      val value = message.getRepeatedField(fieldDescriptor, it)
+      if (value is ValueType) {
+        value
+      } else {
+        error("The type of the field is not compatible to the target: $value")
+      }
+    }
+    .toList()
+}
+
+/**
+ * Gets all values from the [message], with repeated field path represented by [fieldDescriptors]
+ *
+ * All entries except the last one in [fieldDescriptors] must refer to a singular protobuf Message
+ * field. The last entry in [fieldDescriptors] must refer to a repeated field with [ValueType]. The
+ * first element in [fieldDescriptors] must refer to a field in [message], Each of the rest elements
+ * must refer to a field in the message referred by the previous element.
+ */
+inline fun <reified ValueType> getAllValuesFromRepeatedProto(
+  message: MessageOrBuilder,
+  fieldDescriptors: List<FieldDescriptor>,
+): List<ValueType> {
+  return getAllImmediateValuesFromRepeatedProto(
+    getParentMessageFromProto(message, fieldDescriptors),
+    fieldDescriptors.last()
+  )
+}

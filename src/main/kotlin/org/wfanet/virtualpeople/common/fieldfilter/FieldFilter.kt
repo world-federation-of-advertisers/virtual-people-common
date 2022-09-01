@@ -41,6 +41,7 @@ sealed interface FieldFilter {
       return when (config.op) {
         Op.HAS -> HasFilter(descriptor, config)
         Op.EQUAL -> EqualFilter(descriptor, config)
+        Op.ANY_IN -> AnyInFilter.create(descriptor, config)
         Op.GT,
         Op.LT,
         Op.IN,
@@ -49,8 +50,7 @@ sealed interface FieldFilter {
         Op.AND,
         Op.NOT,
         Op.PARTIAL,
-        Op.TRUE,
-        Op.ANY_IN -> TODO("Not yet implemented")
+        Op.TRUE -> TODO("Not yet implemented")
         Op.UNRECOGNIZED,
         Op.INVALID -> error("Invalid OP")
       }
