@@ -74,16 +74,14 @@ internal class EqualFilter(descriptor: Descriptors.Descriptor, config: FieldFilt
     }
   }
 
-  private inline fun <reified ValueType> matchesInternal(
-    messageOrBuilder: MessageOrBuilder
-  ): Boolean {
-    val actualValue = getValueFromProto<ValueType>(messageOrBuilder, fieldDescriptors)
+  private inline fun <reified V> matchesInternal(messageOrBuilder: MessageOrBuilder): Boolean {
+    val actualValue = getValueFromProto<V>(messageOrBuilder, fieldDescriptors)
     return when (fieldDescriptors.last().type) {
       Type.ENUM ->
         actualValue.isSet &&
           actualValue.value == convertToEnum(fieldDescriptors.last().enumType, expectedValue)
       Type.STRING -> actualValue.isSet && actualValue.value == expectedValue
-      else -> actualValue.isSet && actualValue.value == convertToNumeric<ValueType>(expectedValue)
+      else -> actualValue.isSet && actualValue.value == convertToNumeric<V>(expectedValue)
     }
   }
 }

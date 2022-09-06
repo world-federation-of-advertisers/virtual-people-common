@@ -40,11 +40,6 @@ internal class OrFilter(descriptor: Descriptors.Descriptor, config: FieldFilterP
 
   /** Returns true if any of the [subFilters] matches. */
   override fun matches(messageOrBuilder: MessageOrBuilder): Boolean {
-    for (subFilter in subFilters) {
-      if (subFilter.matches(messageOrBuilder)) {
-        return true
-      }
-    }
-    return false
+    return subFilters.any { it.matches(messageOrBuilder) }
   }
 }
