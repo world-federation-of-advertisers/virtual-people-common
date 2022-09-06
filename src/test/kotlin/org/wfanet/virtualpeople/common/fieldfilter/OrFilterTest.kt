@@ -68,8 +68,8 @@ class OrFilterTest {
     assertTrue(filter.matches(testProto1.toBuilder()))
 
     val testProto2 = testProto { a = testProtoA { b = testProtoB { int64Value = 1 } } }
-    assertTrue(filter.matches(testProto1))
-    assertTrue(filter.matches(testProto1.toBuilder()))
+    assertTrue(filter.matches(testProto2))
+    assertTrue(filter.matches(testProto2.toBuilder()))
   }
 
   @Test
