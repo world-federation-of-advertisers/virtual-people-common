@@ -29,7 +29,7 @@ import org.wfanet.virtualpeople.common.fieldfilter.utils.*
  *
  * Always use [FieldFilter.create]. Users should never construct a [AnyInFilter] directly.
  */
-internal abstract class AnyInFilter : FieldFilter {
+internal abstract class AnyInFilter(val fieldDescriptors: List<FieldDescriptor>) : FieldFilter {
   companion object {
     /**
      * Create a AnyInFilter with specific type of expected values.
@@ -61,13 +61,13 @@ internal abstract class AnyInFilter : FieldFilter {
 
       return when (fieldDescriptors.last().type) {
         Type.INT32,
-        Type.UINT32 -> AnyInFilterInt(fieldDescriptors, parseValue(config.value))
+        Type.UINT32 -> AnyInFilterImpl<Int>(fieldDescriptors, parseValue(config.value))
         Type.UINT64,
-        Type.INT64 -> AnyInFilterLong(fieldDescriptors, parseValue(config.value))
-        Type.BOOL -> AnyInFilterBoolean(fieldDescriptors, parseValue(config.value))
-        Type.STRING -> AnyInFilterString(fieldDescriptors, parseValue(config.value))
+        Type.INT64 -> AnyInFilterImpl<Long>(fieldDescriptors, parseValue(config.value))
+        Type.BOOL -> AnyInFilterImpl<Boolean>(fieldDescriptors, parseValue(config.value))
+        Type.STRING -> AnyInFilterImpl<String>(fieldDescriptors, parseValue(config.value))
         Type.ENUM ->
-          AnyInFilterEnum(
+          AnyInFilterImpl(
             fieldDescriptors,
             parseEnumValues(fieldDescriptors.last().enumType, config.value)
               .map { fieldDescriptors.last().enumType.findValueByNumber(it) }
@@ -79,77 +79,28 @@ internal abstract class AnyInFilter : FieldFilter {
   }
 }
 
-/** Implementation of AnyFilter for Int values. */
-internal class AnyInFilterInt(
-  private val fieldDescriptors: List<FieldDescriptor>,
-  private val parsedValues: Set<Int>
-) : AnyInFilter() {
-  override fun matches(messageOrBuilder: MessageOrBuilder): Boolean {
-    getAllValuesFromRepeatedProto<Int>(messageOrBuilder, fieldDescriptors).forEach {
-      if (parsedValues.contains(it)) {
-        return true
-      }
-    }
-    return false
-  }
-}
+/** Implementation of AnyFilter for [V]. */
+internal class AnyInFilterImpl<V>(
+  fieldDescriptors: List<FieldDescriptor>,
+  private val parsedValues: Set<V>
+) : AnyInFilter(fieldDescriptors) {
 
-/** Implementation of AnyFilter for Long values. */
-internal class AnyInFilterLong(
-  private val fieldDescriptors: List<FieldDescriptor>,
-  private val parsedValues: Set<Long>
-) : AnyInFilter() {
   override fun matches(messageOrBuilder: MessageOrBuilder): Boolean {
-    getAllValuesFromRepeatedProto<Long>(messageOrBuilder, fieldDescriptors).forEach {
-      if (parsedValues.contains(it)) {
-        return true
+    @Suppress("UNCHECKED_CAST")
+    /** Guaranteed safe since all types come from the same fieldDescriptor.Type */
+    val values: List<V> =
+      when (fieldDescriptors.last().type) {
+        Type.INT32,
+        Type.UINT32 -> getAllValuesFromRepeatedProto<Int>(messageOrBuilder, fieldDescriptors)
+        Type.UINT64,
+        Type.INT64 -> getAllValuesFromRepeatedProto<Long>(messageOrBuilder, fieldDescriptors)
+        Type.BOOL -> getAllValuesFromRepeatedProto<Boolean>(messageOrBuilder, fieldDescriptors)
+        Type.STRING -> getAllValuesFromRepeatedProto<String>(messageOrBuilder, fieldDescriptors)
+        Type.ENUM ->
+          getAllValuesFromRepeatedProto<EnumValueDescriptor>(messageOrBuilder, fieldDescriptors)
+        else -> error("Unsupported field type for ANY_IN filter. ${fieldDescriptors.last().type}")
       }
-    }
-    return false
-  }
-}
-
-/** Implementation of AnyFilter for Boolean values. */
-internal class AnyInFilterBoolean(
-  private val fieldDescriptors: List<FieldDescriptor>,
-  private val parsedValues: Set<Boolean>
-) : AnyInFilter() {
-  override fun matches(messageOrBuilder: MessageOrBuilder): Boolean {
-    getAllValuesFromRepeatedProto<Boolean>(messageOrBuilder, fieldDescriptors).forEach {
-      if (parsedValues.contains(it)) {
-        return true
-      }
-    }
-    return false
-  }
-}
-
-/** Implementation of AnyFilter for String values. */
-internal class AnyInFilterString(
-  private val fieldDescriptors: List<FieldDescriptor>,
-  private val parsedValues: Set<String>
-) : AnyInFilter() {
-  override fun matches(messageOrBuilder: MessageOrBuilder): Boolean {
-    getAllValuesFromRepeatedProto<String>(messageOrBuilder, fieldDescriptors).forEach {
-      if (parsedValues.contains(it)) {
-        return true
-      }
-    }
-    return false
-  }
-}
-
-/** Implementation of AnyFilter for Enum values. */
-internal class AnyInFilterEnum(
-  private val fieldDescriptors: List<FieldDescriptor>,
-  private val parsedValues: Set<EnumValueDescriptor>
-) : AnyInFilter() {
-  override fun matches(messageOrBuilder: MessageOrBuilder): Boolean {
-    getAllValuesFromRepeatedProto<EnumValueDescriptor>(messageOrBuilder, fieldDescriptors).forEach {
-      if (parsedValues.contains(it)) {
-        return true
-      }
-    }
-    return false
+        as List<V>
+    return values.any { parsedValues.contains(it) }
   }
 }
