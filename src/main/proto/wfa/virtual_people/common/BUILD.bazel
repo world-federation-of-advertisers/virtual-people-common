@@ -25,6 +25,17 @@ cc_proto_library(
     deps = [":model_proto"],
 )
 
+java_proto_library(
+    name = "model_java_proto",
+    deps = [":model_proto"],
+)
+
+kt_jvm_proto_library(
+    name = "model_kt_jvm_proto",
+    srcs = [":model_proto"],
+    deps = [":model_java_proto"],
+)
+
 proto_library(
     name = "event_proto",
     srcs = ["event.proto"],
@@ -42,6 +53,17 @@ cc_proto_library(
     deps = [":event_proto"],
 )
 
+java_proto_library(
+    name = "event_java_proto",
+    deps = [":event_proto"],
+)
+
+kt_jvm_proto_library(
+    name = "event_kt_jvm_proto",
+    srcs = [":event_proto"],
+    deps = [":event_java_proto"],
+)
+
 proto_library(
     name = "label_proto",
     srcs = ["label.proto"],
@@ -56,6 +78,17 @@ cc_proto_library(
     deps = [":label_proto"],
 )
 
+java_proto_library(
+    name = "label_java_proto",
+    deps = [":label_proto"],
+)
+
+kt_jvm_proto_library(
+    name = "label_kt_jvm_proto",
+    srcs = [":label_proto"],
+    deps = [":label_java_proto"],
+)
+
 proto_library(
     name = "demographic_proto",
     srcs = ["demographic.proto"],
@@ -67,6 +100,17 @@ cc_proto_library(
     deps = [":demographic_proto"],
 )
 
+java_proto_library(
+    name = "demographic_java_proto",
+    deps = [":demographic_proto"],
+)
+
+kt_jvm_proto_library(
+    name = "demographic_kt_jvm_proto",
+    srcs = [":demographic_proto"],
+    deps = [":demographic_java_proto"],
+)
+
 proto_library(
     name = "geo_location_proto",
     srcs = ["geo_location.proto"],
@@ -76,6 +120,17 @@ proto_library(
 cc_proto_library(
     name = "geo_location_cc_proto",
     deps = [":geo_location_proto"],
+)
+
+java_proto_library(
+    name = "geo_location_java_proto",
+    deps = [":geo_location_proto"],
+)
+
+kt_jvm_proto_library(
+    name = "geo_location_kt_jvm_proto",
+    srcs = [":geo_location_proto"],
+    deps = [":geo_location_java_proto"],
 )
 
 proto_library(
@@ -90,6 +145,17 @@ proto_library(
 cc_proto_library(
     name = "panel_data_cc_proto",
     deps = [":panel_data_proto"],
+)
+
+java_proto_library(
+    name = "panel_data_java_proto",
+    deps = [":panel_data_proto"],
+)
+
+kt_jvm_proto_library(
+    name = "panel_data_kt_jvm_proto",
+    srcs = [":panel_data_proto"],
+    deps = [":panel_data_java_proto"],
 )
 
 proto_library(
@@ -123,4 +189,15 @@ proto_library(
 cc_proto_library(
     name = "config_cc_proto",
     deps = [":config_proto"],
+)
+
+java_proto_library(
+    name = "config_java_proto",
+    deps = [":config_proto"],
+)
+
+kt_jvm_proto_library(
+    name = "config_kt_jvm_proto",
+    srcs = [":config_proto"],
+    deps = [":config_java_proto"],
 )
