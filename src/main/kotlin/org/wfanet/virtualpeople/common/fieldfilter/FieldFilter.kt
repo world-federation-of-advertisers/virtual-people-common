@@ -18,6 +18,7 @@ import com.google.protobuf.Descriptors.Descriptor
 import com.google.protobuf.MessageOrBuilder
 import org.wfanet.virtualpeople.common.FieldFilterProto
 import org.wfanet.virtualpeople.common.FieldFilterProto.Op
+import org.wfanet.virtualpeople.common.fieldfilter.utils.convertMessageToFilter
 
 /**
  * Kotlin implementation of FieldFilterProto.
@@ -44,12 +45,12 @@ sealed interface FieldFilter {
         Op.AND -> AndFilter(descriptor, config)
         Op.OR -> OrFilter(descriptor, config)
         Op.ANY_IN -> AnyInFilter.create(descriptor, config)
+        Op.PARTIAL -> PartialFilter(descriptor, config)
         Op.GT,
         Op.LT,
         Op.IN,
         Op.REGEXP,
         Op.NOT,
-        Op.PARTIAL,
         Op.TRUE -> TODO("Not yet implemented")
         Op.UNRECOGNIZED,
         Op.INVALID -> error("Invalid OP")
@@ -63,7 +64,8 @@ sealed interface FieldFilter {
      * Float and double fields are not supported. Any repeated field is not supported.
      */
     fun create(messageOrBuilder: MessageOrBuilder): FieldFilter {
-      TODO("Not yet implemented")
+      val config: FieldFilterProto = convertMessageToFilter(messageOrBuilder)
+      return create(messageOrBuilder.descriptorForType, config)
     }
   }
 }
