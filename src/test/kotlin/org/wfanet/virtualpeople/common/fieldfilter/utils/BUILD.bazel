@@ -44,3 +44,18 @@ kt_jvm_test(
         "@wfa_common_jvm//imports/kotlin/kotlin/test",
     ],
 )
+
+kt_jvm_test(
+    name = "MessageFilterUtilTest",
+    srcs = ["MessageFilterUtilTest.kt"],
+    test_class = "org.wfanet.virtualpeople.common.fieldfilter.utils.MessageFilterUtilTest",
+    deps = [
+        "//src/main/kotlin/org/wfanet/virtualpeople/common/fieldfilter/utils",
+        "//src/main/proto/wfa/virtual_people/common/field_filter/test:test_kt_jvm_proto",
+        "@wfa_common_jvm//imports/java/com/google/common/truth",
+        "@wfa_common_jvm//imports/java/com/google/common/truth/extensions/proto",
+        "@wfa_common_jvm//imports/java/com/google/protobuf/util",
+        "@wfa_common_jvm//imports/java/org/junit",
+        "@wfa_common_jvm//imports/kotlin/kotlin/test",
+    ],
+)
