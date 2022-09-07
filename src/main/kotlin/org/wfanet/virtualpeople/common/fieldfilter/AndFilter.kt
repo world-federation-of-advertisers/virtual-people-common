@@ -40,11 +40,6 @@ internal class AndFilter(descriptor: Descriptors.Descriptor, config: FieldFilter
 
   /** Returns true if all [subFilters] match */
   override fun matches(messageOrBuilder: MessageOrBuilder): Boolean {
-    for (subFilter in subFilters) {
-      if (!subFilter.matches(messageOrBuilder)) {
-        return false
-      }
-    }
-    return true
+    return subFilters.all { it.matches(messageOrBuilder) }
   }
 }

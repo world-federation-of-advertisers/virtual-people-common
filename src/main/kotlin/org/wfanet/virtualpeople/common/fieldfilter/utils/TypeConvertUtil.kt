@@ -24,14 +24,14 @@ import com.google.protobuf.Descriptors.EnumValueDescriptor
  *
  * For boolean, only "true' and "false" (capitalization doesn't matter) string are supported
  */
-inline fun <reified ValueType> convertToNumeric(input: String): ValueType {
-  return when (ValueType::class) {
-    Int::class -> input.toInt() as ValueType
-    Long::class -> input.toLong() as ValueType
-    Float::class -> input.toFloat() as ValueType
-    Double::class -> input.toDouble() as ValueType
-    Boolean::class -> input.lowercase().toBooleanStrict() as ValueType
-    else -> error("Unsupported data type: ${ValueType::class}")
+inline fun <reified V> convertToNumeric(input: String): V {
+  return when (V::class) {
+    Int::class -> input.toInt() as V
+    Long::class -> input.toLong() as V
+    Float::class -> input.toFloat() as V
+    Double::class -> input.toDouble() as V
+    Boolean::class -> input.lowercase().toBooleanStrict() as V
+    else -> error("Unsupported data type: ${V::class}")
   }
 }
 

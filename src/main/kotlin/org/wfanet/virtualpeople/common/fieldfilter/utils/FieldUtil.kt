@@ -25,7 +25,7 @@ import com.google.protobuf.MessageOrBuilder
  * @param value the return of the getter of protobuf reflection. Will be the default value of the
  * field when the field is not set.
  */
-data class ProtoFieldValue<ValueType>(val isSet: Boolean, val value: ValueType)
+data class ProtoFieldValue<V>(val isSet: Boolean, val value: V)
 
 /**
  * In the protobuf message represented by [descriptor], get the field descriptors of the field, the
@@ -135,14 +135,14 @@ fun getParentMessageFromProto(
  * When called with unset field, returns default value.
  *
  * The field must be an immediate field of [message]. The corresponding C++ type of the field must
- * be [ValueType].
+ * be [V].
  */
-inline fun <reified ValueType> getImmediateValueFromProtoOrDefault(
+inline fun <reified V> getImmediateValueFromProtoOrDefault(
   message: MessageOrBuilder,
   fieldDescriptor: FieldDescriptor
-): ValueType {
+): V {
   val result = message.getField(fieldDescriptor)
-  if (result is ValueType) {
+  if (result is V) {
     return result
   } else {
     error("The type of the field is not compatible to the target")
@@ -153,10 +153,10 @@ inline fun <reified ValueType> getImmediateValueFromProtoOrDefault(
  * Same as GetImmediateValueFromProtoOrDefault, except that returns a [ProtoFieldValue], which also
  * indicates whether the field is set.
  */
-inline fun <reified ValueType> getImmediateValueFromProto(
+inline fun <reified V> getImmediateValueFromProto(
   message: MessageOrBuilder,
   fieldDescriptor: FieldDescriptor
-): ProtoFieldValue<ValueType> {
+): ProtoFieldValue<V> {
   return ProtoFieldValue(
     message.hasField(fieldDescriptor),
     getImmediateValueFromProtoOrDefault(message, fieldDescriptor)
@@ -170,14 +170,14 @@ inline fun <reified ValueType> getImmediateValueFromProto(
  * field, and will be the default value when isSet is false.
  *
  * All elements except the last one in [fieldDescriptors] must refer to a protobuf Message. The last
- * one in [fieldDescriptors] must refer to a field with [ValueType]. The first element in
- * [fieldDescriptors] must refer to a field in [message], Each of the rest elements must refer to a
- * field in the message referred by the previous element.
+ * one in [fieldDescriptors] must refer to a field with [V]. The first element in [fieldDescriptors]
+ * must refer to a field in [message], Each of the rest elements must refer to a field in the
+ * message referred by the previous element.
  */
-inline fun <reified ValueType> getValueFromProto(
+inline fun <reified V> getValueFromProto(
   message: MessageOrBuilder,
   fieldDescriptors: List<FieldDescriptor>
-): ProtoFieldValue<ValueType> {
+): ProtoFieldValue<V> {
   return getImmediateValueFromProto(
     getParentMessageFromProto(message, fieldDescriptors),
     fieldDescriptors.last()
@@ -188,14 +188,14 @@ inline fun <reified ValueType> getValueFromProto(
  * Sets the value to the [builder], with field name represented by [fieldDescriptor].
  *
  * The field must be an immediate field of [builder]. The corresponding Kotlin type of the field
- * must be [ValueType].
+ * must be [V].
  */
-inline fun <reified ValueType> setImmediateValueToProtoBuilder(
+inline fun <reified V> setImmediateValueToProtoBuilder(
   builder: Builder,
   fieldDescriptor: FieldDescriptor,
-  value: ValueType
+  value: V
 ) {
-  if (builder.getField(fieldDescriptor) is ValueType) {
+  if (builder.getField(fieldDescriptor) is V) {
     builder.setField(fieldDescriptor, value)
   } else {
     error("The type of the field is not compatible to the target")
@@ -206,9 +206,9 @@ inline fun <reified ValueType> setImmediateValueToProtoBuilder(
  * Sets the value to the [builder], with field path represented by [fieldDescriptors].
  *
  * All elements except the last one in [fieldDescriptors] must refer to a protobuf Message. The last
- * one in [fieldDescriptors] must refer to a field with [ValueType]. The first element in
- * [fieldDescriptors] must refer to a field in [builder], Each of the rest elements must refer to a
- * field in the message referred by the previous element.
+ * one in [fieldDescriptors] must refer to a field with [V]. The first element in [fieldDescriptors]
+ * must refer to a field in [builder], Each of the rest elements must refer to a field in the
+ * message referred by the previous element.
  *
  * The typical usage is to first call getFieldFromProto(see above), to get [fieldDescriptors] for
  * the target field in [builder], then call this function to set the value of the target field.
@@ -230,10 +230,10 @@ inline fun <reified ValueType> setImmediateValueToProtoBuilder(
  *   setValueToProto(obj_a, fieldDescriptors, 10);
  * ```
  */
-inline fun <reified ValueType> setValueToProtoBuilder(
+inline fun <reified V> setValueToProtoBuilder(
   builder: Builder,
   fieldDescriptors: List<FieldDescriptor>,
-  value: ValueType
+  value: V
 ) {
   val parentBuilder = getParentMessageFromProto(builder, fieldDescriptors)
   if (parentBuilder !is Builder) {
@@ -259,15 +259,15 @@ fun getSizeOfRepeatedProto(
  * [index] must be in the boundary of the repeated field.
  *
  * The field must be an immediate field of [message]. The corresponding type of the field must be
- * [ValueType].
+ * [V].
  */
-inline fun <reified ValueType> getImmediateValueFromRepeatedProto(
+inline fun <reified V> getImmediateValueFromRepeatedProto(
   message: MessageOrBuilder,
   fieldDescriptor: FieldDescriptor,
   index: Int
-): ValueType {
+): V {
   val result = message.getRepeatedField(fieldDescriptor, index)
-  if (result is ValueType) {
+  if (result is V) {
     return result
   } else {
     error("The type of the field is not compatible to the target: $result")
@@ -281,15 +281,15 @@ inline fun <reified ValueType> getImmediateValueFromRepeatedProto(
  * [index] must be in the boundary of the repeated field.
  *
  * All entries except the last one in [fieldDescriptors] must refer to a singular protobuf Message
- * field. The last entry in [fieldDescriptors] must refer to a repeated field with [ValueType]. The
- * first element in [fieldDescriptors] must refer to a field in [message], Each of the rest elements
- * must refer to a field in the message referred by the previous element.
+ * field. The last entry in [fieldDescriptors] must refer to a repeated field with [V]. The first
+ * element in [fieldDescriptors] must refer to a field in [message], Each of the rest elements must
+ * refer to a field in the message referred by the previous element.
  */
-inline fun <reified ValueType> getValueFromRepeatedProto(
+inline fun <reified V> getValueFromRepeatedProto(
   message: MessageOrBuilder,
   fieldDescriptors: List<FieldDescriptor>,
   index: Int
-): ValueType {
+): V {
   return getImmediateValueFromRepeatedProto(
     getParentMessageFromProto(message, fieldDescriptors),
     fieldDescriptors.last(),
@@ -301,16 +301,16 @@ inline fun <reified ValueType> getValueFromRepeatedProto(
  * Gets all values from the [message], with repeated field name represented by [fieldDescriptor]
  *
  * The field must be an immediate field of [message]. The corresponding type of the field must be
- * [ValueType].
+ * [V].
  */
-inline fun <reified ValueType> getAllImmediateValuesFromRepeatedProto(
+inline fun <reified V> getAllImmediateValuesFromRepeatedProto(
   message: MessageOrBuilder,
   fieldDescriptor: FieldDescriptor,
-): List<ValueType> {
+): List<V> {
   return (0 until message.getRepeatedFieldCount(fieldDescriptor))
     .map {
       val value = message.getRepeatedField(fieldDescriptor, it)
-      if (value is ValueType) {
+      if (value is V) {
         value
       } else {
         error("The type of the field is not compatible to the target: $value")
@@ -323,14 +323,14 @@ inline fun <reified ValueType> getAllImmediateValuesFromRepeatedProto(
  * Gets all values from the [message], with repeated field path represented by [fieldDescriptors]
  *
  * All entries except the last one in [fieldDescriptors] must refer to a singular protobuf Message
- * field. The last entry in [fieldDescriptors] must refer to a repeated field with [ValueType]. The
- * first element in [fieldDescriptors] must refer to a field in [message], Each of the rest elements
- * must refer to a field in the message referred by the previous element.
+ * field. The last entry in [fieldDescriptors] must refer to a repeated field with [V]. The first
+ * element in [fieldDescriptors] must refer to a field in [message], Each of the rest elements must
+ * refer to a field in the message referred by the previous element.
  */
-inline fun <reified ValueType> getAllValuesFromRepeatedProto(
+inline fun <reified V> getAllValuesFromRepeatedProto(
   message: MessageOrBuilder,
   fieldDescriptors: List<FieldDescriptor>,
-): List<ValueType> {
+): List<V> {
   return getAllImmediateValuesFromRepeatedProto(
     getParentMessageFromProto(message, fieldDescriptors),
     fieldDescriptors.last()

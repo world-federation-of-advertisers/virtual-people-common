@@ -17,21 +17,21 @@ package org.wfanet.virtualpeople.common.fieldfilter.utils
 import com.google.protobuf.Descriptors.EnumDescriptor
 
 /**
- * A helper function to parse and store [valuesString] as a set of ValueType. [valuesString] is a
- * string represents a list of [ValueType] entities separated by comma.
+ * A helper function to parse and store [valuesString] as a set of V. [valuesString] is a string
+ * represents a list of [V] entities separated by comma.
  *
- * The supported [ValueType]s are: [Int] [Long] [Boolean] [String]
+ * The supported [V]s are: [Int] [Long] [Boolean] [String]
  */
-inline fun <reified ValueType> parseValue(valuesString: String): Set<ValueType> {
+inline fun <reified V> parseValue(valuesString: String): Set<V> {
   return valuesString
     .split(',')
     .map { value ->
-      when (ValueType::class) {
-        String::class -> value as ValueType
+      when (V::class) {
+        String::class -> value as V
         Int::class,
         Long::class,
-        Boolean::class -> convertToNumeric<ValueType>(value)
-        else -> error("Only Int, Long, Boolean and String are supported, get ${ValueType::class}")
+        Boolean::class -> convertToNumeric<V>(value)
+        else -> error("Only Int, Long, Boolean and String are supported, get ${V::class}")
       }
     }
     .toSet()
