@@ -74,3 +74,27 @@ kt_jvm_test(
         "@wfa_common_jvm//imports/kotlin/kotlin/test",
     ],
 )
+
+kt_jvm_test(
+    name = "GtFilterTest",
+    srcs = ["GtFilterTest.kt"],
+    test_class = "org.wfanet.virtualpeople.common.fieldfilter.GtFilterTest",
+    deps = [
+        "//src/main/kotlin/org/wfanet/virtualpeople/common/fieldfilter",
+        "//src/main/proto/wfa/virtual_people/common/field_filter/test:test_kt_jvm_proto",
+        "@wfa_common_jvm//imports/java/org/junit",
+        "@wfa_common_jvm//imports/kotlin/kotlin/test",
+    ],
+)
+
+kt_jvm_test(
+    name = "LtFilterTest",
+    srcs = ["LtFilterTest.kt"],
+    test_class = "org.wfanet.virtualpeople.common.fieldfilter.LtFilterTest",
+    deps = [
+        "//src/main/kotlin/org/wfanet/virtualpeople/common/fieldfilter",
+        "//src/main/proto/wfa/virtual_people/common/field_filter/test:test_kt_jvm_proto",
+        "@wfa_common_jvm//imports/java/org/junit",
+        "@wfa_common_jvm//imports/kotlin/kotlin/test",
+    ],
+)
