@@ -46,8 +46,8 @@ sealed interface FieldFilter {
         Op.OR -> OrFilter(descriptor, config)
         Op.ANY_IN -> AnyInFilter.create(descriptor, config)
         Op.PARTIAL -> PartialFilter(descriptor, config)
-        Op.GT,
-        Op.LT,
+        Op.GT -> GtFilter(descriptor, config)
+        Op.LT -> LtFilter(descriptor, config)
         Op.IN,
         Op.REGEXP,
         Op.NOT,
