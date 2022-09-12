@@ -48,10 +48,10 @@ sealed interface FieldFilter {
         Op.PARTIAL -> PartialFilter(descriptor, config)
         Op.GT -> GtFilter(descriptor, config)
         Op.LT -> LtFilter(descriptor, config)
-        Op.IN,
+        Op.IN -> InFilter.create(descriptor, config)
         Op.REGEXP,
-        Op.NOT,
-        Op.TRUE -> TODO("Not yet implemented")
+        Op.NOT -> NotFilter(descriptor, config)
+        Op.TRUE -> TrueFilter(config)
         Op.UNRECOGNIZED,
         Op.INVALID -> error("Invalid OP")
       }
