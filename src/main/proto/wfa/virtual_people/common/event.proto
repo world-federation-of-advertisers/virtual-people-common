@@ -35,6 +35,8 @@ message EventId {
   optional string id = 2;
 
   // The fingerprint of id. Only set and used in Labeler.
+  // Note: uint64 proto field behaves differently in C++ and Java/Kotlin. Take
+  // extra caution when using the fingerprint.
   optional uint64 id_fingerprint = 3;
 }
 
@@ -60,6 +62,8 @@ message UserInfo {
   int64 creation_time_usec = 5;
 
   // The fingerprint of user_id. Only set and used in Labeler.
+  // Note: uint64 proto field behaves differently in C++ and Java/Kotlin. Take
+  // extra caution when using the fingerprint.
   optional uint64 user_id_fingerprint = 6;
 }
 
