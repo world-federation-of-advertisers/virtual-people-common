@@ -310,6 +310,10 @@ message LabelerEvent {
   // This is computed from the user ids of the event, or event_id if there is no
   // user id. If there are multiple user ids, the model has embedded logic to
   // choose which id to use.
+  //
+  // ***************** IMPORTANT *****************
+  // Proto unit64 filed is read as Long in Java/Kotlin
+  // Always cast fingerprint to ULong type before using it
   optional uint64 acting_fingerprint = 9;
 
   // The default field to extract multiplicity from.
