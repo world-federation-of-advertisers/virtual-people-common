@@ -35,6 +35,10 @@ message EventId {
   optional string id = 2;
 
   // The fingerprint of id. Only set and used in Labeler.
+  //
+  // ***************** IMPORTANT *****************
+  // Proto uint64 field is read as Long in Java/Kotlin
+  // Always cast fingerprint to ULong type before using it
   optional uint64 id_fingerprint = 3;
 }
 
@@ -60,6 +64,10 @@ message UserInfo {
   int64 creation_time_usec = 5;
 
   // The fingerprint of user_id. Only set and used in Labeler.
+  //
+  // ***************** IMPORTANT *****************
+  // Proto uint64 field is read as Long in Java/Kotlin
+  // Always cast fingerprint to ULong type before using it
   optional uint64 user_id_fingerprint = 6;
 }
 
