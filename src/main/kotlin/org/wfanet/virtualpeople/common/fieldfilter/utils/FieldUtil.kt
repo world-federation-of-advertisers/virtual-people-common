@@ -142,8 +142,12 @@ inline fun <reified V> getImmediateValueFromProtoOrDefault(
   fieldDescriptor: FieldDescriptor
 ): V {
   val result = message.getField(fieldDescriptor)
-  if (result is V) {
-    return result
+  return if (result is V) {
+    result
+  } else if (result is Int && V::class == UInt::class) {
+    result.toUInt() as V
+  } else if (result is Long && V::class == ULong::class) {
+    result.toULong() as V
   } else {
     error("The type of the field is not compatible to the target")
   }
@@ -197,8 +201,14 @@ inline fun <reified V> setImmediateValueToProtoBuilder(
 ) {
   if (builder.getField(fieldDescriptor) is V) {
     builder.setField(fieldDescriptor, value)
+  } else if (builder.getField(fieldDescriptor) is Int && V::class == UInt::class) {
+    builder.setField(fieldDescriptor, (value as UInt).toInt())
+  } else if (builder.getField(fieldDescriptor) is Long && V::class == ULong::class) {
+    builder.setField(fieldDescriptor, (value as ULong).toLong())
   } else {
-    error("The type of the field is not compatible to the target")
+    error(
+      "The type of the field is not compatible to the target. ${builder.getField(fieldDescriptor).javaClass} vs  ${V::class}"
+    )
   }
 }
 
@@ -267,8 +277,12 @@ inline fun <reified V> getImmediateValueFromRepeatedProto(
   index: Int
 ): V {
   val result = message.getRepeatedField(fieldDescriptor, index)
-  if (result is V) {
-    return result
+  return if (result is V) {
+    result
+  } else if (result is Int && V::class == UInt::class) {
+    result.toUInt() as V
+  } else if (result is Long && V::class == ULong::class) {
+    result.toULong() as V
   } else {
     error("The type of the field is not compatible to the target: $result")
   }
@@ -312,6 +326,10 @@ inline fun <reified V> getAllImmediateValuesFromRepeatedProto(
       val value = message.getRepeatedField(fieldDescriptor, it)
       if (value is V) {
         value
+      } else if (value is Int && V::class == UInt::class) {
+        value.toUInt() as V
+      } else if (value is Long && V::class == ULong::class) {
+        value.toULong() as V
       } else {
         error("The type of the field is not compatible to the target: $value")
       }
