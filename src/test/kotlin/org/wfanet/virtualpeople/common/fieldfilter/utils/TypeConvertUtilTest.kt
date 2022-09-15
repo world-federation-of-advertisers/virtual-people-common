@@ -27,9 +27,11 @@ class TypeConvertUtilTest {
 
   @Test
   fun `type convert util valid cases`() {
-    assertEquals(1, convertToNumeric("1"))
+    assertEquals(1, convertToNumeric<Int>("1"))
+    assertEquals(1U, convertToNumeric("1"))
     assertEquals(-1, convertToNumeric("-1"))
     assertEquals(1L, convertToNumeric("1"))
+    assertEquals(1UL, convertToNumeric("1"))
     assertEquals(-1L, convertToNumeric("-1"))
     assertEquals(1.1f, convertToNumeric("1.1"))
     assertEquals(-1.1f, convertToNumeric("-1.1"))

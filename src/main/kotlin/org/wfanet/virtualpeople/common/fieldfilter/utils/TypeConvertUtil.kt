@@ -20,14 +20,16 @@ import com.google.protobuf.Descriptors.EnumValueDescriptor
 /**
  * Convert the string [input] to a numeric type. The allowed output types are
  *
- * [Int], [Long], [Float], [Double], [Boolean]
+ * [Int], [UInt], [Long], [ULong], [Float], [Double], [Boolean]
  *
  * For boolean, only "true' and "false" (capitalization doesn't matter) string are supported
  */
 inline fun <reified V> convertToNumeric(input: String): V {
   return when (V::class) {
     Int::class -> input.toInt() as V
+    UInt::class -> input.toUInt() as V
     Long::class -> input.toLong() as V
+    ULong::class -> input.toULong() as V
     Float::class -> input.toFloat() as V
     Double::class -> input.toDouble() as V
     Boolean::class -> input.lowercase().toBooleanStrict() as V
