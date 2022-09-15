@@ -39,7 +39,7 @@ internal class PartialFilter(descriptor: Descriptor, config: FieldFilterProto) :
       error("Name must be set. Input FieldFilterProto: $config")
     }
     if (config.subFiltersCount == 0) {
-      error("sub_filters must be set when op is PARTIAL. Input FieldFilterProto: $config")
+      error("subFilters must be set when op is PARTIAL. Input FieldFilterProto: $config")
     }
 
     fieldDescriptors = getFieldFromProto(descriptor, config.name)

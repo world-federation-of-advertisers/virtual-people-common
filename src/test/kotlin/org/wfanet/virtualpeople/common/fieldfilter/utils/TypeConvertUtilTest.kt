@@ -14,8 +14,10 @@
 
 package org.wfanet.virtualpeople.common.fieldfilter.utils
 
+import java.lang.NumberFormatException
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -43,18 +45,22 @@ class TypeConvertUtilTest {
 
   @Test
   fun `type convert util invalid cases`() {
-    assertFailsWith<IllegalArgumentException> { convertToNumeric<Int>("a") }
-    assertFailsWith<IllegalArgumentException> { convertToNumeric<Int>("") }
-    assertFailsWith<IllegalArgumentException> { convertToNumeric<Long>("a") }
-    assertFailsWith<IllegalArgumentException> { convertToNumeric<Long>("") }
-    assertFailsWith<IllegalArgumentException> { convertToNumeric<Float>("a") }
-    assertFailsWith<IllegalArgumentException> { convertToNumeric<Float>("") }
-    assertFailsWith<IllegalArgumentException> { convertToNumeric<Double>("a") }
-    assertFailsWith<IllegalArgumentException> { convertToNumeric<Double>("") }
-    assertFailsWith<IllegalArgumentException> { convertToNumeric<Boolean>("foo") }
-    assertFailsWith<IllegalArgumentException> { convertToNumeric<Boolean>("1") }
+    assertFailsWith<NumberFormatException> { convertToNumeric<Int>("a") }
+    assertFailsWith<NumberFormatException> { convertToNumeric<Int>("") }
+    assertFailsWith<NumberFormatException> { convertToNumeric<Long>("a") }
+    assertFailsWith<NumberFormatException> { convertToNumeric<Long>("") }
+    assertFailsWith<NumberFormatException> { convertToNumeric<Float>("a") }
+    assertFailsWith<NumberFormatException> { convertToNumeric<Float>("") }
+    assertFailsWith<NumberFormatException> { convertToNumeric<Double>("a") }
+    assertFailsWith<NumberFormatException> { convertToNumeric<Double>("") }
+    val exception1 = assertFailsWith<IllegalArgumentException> { convertToNumeric<Boolean>("foo") }
+    assertTrue(exception1.message!!.contains("The string doesn't represent a boolean value"))
+    val exception2 = assertFailsWith<IllegalArgumentException> { convertToNumeric<Boolean>("1") }
+    assertTrue(exception2.message!!.contains("The string doesn't represent a boolean value"))
+
     /** Unsupported output type */
-    assertFailsWith<IllegalStateException> { convertToNumeric<Char>("1") }
+    val exception3 = assertFailsWith<IllegalStateException> { convertToNumeric<Char>("1") }
+    assertTrue(exception3.message!!.contains("Unsupported data type"))
   }
 
   @Test
@@ -70,9 +76,13 @@ class TypeConvertUtilTest {
   @Test
   fun `convert to enum invalid cases`() {
     val fieldDescriptor = TestProtoB.getDescriptor().findFieldByName("enum_value")
-    assertFailsWith<IllegalStateException> {
-      convertToEnum(fieldDescriptor.enumType, "TEST_ENUM_7")
-    }
-    assertFailsWith<IllegalStateException> { convertToEnum(fieldDescriptor.enumType, "7") }
+    val exception1 =
+      assertFailsWith<IllegalStateException> {
+        convertToEnum(fieldDescriptor.enumType, "TEST_ENUM_7")
+      }
+    assertTrue(exception1.message!!.contains("Not a valid enum name or integer"))
+    val exception2 =
+      assertFailsWith<IllegalStateException> { convertToEnum(fieldDescriptor.enumType, "7") }
+    assertTrue(exception2.message!!.contains("Input cannot be converted to enum"))
   }
 }
