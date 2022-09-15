@@ -310,6 +310,9 @@ message LabelerEvent {
   // This is computed from the user ids of the event, or event_id if there is no
   // user id. If there are multiple user ids, the model has embedded logic to
   // choose which id to use.
+  //
+  // Note: uint64 proto field behaves differently in C++ and Java/Kotlin. Take
+  // extra caution when using the fingerprint.
   optional uint64 acting_fingerprint = 9;
 
   // The default field to extract multiplicity from.
