@@ -30,9 +30,11 @@ class AndFilterTest {
   @Test
   fun `no sub filter should fail`() {
     val fieldFilter = fieldFilterProto { op = Op.AND }
-    assertFailsWith<IllegalStateException> {
-      FieldFilter.create(TestProto.getDescriptor(), fieldFilter)
-    }
+    val exception =
+      assertFailsWith<IllegalStateException> {
+        FieldFilter.create(TestProto.getDescriptor(), fieldFilter)
+      }
+    assertTrue(exception.message!!.contains("subFilters must be set when op is AND"))
   }
 
   @Test

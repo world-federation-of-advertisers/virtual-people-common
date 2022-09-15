@@ -18,6 +18,7 @@ import com.google.common.truth.extensions.proto.ProtoTruth.assertThat
 import java.lang.IllegalStateException
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -34,13 +35,19 @@ class MessageFilterUtilTest {
   @Test
   fun `float not supported should throw`() {
     val filterMessage = testProto { a = testProtoA { b = testProtoB { floatValue = 1.0f } } }
-    assertFailsWith<IllegalStateException> { convertMessageToFilter(filterMessage) }
+    val exception = assertFailsWith<IllegalStateException> { convertMessageToFilter(filterMessage) }
+    assertTrue(
+      exception.message!!.contains("Unsupported field type converting to FieldFilterProto")
+    )
   }
 
   @Test
   fun `double not supported should throw`() {
     val filterMessage = testProto { a = testProtoA { b = testProtoB { doubleValue = 1.0 } } }
-    assertFailsWith<IllegalStateException> { convertMessageToFilter(filterMessage) }
+    val exception = assertFailsWith<IllegalStateException> { convertMessageToFilter(filterMessage) }
+    assertTrue(
+      exception.message!!.contains("Unsupported field type converting to FieldFilterProto")
+    )
   }
 
   @Test
@@ -53,7 +60,10 @@ class MessageFilterUtilTest {
         }
       }
     }
-    assertFailsWith<IllegalStateException> { convertMessageToFilter(filterMessage) }
+    val exception = assertFailsWith<IllegalStateException> { convertMessageToFilter(filterMessage) }
+    assertTrue(
+      exception.message!!.contains("Repeated field in message when converting to FieldFilterProto")
+    )
   }
 
   @Test

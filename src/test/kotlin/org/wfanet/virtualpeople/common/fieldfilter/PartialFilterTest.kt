@@ -96,7 +96,7 @@ class PartialFilterTest {
       assertFailsWith<IllegalStateException> {
         FieldFilter.create(TestProto.getDescriptor(), fieldFilter)
       }
-    assertTrue(exception.message!!.contains("sub_filters must be set"))
+    assertTrue(exception.message!!.contains("subFilters must be set"))
   }
 
   @Test
