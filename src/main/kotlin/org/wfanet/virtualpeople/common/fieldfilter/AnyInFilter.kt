@@ -25,7 +25,8 @@ import org.wfanet.virtualpeople.common.fieldfilter.utils.*
 /**
  * The implementation of [FieldFilter] when op is ANY_IN in config.
  *
- * The supported ValueTypes are: [Int], [Long], [Boolean], [EnumValueDescriptor], [String]
+ * The supported ValueTypes are: [Int], [UInt], [Long], [ULong], [Boolean], [EnumValueDescriptor],
+ * [String]
  *
  * Always use [FieldFilter.create]. Users should never construct a [AnyInFilter] directly.
  */
@@ -60,9 +61,9 @@ internal abstract class AnyInFilter(val fieldDescriptors: List<FieldDescriptor>)
       }
 
       return when (fieldDescriptors.last().type) {
-        Type.INT32,
-        Type.UINT32 -> AnyInFilterImpl<Int>(fieldDescriptors, parseValue(config.value))
-        Type.UINT64,
+        Type.INT32 -> AnyInFilterImpl<Int>(fieldDescriptors, parseValue(config.value))
+        Type.UINT32 -> AnyInFilterImpl<UInt>(fieldDescriptors, parseValue(config.value))
+        Type.UINT64 -> AnyInFilterImpl<ULong>(fieldDescriptors, parseValue(config.value))
         Type.INT64 -> AnyInFilterImpl<Long>(fieldDescriptors, parseValue(config.value))
         Type.BOOL -> AnyInFilterImpl<Boolean>(fieldDescriptors, parseValue(config.value))
         Type.STRING -> AnyInFilterImpl<String>(fieldDescriptors, parseValue(config.value))
@@ -90,9 +91,9 @@ internal class AnyInFilterImpl<V>(
     /** Guaranteed safe since all types come from the same fieldDescriptor.Type */
     val values =
       when (fieldDescriptors.last().type) {
-        Type.INT32,
-        Type.UINT32 -> getAllValuesFromRepeatedProto<Int>(messageOrBuilder, fieldDescriptors)
-        Type.UINT64,
+        Type.INT32 -> getAllValuesFromRepeatedProto<Int>(messageOrBuilder, fieldDescriptors)
+        Type.UINT32 -> getAllValuesFromRepeatedProto<UInt>(messageOrBuilder, fieldDescriptors)
+        Type.UINT64 -> getAllValuesFromRepeatedProto<ULong>(messageOrBuilder, fieldDescriptors)
         Type.INT64 -> getAllValuesFromRepeatedProto<Long>(messageOrBuilder, fieldDescriptors)
         Type.BOOL -> getAllValuesFromRepeatedProto<Boolean>(messageOrBuilder, fieldDescriptors)
         Type.STRING -> getAllValuesFromRepeatedProto<String>(messageOrBuilder, fieldDescriptors)

@@ -25,7 +25,8 @@ import org.wfanet.virtualpeople.common.fieldfilter.utils.*
 /**
  * The implementation of [FieldFilter] when op is EQUAL in config.
  *
- * The supported ValueTypes are: [Int], [Long], [Boolean], [EnumValueDescriptor], [String]
+ * The supported ValueTypes are: [Int], [UInt], [Long], [ULong], [Boolean], [EnumValueDescriptor],
+ * [String]
  *
  * Always use [FieldFilter.create] Users should never construct a [EqualFilter] directly.
  */
@@ -61,10 +62,10 @@ internal class EqualFilter(descriptor: Descriptors.Descriptor, config: FieldFilt
    */
   override fun matches(messageOrBuilder: MessageOrBuilder): Boolean {
     return when (fieldDescriptors.last().type) {
-      Type.INT32,
-      Type.UINT32 -> matchesInternal<Int>(messageOrBuilder)
-      Type.UINT64,
-      Type.INT64 -> matchesInternal<Long>(messageOrBuilder)
+      Type.INT32 -> matchesInternal<Int>(messageOrBuilder)
+      Type.UINT32 -> matchesInternal<UInt>(messageOrBuilder)
+      Type.UINT64 -> matchesInternal<Long>(messageOrBuilder)
+      Type.INT64 -> matchesInternal<ULong>(messageOrBuilder)
       Type.BOOL -> matchesInternal<Boolean>(messageOrBuilder)
       Type.STRING -> matchesInternal<String>(messageOrBuilder)
       Type.ENUM -> matchesInternal<EnumValueDescriptor>(messageOrBuilder)
