@@ -20,7 +20,7 @@ import com.google.protobuf.Descriptors.EnumDescriptor
  * A helper function to parse and store [valuesString] as a set of V. [valuesString] is a string
  * represents a list of [V] entities separated by comma.
  *
- * The supported [V]s are: [Int] [Long] [Boolean] [String]
+ * The supported [V]s are: [Int], [UInt], [Long], [ULong], [Boolean], [String].
  */
 inline fun <reified V> parseValue(valuesString: String): Set<V> {
   return valuesString
@@ -29,9 +29,12 @@ inline fun <reified V> parseValue(valuesString: String): Set<V> {
       when (V::class) {
         String::class -> value as V
         Int::class,
+        UInt::class,
         Long::class,
-        Boolean::class -> convertToNumeric<V>(value)
-        else -> error("Only Int, Long, Boolean and String are supported, get ${V::class}")
+        ULong::class,
+        Boolean::class -> convertToNumeric(value)
+        else ->
+          error("Only Int, UInt, Long, ULong, Boolean and String are supported, get ${V::class}")
       }
     }
     .toSet()

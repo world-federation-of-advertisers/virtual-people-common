@@ -141,11 +141,14 @@ inline fun <reified V> getImmediateValueFromProtoOrDefault(
   message: MessageOrBuilder,
   fieldDescriptor: FieldDescriptor
 ): V {
-  val result = message.getField(fieldDescriptor)
-  if (result is V) {
-    return result
-  } else {
-    error("The type of the field is not compatible to the target")
+  return when (val result = message.getField(fieldDescriptor)) {
+    is V -> result
+    is Int -> result.toUInt() as V
+    is Long -> result.toULong() as V
+    else ->
+      error(
+        "The type of the field is not compatible to the target ${result.javaClass} vs ${V::class}"
+      )
   }
 }
 
@@ -195,10 +198,14 @@ inline fun <reified V> setImmediateValueToProtoBuilder(
   fieldDescriptor: FieldDescriptor,
   value: V
 ) {
-  if (builder.getField(fieldDescriptor) is V) {
-    builder.setField(fieldDescriptor, value)
-  } else {
-    error("The type of the field is not compatible to the target")
+  when (builder.getField(fieldDescriptor)) {
+    is V -> builder.setField(fieldDescriptor, value)
+    is Int -> builder.setField(fieldDescriptor, (value as UInt).toInt())
+    is Long -> builder.setField(fieldDescriptor, (value as ULong).toLong())
+    else ->
+      error(
+        "The type of the field is not compatible to the target. ${builder.getField(fieldDescriptor).javaClass} vs  ${V::class}"
+      )
   }
 }
 
@@ -266,11 +273,11 @@ inline fun <reified V> getImmediateValueFromRepeatedProto(
   fieldDescriptor: FieldDescriptor,
   index: Int
 ): V {
-  val result = message.getRepeatedField(fieldDescriptor, index)
-  if (result is V) {
-    return result
-  } else {
-    error("The type of the field is not compatible to the target: $result")
+  return when (val result = message.getRepeatedField(fieldDescriptor, index)) {
+    is V -> result
+    is Int -> result.toUInt() as V
+    is Long -> result.toULong() as V
+    else -> error("The type of the field is not compatible to the target: $result")
   }
 }
 
@@ -309,11 +316,11 @@ inline fun <reified V> getAllImmediateValuesFromRepeatedProto(
 ): List<V> {
   return (0 until message.getRepeatedFieldCount(fieldDescriptor))
     .map {
-      val value = message.getRepeatedField(fieldDescriptor, it)
-      if (value is V) {
-        value
-      } else {
-        error("The type of the field is not compatible to the target: $value")
+      when (val value = message.getRepeatedField(fieldDescriptor, it)) {
+        is V -> value
+        is Int -> value.toUInt() as V
+        is Long -> value.toULong() as V
+        else -> error("The type of the field is not compatible to the target: $value")
       }
     }
     .toList()
