@@ -39,7 +39,7 @@ class FieldUtilTest {
    * Helper class to test getFieldAndValue. testProto1 and testProto2 are either a TestProto or
    * TestProto.Builder
    */
-  private fun testGetFieldAndValue(testProto1: MessageOrBuilder, testProto2: MessageOrBuilder) {
+  inline fun testGetFieldAndValue(testProto1: MessageOrBuilder, testProto2: MessageOrBuilder) {
     /** Test int32. */
     val int32ValueFields = getFieldFromProto(testProto1.descriptorForType, "a.b.int32_value")
     assertEquals(ProtoFieldValue(true, 2), getValueFromProto(testProto2, int32ValueFields))
@@ -48,10 +48,10 @@ class FieldUtilTest {
     assertEquals(ProtoFieldValue(true, 2L), getValueFromProto(testProto2, int64ValueFields))
     /** Test uint32. */
     val uint32ValueFields = getFieldFromProto(testProto1.descriptorForType, "a.b.uint32_value")
-    assertEquals(ProtoFieldValue(true, 2), getValueFromProto(testProto2, uint32ValueFields))
+    assertEquals(ProtoFieldValue(true, 2U), getValueFromProto(testProto2, uint32ValueFields))
     /** Test uint64. */
     val uint64ValueFields = getFieldFromProto(testProto1.descriptorForType, "a.b.uint64_value")
-    assertEquals(ProtoFieldValue(true, 2L), getValueFromProto(testProto2, uint64ValueFields))
+    assertEquals(ProtoFieldValue(true, 2UL), getValueFromProto(testProto2, uint64ValueFields))
     /** Test float. */
     val floatValueFields = getFieldFromProto(testProto1.descriptorForType, "a.b.float_value")
     assertEquals(ProtoFieldValue(true, 2.0f), getValueFromProto(testProto2, floatValueFields))
@@ -67,7 +67,7 @@ class FieldUtilTest {
     /** Test enum. */
     val enumValueFields = getFieldFromProto(testProto1.descriptorForType, "a.b.enum_value")
     assertEquals(
-      ProtoFieldValue(true, TestProtoB.TestEnum.TEST_ENUM_2.valueDescriptor),
+      ProtoFieldValue(true, TestEnum.TEST_ENUM_2.valueDescriptor),
       getValueFromProto<EnumValueDescriptor>(testProto2, enumValueFields)
     )
     /** Test string. */
@@ -87,7 +87,7 @@ class FieldUtilTest {
           floatValue = 1.0F
           doubleValue = 1.0
           boolValue = true
-          enumValue = TestProtoB.TestEnum.TEST_ENUM_1
+          enumValue = TestEnum.TEST_ENUM_1
           stringValue = "string1"
         }
       }
@@ -187,7 +187,7 @@ class FieldUtilTest {
           floatValue = 3.0F
           doubleValue = 3.0
           boolValue = true
-          enumValue = TestProtoB.TestEnum.TEST_ENUM_1
+          enumValue = TestEnum.TEST_ENUM_1
           stringValue = "string3"
         }
         .toBuilder()
@@ -201,10 +201,10 @@ class FieldUtilTest {
     setValueToProtoBuilder(testProtoB, int64ValueFields, 4L)
     /** Test uint32. */
     val uint32ValueFields = getFieldFromProto(testProtoB.descriptorForType, "uint32_value")
-    setValueToProtoBuilder(testProtoB, uint32ValueFields, 4)
+    setValueToProtoBuilder(testProtoB, uint32ValueFields, 4U)
     /** Test uint64. */
     val uint64ValueFields = getFieldFromProto(testProtoB.descriptorForType, "uint64_value")
-    setValueToProtoBuilder(testProtoB, uint64ValueFields, 4L)
+    setValueToProtoBuilder(testProtoB, uint64ValueFields, 4UL)
     /** Test float. */
     val floatValueFields = getFieldFromProto(testProtoB.descriptorForType, "float_value")
     setValueToProtoBuilder(testProtoB, floatValueFields, 4.0f)
@@ -216,11 +216,7 @@ class FieldUtilTest {
     setValueToProtoBuilder(testProtoB, booleanValueFields, false)
     /** Test enum. */
     val enumValueFields = getFieldFromProto(testProtoB.descriptorForType, "enum_value")
-    setValueToProtoBuilder(
-      testProtoB,
-      enumValueFields,
-      TestProtoB.TestEnum.TEST_ENUM_2.valueDescriptor
-    )
+    setValueToProtoBuilder(testProtoB, enumValueFields, TestEnum.TEST_ENUM_2.valueDescriptor)
     /** Test string. */
     val stringValueFields = getFieldFromProto(testProtoB.descriptorForType, "string_value")
     setValueToProtoBuilder(testProtoB, stringValueFields, "string4")
@@ -269,10 +265,10 @@ class FieldUtilTest {
     setValueToProtoBuilder(testProto, int64ValueFields, 6L)
     /** Test uint32. */
     val uint32ValueFields = getFieldFromProto(testProto.descriptorForType, "a.b.uint32_value")
-    setValueToProtoBuilder(testProto, uint32ValueFields, 6)
+    setValueToProtoBuilder(testProto, uint32ValueFields, 6U)
     /** Test uint64. */
     val uint64ValueFields = getFieldFromProto(testProto.descriptorForType, "a.b.uint64_value")
-    setValueToProtoBuilder(testProto, uint64ValueFields, 6L)
+    setValueToProtoBuilder(testProto, uint64ValueFields, 6UL)
     /** Test float. */
     val floatValueFields = getFieldFromProto(testProto.descriptorForType, "a.b.float_value")
     setValueToProtoBuilder(testProto, floatValueFields, 6.0f)
@@ -325,10 +321,10 @@ class FieldUtilTest {
     setValueToProtoBuilder(testProto, int64ValueFields, 6L)
     /** Test uint32. */
     val uint32ValueFields = getFieldFromProto(testProto.descriptorForType, "a.b.uint32_value")
-    setValueToProtoBuilder(testProto, uint32ValueFields, 6)
+    setValueToProtoBuilder(testProto, uint32ValueFields, 6U)
     /** Test uint64. */
     val uint64ValueFields = getFieldFromProto(testProto.descriptorForType, "a.b.uint64_value")
-    setValueToProtoBuilder(testProto, uint64ValueFields, 6L)
+    setValueToProtoBuilder(testProto, uint64ValueFields, 6UL)
     /** Test float. */
     val floatValueFields = getFieldFromProto(testProto.descriptorForType, "a.b.float_value")
     setValueToProtoBuilder(testProto, floatValueFields, 6.0f)
@@ -537,11 +533,11 @@ class FieldUtilTest {
     /** Test uint32. */
     val uint32ValueFields =
       getFieldFromProto(testProto.descriptorForType, "a.b.uint32_values", allowRepeated = true)
-    assertEquals(2, getValueFromRepeatedProto(testProto, uint32ValueFields, 1))
+    assertEquals(2U, getValueFromRepeatedProto(testProto, uint32ValueFields, 1))
     /** Test uint64. */
     val uint64ValueFields =
       getFieldFromProto(testProto.descriptorForType, "a.b.uint64_values", allowRepeated = true)
-    assertEquals(2L, getValueFromRepeatedProto(testProto, uint64ValueFields, 1))
+    assertEquals(2UL, getValueFromRepeatedProto(testProto, uint64ValueFields, 1))
     /** Test float. */
     val floatValueFields =
       getFieldFromProto(testProto.descriptorForType, "a.b.float_values", allowRepeated = true)
@@ -558,7 +554,7 @@ class FieldUtilTest {
     val enumValueFields =
       getFieldFromProto(testProto.descriptorForType, "a.b.enum_values", allowRepeated = true)
     assertEquals(
-      TestProtoB.TestEnum.TEST_ENUM_2.valueDescriptor,
+      TestEnum.TEST_ENUM_2.valueDescriptor,
       getValueFromRepeatedProto<EnumValueDescriptor>(testProto, enumValueFields, 1)
     )
     /** Test string. */
@@ -593,8 +589,8 @@ class FieldUtilTest {
           doubleValues.add(2.0)
           boolValues.add(true)
           boolValues.add(false)
-          enumValues.add(TestProtoB.TestEnum.TEST_ENUM_1)
-          enumValues.add(TestProtoB.TestEnum.TEST_ENUM_2)
+          enumValues.add(TestEnum.TEST_ENUM_1)
+          enumValues.add(TestEnum.TEST_ENUM_2)
           stringValues.add("string1")
           stringValues.add("string2")
         }
@@ -614,11 +610,11 @@ class FieldUtilTest {
     /** Test uint32. */
     val uint32ValueFields =
       getFieldFromProto(testProto.descriptorForType, "a.b.uint32_values", allowRepeated = true)
-    assertEquals(listOf(1, 2), getAllValuesFromRepeatedProto(testProto, uint32ValueFields))
+    assertEquals(listOf(1U, 2U), getAllValuesFromRepeatedProto(testProto, uint32ValueFields))
     /** Test uint64. */
     val uint64ValueFields =
       getFieldFromProto(testProto.descriptorForType, "a.b.uint64_values", allowRepeated = true)
-    assertEquals(listOf(1L, 2L), getAllValuesFromRepeatedProto(testProto, uint64ValueFields))
+    assertEquals(listOf(1UL, 2UL), getAllValuesFromRepeatedProto(testProto, uint64ValueFields))
     /** Test float. */
     val floatValueFields =
       getFieldFromProto(testProto.descriptorForType, "a.b.float_values", allowRepeated = true)
