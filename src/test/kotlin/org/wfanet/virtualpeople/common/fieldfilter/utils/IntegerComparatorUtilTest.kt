@@ -112,9 +112,18 @@ class IntegerComparatorUtilTest {
     val testProto3 = testProto { a = testProtoA { b = testProtoB { uint32Value = 9 } } }
     assertEquals(comparator.compare(testProto3), IntegerCompareResult.LESS_THAN)
 
+    val testProto4 = testProto {
+      a = testProtoA { b = testProtoB { uint32Value = UInt.MAX_VALUE.toInt() } }
+    }
+    assertEquals(comparator.compare(testProto4), IntegerCompareResult.GREATER_THAN)
+
+    /** For uint32 proto type, -1 is identical to UInt.MAX_VALUE in kotlin */
+    val testProto5 = testProto { a = testProtoA { b = testProtoB { uint32Value = -1 } } }
+    assertEquals(comparator.compare(testProto5), IntegerCompareResult.GREATER_THAN)
+
     /** Return INVALID when the field is not set. */
-    val testProto4 = testProto {}
-    assertEquals(comparator.compare(testProto4), IntegerCompareResult.INVALID)
+    val testProto6 = testProto {}
+    assertEquals(comparator.compare(testProto6), IntegerCompareResult.INVALID)
   }
 
   @Test
@@ -131,8 +140,17 @@ class IntegerComparatorUtilTest {
     val testProto3 = testProto { a = testProtoA { b = testProtoB { uint64Value = 9 } } }
     assertEquals(comparator.compare(testProto3), IntegerCompareResult.LESS_THAN)
 
+    val testProto4 = testProto {
+      a = testProtoA { b = testProtoB { uint64Value = ULong.MAX_VALUE.toLong() } }
+    }
+    assertEquals(comparator.compare(testProto4), IntegerCompareResult.GREATER_THAN)
+
+    /** For uint64 proto type, -1 is identical to ULong.MAX_VALUE in kotlin */
+    val testProto5 = testProto { a = testProtoA { b = testProtoB { uint64Value = -1 } } }
+    assertEquals(comparator.compare(testProto5), IntegerCompareResult.GREATER_THAN)
+
     /** Return INVALID when the field is not set. */
-    val testProto4 = testProto {}
-    assertEquals(comparator.compare(testProto4), IntegerCompareResult.INVALID)
+    val testProto6 = testProto {}
+    assertEquals(comparator.compare(testProto6), IntegerCompareResult.INVALID)
   }
 }

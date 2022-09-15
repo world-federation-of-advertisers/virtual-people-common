@@ -33,13 +33,13 @@ internal class GtFilter(descriptor: Descriptors.Descriptor, config: FieldFilterP
 
   /**
    * Returns error status if any of the following happens:
-   * 1. [config.op] is not GT.
-   * 2. [config.name] is not set.
-   * 3. [config.name] refers to a non-integer field.
-   * 4. Any field of the path represented by [config.name] is repeated field.
-   * 5. [config.value] is not set.
+   * 1. config.op is not GT.
+   * 2. config.name is not set.
+   * 3. config.name refers to a non-integer field.
+   * 4. Any field of the path represented by config.name is repeated field.
+   * 5. config.value is not set.
    *
-   * [config.value] will be cast to the type of the field represented by [config.name].
+   * config.value will be cast to the type of the field represented by config.name.
    */
   init {
     if (config.op != FieldFilterProto.Op.GT) {
@@ -56,8 +56,8 @@ internal class GtFilter(descriptor: Descriptors.Descriptor, config: FieldFilterP
   }
 
   /**
-   * Returns true when the field represented by [config.name] in [messageOrBuilder] is larger than
-   * [config.value]. Otherwise, returns false. Returns false if the field is not set.
+   * Returns true when the field represented by config.name in [messageOrBuilder] is larger than
+   * config.value. Otherwise, returns false. Returns false if the field is not set.
    */
   override fun matches(messageOrBuilder: MessageOrBuilder): Boolean {
     return comparator.compare(messageOrBuilder) == IntegerCompareResult.GREATER_THAN
