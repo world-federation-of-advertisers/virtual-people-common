@@ -16,6 +16,7 @@ package org.wfanet.virtualpeople.common.fieldfilter
 
 import com.google.protobuf.Descriptors
 import com.google.protobuf.Descriptors.EnumValueDescriptor
+import com.google.protobuf.Descriptors.FieldDescriptor.Type
 import com.google.protobuf.MessageOrBuilder
 import org.wfanet.virtualpeople.common.FieldFilterProto
 import org.wfanet.virtualpeople.common.fieldfilter.utils.*
@@ -23,7 +24,8 @@ import org.wfanet.virtualpeople.common.fieldfilter.utils.*
 /**
  * The implementation of [FieldFilter] when op is IN in config.
  *
- * The supported ValueTypes are: [Int], [Long], [Boolean], [EnumValueDescriptor], [String]
+ * The supported ValueTypes are: [Int], [UInt], [Long], [ULong], [Boolean], [EnumValueDescriptor],
+ * [String]
  *
  * Always use [FieldFilter.create]. Users should never construct a [InFilter] directly.
  */
@@ -32,12 +34,12 @@ internal abstract class InFilter(val fieldDescriptors: List<Descriptors.FieldDes
   companion object {
     /**
      * Throws an error if any of the following happens:
-     * 1. [config.op] is not IN.
-     * 2. [config.name] is not set.
-     * 3. Any field of the path represented by [config.name] is repeated field.
-     * 4. [config.value] is not set.
-     * 5. Any entry in [config.value] (split by comma) cannot be cast to the type of the field
-     * represented by [config.name].
+     * 1. [config].op is not IN.
+     * 2. [config].name is not set.
+     * 3. Any field of the path represented by [config].name is repeated field.
+     * 4. [config].value is not set.
+     * 5. Any entry in [config].value (split by comma) cannot be cast to the type of the field
+     * represented by [config].name.
      */
     internal fun create(descriptor: Descriptors.Descriptor, config: FieldFilterProto): InFilter {
 
@@ -53,17 +55,13 @@ internal abstract class InFilter(val fieldDescriptors: List<Descriptors.FieldDes
       val fieldDescriptors = getFieldFromProto(descriptor, config.name, allowRepeated = false)
 
       return when (fieldDescriptors.last().type) {
-        Descriptors.FieldDescriptor.Type.INT32,
-        Descriptors.FieldDescriptor.Type.UINT32 ->
-          InFilterImpl<Int>(fieldDescriptors, parseValue(config.value))
-        Descriptors.FieldDescriptor.Type.UINT64,
-        Descriptors.FieldDescriptor.Type.INT64 ->
-          InFilterImpl<Long>(fieldDescriptors, parseValue(config.value))
-        Descriptors.FieldDescriptor.Type.BOOL ->
-          InFilterImpl<Boolean>(fieldDescriptors, parseValue(config.value))
-        Descriptors.FieldDescriptor.Type.STRING ->
-          InFilterImpl<String>(fieldDescriptors, parseValue(config.value))
-        Descriptors.FieldDescriptor.Type.ENUM ->
+        Type.INT32 -> InFilterImpl<Int>(fieldDescriptors, parseValue(config.value))
+        Type.UINT32 -> InFilterImpl<UInt>(fieldDescriptors, parseValue(config.value))
+        Type.UINT64 -> InFilterImpl<ULong>(fieldDescriptors, parseValue(config.value))
+        Type.INT64 -> InFilterImpl<Long>(fieldDescriptors, parseValue(config.value))
+        Type.BOOL -> InFilterImpl<Boolean>(fieldDescriptors, parseValue(config.value))
+        Type.STRING -> InFilterImpl<String>(fieldDescriptors, parseValue(config.value))
+        Type.ENUM ->
           InFilterImpl(
             fieldDescriptors,
             parseEnumValues(fieldDescriptors.last().enumType, config.value)
@@ -90,18 +88,13 @@ internal class InFilterImpl<T>(
   override fun matches(messageOrBuilder: MessageOrBuilder): Boolean {
     val protoFieldValue =
       when (fieldDescriptors.last().type) {
-        Descriptors.FieldDescriptor.Type.INT32,
-        Descriptors.FieldDescriptor.Type.UINT32 ->
-          getValueFromProto<Int>(messageOrBuilder, fieldDescriptors)
-        Descriptors.FieldDescriptor.Type.UINT64,
-        Descriptors.FieldDescriptor.Type.INT64 ->
-          getValueFromProto<Long>(messageOrBuilder, fieldDescriptors)
-        Descriptors.FieldDescriptor.Type.BOOL ->
-          getValueFromProto<Boolean>(messageOrBuilder, fieldDescriptors)
-        Descriptors.FieldDescriptor.Type.STRING ->
-          getValueFromProto<String>(messageOrBuilder, fieldDescriptors)
-        Descriptors.FieldDescriptor.Type.ENUM ->
-          getValueFromProto<EnumValueDescriptor>(messageOrBuilder, fieldDescriptors)
+        Type.INT32 -> getValueFromProto<Int>(messageOrBuilder, fieldDescriptors)
+        Type.UINT32 -> getValueFromProto<UInt>(messageOrBuilder, fieldDescriptors)
+        Type.UINT64 -> getValueFromProto<ULong>(messageOrBuilder, fieldDescriptors)
+        Type.INT64 -> getValueFromProto<Long>(messageOrBuilder, fieldDescriptors)
+        Type.BOOL -> getValueFromProto<Boolean>(messageOrBuilder, fieldDescriptors)
+        Type.STRING -> getValueFromProto<String>(messageOrBuilder, fieldDescriptors)
+        Type.ENUM -> getValueFromProto<EnumValueDescriptor>(messageOrBuilder, fieldDescriptors)
         else -> error("Unsupported field type for IN filter. ${fieldDescriptors.last().type}")
       }
     @Suppress("UNCHECKED_CAST")
