@@ -29,7 +29,7 @@ enum class IntegerCompareResult {
  * A helper class to do integer comparison between a field in a protobuf message and a given integer
  * represented by a string.
  *
- * The supported [ValueType]s integer types are: [Int] [Long]
+ * The supported integer types are: [Int], [UInt], [Long], [ULong]
  *
  * The path represented by [fieldDescriptors] must be a valid path to an integer field in
  * [messageOrBuilder].
@@ -93,10 +93,10 @@ abstract class IntegerComparator(val fieldDescriptors: List<FieldDescriptor>) {
      */
     fun new(fieldDescriptors: List<FieldDescriptor>, value: String): IntegerComparator {
       return when (fieldDescriptors.last().type) {
-        Type.INT32,
-        Type.UINT32 -> IntegerComparatorImpl<Int>(fieldDescriptors, convertToNumeric(value))
-        Type.INT64,
-        Type.UINT64 -> IntegerComparatorImpl<Long>(fieldDescriptors, convertToNumeric(value))
+        Type.INT32 -> IntegerComparatorImpl<Int>(fieldDescriptors, convertToNumeric(value))
+        Type.UINT32 -> IntegerComparatorImpl<UInt>(fieldDescriptors, convertToNumeric(value))
+        Type.INT64 -> IntegerComparatorImpl<Long>(fieldDescriptors, convertToNumeric(value))
+        Type.UINT64 -> IntegerComparatorImpl<ULong>(fieldDescriptors, convertToNumeric(value))
         else -> {
           error("The given field is not integer when building IntegerComparator.")
         }
@@ -112,21 +112,23 @@ private class IntegerComparatorImpl<T>(fieldDescriptors: List<FieldDescriptor>, 
   override fun compare(messageOrBuilder: MessageOrBuilder): IntegerCompareResult {
     val fieldValue =
       when (fieldDescriptors.last().type) {
-        Type.INT32,
-        Type.UINT32 -> getValueFromProto<Int>(messageOrBuilder, fieldDescriptors)
-        Type.INT64,
-        Type.UINT64 -> getValueFromProto<Long>(messageOrBuilder, fieldDescriptors)
+        Type.INT32 -> getValueFromProto<Int>(messageOrBuilder, fieldDescriptors)
+        Type.UINT32 -> getValueFromProto<UInt>(messageOrBuilder, fieldDescriptors)
+        Type.INT64 -> getValueFromProto<Long>(messageOrBuilder, fieldDescriptors)
+        Type.UINT64 -> getValueFromProto<ULong>(messageOrBuilder, fieldDescriptors)
         else -> error("The given field is not integer.")
       }
     if (!fieldValue.isSet) {
       return IntegerCompareResult.INVALID
     }
-    if (fieldValue.value as Comparable<T> > value) {
-      return IntegerCompareResult.GREATER_THAN
+
+    val inputValue = fieldValue.value as Comparable<T>
+    return if (inputValue > value) {
+      IntegerCompareResult.GREATER_THAN
+    } else if (inputValue < value) {
+      IntegerCompareResult.LESS_THAN
+    } else {
+      IntegerCompareResult.EQUAL
     }
-    if (fieldValue.value as Comparable<T> < value) {
-      return IntegerCompareResult.LESS_THAN
-    }
-    return IntegerCompareResult.EQUAL
   }
 }

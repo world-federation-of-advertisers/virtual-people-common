@@ -126,11 +126,9 @@ class InFilterTest {
       op = Op.IN
       value = "1,a,1"
     }
-    val exception =
-      assertFailsWith<NumberFormatException> {
-        FieldFilter.create(TestProto.getDescriptor(), fieldFilter)
-      }
-    assertTrue(exception.message!!.contains("For input string: \"a\""))
+    assertFailsWith<NumberFormatException> {
+      FieldFilter.create(TestProto.getDescriptor(), fieldFilter)
+    }
   }
 
   @Test
@@ -178,12 +176,9 @@ class InFilterTest {
       op = Op.IN
       value = "1,a,1"
     }
-
-    val exception =
-      assertFailsWith<NumberFormatException> {
-        FieldFilter.create(TestProto.getDescriptor(), fieldFilter)
-      }
-    assertTrue(exception.message!!.contains("For input string: \"a\""))
+    assertFailsWith<NumberFormatException> {
+      FieldFilter.create(TestProto.getDescriptor(), fieldFilter)
+    }
   }
 
   @Test
@@ -232,11 +227,9 @@ class InFilterTest {
       value = "1,a,1"
     }
 
-    val exception =
-      assertFailsWith<NumberFormatException> {
-        FieldFilter.create(TestProto.getDescriptor(), fieldFilter)
-      }
-    assertTrue(exception.message!!.contains("For input string: \"a\""))
+    assertFailsWith<NumberFormatException> {
+      FieldFilter.create(TestProto.getDescriptor(), fieldFilter)
+    }
   }
 
   @Test
@@ -285,11 +278,9 @@ class InFilterTest {
       value = "1,a,1"
     }
 
-    val exception =
-      assertFailsWith<NumberFormatException> {
-        FieldFilter.create(TestProto.getDescriptor(), fieldFilter)
-      }
-    assertTrue(exception.message!!.contains("For input string: \"a\""))
+    assertFailsWith<NumberFormatException> {
+      FieldFilter.create(TestProto.getDescriptor(), fieldFilter)
+    }
   }
 
   @Test
