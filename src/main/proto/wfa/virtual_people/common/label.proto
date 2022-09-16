@@ -56,7 +56,7 @@ message IndependentQuantumLabels {
 message VirtualPersonActivity {
   // If virtual_person_id is not set, then this is only for counting
   // impressions by labels, and can be ignored for reach purpose.
-  optional int64 virtual_person_id = 1;
+  optional uint64 virtual_person_id = 1;
 
   oneof person_label {
     // Quantum label. This is only for debugging purposes.
