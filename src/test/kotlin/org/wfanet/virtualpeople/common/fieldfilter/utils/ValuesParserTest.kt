@@ -14,8 +14,10 @@
 
 package org.wfanet.virtualpeople.common.fieldfilter.utils
 
+import java.lang.NumberFormatException
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -37,9 +39,10 @@ class ValuesParserTest {
 
   @Test
   fun `value parser invalid cases`() {
-    assertFailsWith<IllegalArgumentException> { parseValue<Int>("1,a,1") }
-    assertFailsWith<IllegalArgumentException> { parseValue<Long>("1,a,1") }
-    assertFailsWith<IllegalArgumentException> { parseValue<Boolean>("true,a") }
+    assertFailsWith<NumberFormatException> { parseValue<Int>("1,a,1") }
+    assertFailsWith<NumberFormatException> { parseValue<Long>("1,a,1") }
+    val exception = assertFailsWith<IllegalArgumentException> { parseValue<Boolean>("true,a") }
+    assertTrue(exception.message!!.contains("The string doesn't represent a boolean value"))
   }
 
   @Test
@@ -53,6 +56,7 @@ class ValuesParserTest {
   @Test
   fun `enum value parser invalid cases`() {
     val descriptor = TestProtoB.TestEnum.getDescriptor()
-    assertFailsWith<IllegalStateException> { parseEnumValues(descriptor, "1,a,1") }
+    val exception = assertFailsWith<IllegalStateException> { parseEnumValues(descriptor, "1,a,1") }
+    assertTrue(exception.message!!.contains("Not a valid enum name or integer"))
   }
 }

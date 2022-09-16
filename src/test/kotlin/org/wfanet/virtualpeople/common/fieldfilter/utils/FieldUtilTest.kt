@@ -373,16 +373,22 @@ class FieldUtilTest {
   fun `invald field name should throw`() {
     val testProto = testProto { a = testProtoA { b = testProtoB { int32Value = 6 } } }
 
-    assertFailsWith<IllegalStateException> { getFieldFromProto(testProto.descriptorForType, "a.c") }
+    val exception =
+      assertFailsWith<IllegalStateException> {
+        getFieldFromProto(testProto.descriptorForType, "a.c")
+      }
+    assertTrue(exception.message!!.contains("The field name is invalid"))
   }
 
   @Test
   fun `invald sub message name should throw`() {
     val testProto = testProto { a = testProtoA { b = testProtoB { int32Value = 6 } } }
 
-    assertFailsWith<UnsupportedOperationException> {
-      getFieldFromProto(testProto.descriptorForType, "a.b.int64_value.c")
-    }
+    val exception =
+      assertFailsWith<UnsupportedOperationException> {
+        getFieldFromProto(testProto.descriptorForType, "a.b.int64_value.c")
+      }
+    assertTrue(exception.message!!.contains("This field is not of message type"))
   }
 
   @Test
@@ -417,22 +423,29 @@ class FieldUtilTest {
   @Test
   fun `repeated field is disallowed unless it is the last field and allowRepeated is true`() {
     /** Any repeated field in the path except the last field is disallowed. */
-    assertFailsWith<UnsupportedOperationException> {
-      getFieldFromProto(TestProto.getDescriptor(), "repeated_proto_a.b.int64_value.")
-    }
+    val exception1 =
+      assertFailsWith<UnsupportedOperationException> {
+        getFieldFromProto(TestProto.getDescriptor(), "repeated_proto_a.b.int64_value.")
+      }
+    assertTrue(exception1.message!!.contains("This field is not of message type"))
+
     /** Any repeated field in the path except the last field is disallowed. */
-    assertFailsWith<UnsupportedOperationException> {
-      getFieldFromProto(
-        TestProto.getDescriptor(),
-        "repeated_proto_a.b.int64_value.",
-        allowRepeated = true
-      )
-    }
+    val exception2 =
+      assertFailsWith<UnsupportedOperationException> {
+        getFieldFromProto(
+          TestProto.getDescriptor(),
+          "repeated_proto_a.b.int64_value.",
+          allowRepeated = true
+        )
+      }
+    assertTrue(exception2.message!!.contains("This field is not of message type"))
 
     /** Last field is disallowed to be repeated if @allow_repeated is set to false. */
-    assertFailsWith<IllegalStateException> {
-      getFieldFromProto(TestProto.getDescriptor(), "a.b.int32_values")
-    }
+    val exception3 =
+      assertFailsWith<IllegalStateException> {
+        getFieldFromProto(TestProto.getDescriptor(), "a.b.int32_values")
+      }
+    assertTrue(exception3.message!!.contains("Repeated field is not allowed in the path"))
 
     /** Last field is allowed to be repeated if @allow_repeated is set to true. */
     getFieldFromProto(TestProto.getDescriptor(), "a.b.int32_values", allowRepeated = true)

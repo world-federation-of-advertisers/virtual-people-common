@@ -33,9 +33,11 @@ class HasFilterTest {
   @Test
   fun `filter without name should fail`() {
     val fieldFilter = fieldFilterProto { op = Op.HAS }
-    assertFailsWith<IllegalStateException> {
-      FieldFilter.create(TestProto.getDescriptor(), fieldFilter)
-    }
+    val exception =
+      assertFailsWith<IllegalStateException> {
+        FieldFilter.create(TestProto.getDescriptor(), fieldFilter)
+      }
+    assertTrue(exception.message!!.contains("Name must be set"))
   }
 
   @Test
@@ -44,9 +46,11 @@ class HasFilterTest {
       name = "a.b.invalid_field"
       op = Op.HAS
     }
-    assertFailsWith<IllegalStateException> {
-      FieldFilter.create(TestProto.getDescriptor(), fieldFilter)
-    }
+    val exception =
+      assertFailsWith<IllegalStateException> {
+        FieldFilter.create(TestProto.getDescriptor(), fieldFilter)
+      }
+    assertTrue(exception.message!!.contains("The field name is invalid"))
   }
 
   @Test
@@ -55,9 +59,11 @@ class HasFilterTest {
       name = "repeated_proto_a.b.int32_value"
       op = Op.HAS
     }
-    assertFailsWith<IllegalStateException> {
-      FieldFilter.create(TestProto.getDescriptor(), fieldFilter)
-    }
+    val exception =
+      assertFailsWith<IllegalStateException> {
+        FieldFilter.create(TestProto.getDescriptor(), fieldFilter)
+      }
+    assertTrue(exception.message!!.contains("Repeated field is not allowed in the path"))
   }
 
   @Test

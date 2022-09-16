@@ -43,21 +43,27 @@ class IntegerComparatorUtilTest {
   fun `invalid value should throw`() {
     /** "a" is not a valid integer. */
     val fieldDescriptors = getFieldFromProto(TestProto.getDescriptor(), "a.b.int32_value")
-    assertFailsWith<NumberFormatException> { IntegerComparator.new(fieldDescriptors, "a") }
+    val exception =
+      assertFailsWith<NumberFormatException> { IntegerComparator.new(fieldDescriptors, "a") }
+    assertTrue(exception.message!!.contains("For input string"))
   }
 
   @Test
   fun `value type not match should throw`() {
     /** "1L" is not a valid int32. */
     val fieldDescriptors = getFieldFromProto(TestProto.getDescriptor(), "a.b.int32_value")
-    assertFailsWith<NumberFormatException> { IntegerComparator.new(fieldDescriptors, "1L") }
+    val exception =
+      assertFailsWith<NumberFormatException> { IntegerComparator.new(fieldDescriptors, "1L") }
+    assertTrue(exception.message!!.contains("For input string"))
   }
 
   @Test
   fun `value type mismatch should throw`() {
     /** "10.5" is not a valid int32. */
     val fieldDescriptors = getFieldFromProto(TestProto.getDescriptor(), "a.b.int32_value")
-    assertFailsWith<NumberFormatException> { IntegerComparator.new(fieldDescriptors, "10.5") }
+    val exception =
+      assertFailsWith<NumberFormatException> { IntegerComparator.new(fieldDescriptors, "10.5") }
+    assertTrue(exception.message!!.contains("For input string"))
   }
 
   @Test

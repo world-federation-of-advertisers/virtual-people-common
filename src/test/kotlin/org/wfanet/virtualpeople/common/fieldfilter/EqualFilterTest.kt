@@ -37,9 +37,11 @@ class EqualFilterTest {
       op = Op.EQUAL
       value = "1"
     }
-    assertFailsWith<IllegalStateException> {
-      FieldFilter.create(TestProto.getDescriptor(), fieldFilter)
-    }
+    val exception =
+      assertFailsWith<IllegalStateException> {
+        FieldFilter.create(TestProto.getDescriptor(), fieldFilter)
+      }
+    assertTrue(exception.message!!.contains("Name must be set"))
   }
 
   @Test
@@ -49,9 +51,11 @@ class EqualFilterTest {
       op = Op.EQUAL
       value = "1"
     }
-    assertFailsWith<IllegalStateException> {
-      FieldFilter.create(TestProto.getDescriptor(), fieldFilter)
-    }
+    val exception =
+      assertFailsWith<IllegalStateException> {
+        FieldFilter.create(TestProto.getDescriptor(), fieldFilter)
+      }
+    assertTrue(exception.message!!.contains("The field name is invalid"))
   }
 
   @Test
@@ -61,9 +65,11 @@ class EqualFilterTest {
       op = Op.EQUAL
       value = "1"
     }
-    assertFailsWith<IllegalStateException> {
-      FieldFilter.create(TestProto.getDescriptor(), fieldFilter)
-    }
+    val exception =
+      assertFailsWith<IllegalStateException> {
+        FieldFilter.create(TestProto.getDescriptor(), fieldFilter)
+      }
+    assertTrue(exception.message!!.contains("Repeated field is not allowed"))
   }
 
   @Test
@@ -73,9 +79,11 @@ class EqualFilterTest {
       op = Op.EQUAL
       value = "1"
     }
-    assertFailsWith<IllegalStateException> {
-      FieldFilter.create(TestProto.getDescriptor(), fieldFilter)
-    }
+    val exception =
+      assertFailsWith<IllegalStateException> {
+        FieldFilter.create(TestProto.getDescriptor(), fieldFilter)
+      }
+    assertTrue(exception.message!!.contains("Repeated field is not allowed in the path"))
   }
 
   @Test

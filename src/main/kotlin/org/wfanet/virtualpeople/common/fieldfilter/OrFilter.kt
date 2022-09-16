@@ -33,7 +33,7 @@ internal class OrFilter(descriptor: Descriptors.Descriptor, config: FieldFilterP
       error("Op must be OR. Input FieldFilterProto: $config")
     }
     if (config.subFiltersCount == 0) {
-      error("sub_filters must be set when op is AND. Input FieldFilterProto: $config")
+      error("subFilters must be set when op is AND. Input FieldFilterProto: $config")
     }
     subFilters = config.subFiltersList.map { FieldFilter.create(descriptor, it) }
   }

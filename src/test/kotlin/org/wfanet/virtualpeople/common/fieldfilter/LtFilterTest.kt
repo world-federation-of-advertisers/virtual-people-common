@@ -104,11 +104,9 @@ class LtFilterTest {
       op = FieldFilterProto.Op.LT
       value = "10.5"
     }
-    val exception =
-      assertFailsWith<NumberFormatException> {
-        FieldFilter.create(TestProto.getDescriptor(), fieldFilter)
-      }
-    assertTrue(exception.message!!.contains("For input string: \"10.5\""))
+    assertFailsWith<NumberFormatException> {
+      FieldFilter.create(TestProto.getDescriptor(), fieldFilter)
+    }
   }
 
   @Test

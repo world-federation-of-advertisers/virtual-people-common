@@ -37,9 +37,11 @@ class AnyInFilterTest {
       op = Op.ANY_IN
       value = "1,2,1"
     }
-    assertFailsWith<IllegalStateException> {
-      FieldFilter.create(TestProto.getDescriptor(), fieldFilter)
-    }
+    val exception =
+      assertFailsWith<IllegalStateException> {
+        FieldFilter.create(TestProto.getDescriptor(), fieldFilter)
+      }
+    assertTrue(exception.message!!.contains("Name must be set"))
   }
 
   @Test
@@ -49,9 +51,11 @@ class AnyInFilterTest {
       op = Op.ANY_IN
       value = "1,2,1"
     }
-    assertFailsWith<IllegalStateException> {
-      FieldFilter.create(TestProto.getDescriptor(), fieldFilter)
-    }
+    val exception =
+      assertFailsWith<IllegalStateException> {
+        FieldFilter.create(TestProto.getDescriptor(), fieldFilter)
+      }
+    assertTrue(exception.message!!.contains("Name must represent a repeated field"))
   }
 
   @Test
@@ -61,9 +65,11 @@ class AnyInFilterTest {
       op = Op.ANY_IN
       value = "1,2,1"
     }
-    assertFailsWith<IllegalStateException> {
-      FieldFilter.create(TestProto.getDescriptor(), fieldFilter)
-    }
+    val exception =
+      assertFailsWith<IllegalStateException> {
+        FieldFilter.create(TestProto.getDescriptor(), fieldFilter)
+      }
+    assertTrue(exception.message!!.contains("Repeated field is not allowed in the path"))
   }
 
   @Test
@@ -72,9 +78,11 @@ class AnyInFilterTest {
       name = "a.b.int32_values"
       op = Op.ANY_IN
     }
-    assertFailsWith<IllegalStateException> {
-      FieldFilter.create(TestProto.getDescriptor(), fieldFilter)
-    }
+    val exception =
+      assertFailsWith<IllegalStateException> {
+        FieldFilter.create(TestProto.getDescriptor(), fieldFilter)
+      }
+    assertTrue(exception.message!!.contains("Value must be set"))
   }
 
   @Test
@@ -321,9 +329,11 @@ class AnyInFilterTest {
       op = Op.ANY_IN
       value = "true,a"
     }
-    assertFailsWith<IllegalArgumentException> {
-      FieldFilter.create(TestProto.getDescriptor(), fieldFilter)
-    }
+    val exception =
+      assertFailsWith<IllegalArgumentException> {
+        FieldFilter.create(TestProto.getDescriptor(), fieldFilter)
+      }
+    assertTrue(exception.message!!.contains("The string doesn't represent a boolean value"))
   }
 
   @Test
@@ -459,9 +469,11 @@ class AnyInFilterTest {
       op = Op.ANY_IN
       value = "a,TEST_ENUM_2,1"
     }
-    assertFailsWith<IllegalStateException> {
-      FieldFilter.create(TestProto.getDescriptor(), fieldFilter)
-    }
+    val exception =
+      assertFailsWith<IllegalStateException> {
+        FieldFilter.create(TestProto.getDescriptor(), fieldFilter)
+      }
+    assertTrue(exception.message!!.contains("Not a valid enum name or integer"))
   }
 
   @Test
