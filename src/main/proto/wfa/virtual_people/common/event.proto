@@ -126,6 +126,11 @@ message LabelerInput {
   // Device type string. Computed from user agent string using a library
   // function.
   optional string device_type = 6;
+
+  // Unique event collection identifier. Used to map back to specific consented
+  // event groupings defined by the Data Provider. Unlike event_id, these are
+  // intended to be used for labeling.
+  optional string event_collection_id = 7;
 }
 
 // LogEvent contains all attributes in LabelerInput, as well as other
