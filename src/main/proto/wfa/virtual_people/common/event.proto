@@ -67,6 +67,15 @@ message UserInfo {
   optional uint64 user_id_fingerprint = 6;
 }
 
+// Represents information about the parent event that is not used in labeling or
+// measurement. These are not intended to be unique across all EDPs.
+message TrafficInfo {
+  // Identifies a collection of events. A model provider can use this to group
+  // events during VID model training. This could be something like a campaign
+  // id.
+  optional string event_collection_id = 1;
+}
+
 // Represents info for all user ids associated with a specific event.
 message ProfileInfo {
   // Information for email id.
@@ -126,6 +135,10 @@ message LabelerInput {
   // Device type string. Computed from user agent string using a library
   // function.
   optional string device_type = 6;
+
+  // Event information not intended to be used during labeling or in the
+  // measurement system.
+  optional TrafficInfo traffic_info = 7;
 }
 
 // LogEvent contains all attributes in LabelerInput, as well as other
