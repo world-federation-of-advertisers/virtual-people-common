@@ -115,6 +115,7 @@ message BranchNode {
       ConditionalMerge conditional_merge = 3;
       UpdateTree update_tree = 4;
       ConditionalAssignment conditional_assignment = 5;
+      GeometricShredder geometric_shredder = 6;
     }
   }
 
@@ -238,6 +239,31 @@ message ConditionalAssignment {
 // Implemented as an embedded model tree, represented by the root node.
 message UpdateTree {
   optional CompiledNode root = 1;
+}
+
+// This is to update the target field value with the hash of the source field
+// value with some probability.
+// Example:
+// For the following protobuf:
+//     psi: 0.8
+//     field_to_hash: "labeler_input.event_id.id"
+//     target_field: "acting_fingerprint"
+//     random_seed: "seed1"
+// There are 1 - 0.8 = 20% probabilities that the value of field 
+// acting_fingerprint is updated with the hash of labeler_input.event_id.id.
+message GeometricShredder {
+  // The shredding probability parameter psi, which corresponds to the
+  // success probability parameter of geometric distribution as p = 1 − psi.
+  optional float psi = 1;
+
+  // The field to apply the hash to.
+  optional string field_to_hash = 2;
+
+  // The field to be updated using the hashed value.
+  optional string target_field = 3;
+
+  // The random seed for shredding.
+  optional string random_seed = 4;
 }
 
 message Multiplicity {
