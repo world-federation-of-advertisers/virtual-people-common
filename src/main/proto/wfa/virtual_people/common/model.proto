@@ -252,7 +252,7 @@ message GeometricShredder {
   // The field for the randomness.
   optional string randomness_field = 2;
 
-  // The field to apply the hash to.
+  // The field to apply the shredding to.
   optional string target_field = 3;
 
   // The random seed for shredding.
