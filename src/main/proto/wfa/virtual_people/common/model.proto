@@ -115,6 +115,7 @@ message BranchNode {
       ConditionalMerge conditional_merge = 3;
       UpdateTree update_tree = 4;
       ConditionalAssignment conditional_assignment = 5;
+      GeometricShredder geometric_shredder = 6;
     }
   }
 
@@ -238,6 +239,24 @@ message ConditionalAssignment {
 // Implemented as an embedded model tree, represented by the root node.
 message UpdateTree {
   optional CompiledNode root = 1;
+}
+
+// This is to update the target field value with some probability.
+// See https://colab.sandbox.google.com/drive/11C3CWcldUCrkZxUKvTkzhoxkocgKoP6k
+// for details.
+message GeometricShredder {
+  // The shredding probability parameter psi, which corresponds to the
+  // success probability parameter of geometric distribution as p = 1 − psi.
+  optional float psi = 1;
+
+  // The field for the randomness.
+  optional string randomness_field = 2;
+
+  // The field to apply the shredding to.
+  optional string target_field = 3;
+
+  // The random seed for shredding.
+  optional string random_seed = 4;
 }
 
 message Multiplicity {
