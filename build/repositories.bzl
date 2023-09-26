@@ -29,7 +29,7 @@ def virtual_people_common_repositories():
 
     http_archive(
         name = "wfa_common_jvm",
-        sha256 = "ad623ee3b1893b47fc6c86d6b1c90ea1f46a44bdf502a1847518f6769597c5cf",
-        strip_prefix = "common-jvm-0.45.0",
-        url = "https://github.com/world-federation-of-advertisers/common-jvm/archive/refs/tags/v0.45.0.tar.gz",
+        sha256 = "2719f6147eccd2a493e573720c64fa3a13f344840f8416060753d97fe13ab942",
+        strip_prefix = "common-jvm-0.66.0",
+        url = "https://github.com/world-federation-of-advertisers/common-jvm/archive/refs/tags/v0.66.0.tar.gz",
     )
