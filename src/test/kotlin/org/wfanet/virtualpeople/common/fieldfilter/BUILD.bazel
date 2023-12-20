@@ -1,14 +1,14 @@
-load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_test")
+load("@wfa_rules_kotlin_jvm//kotlin:defs.bzl", "kt_jvm_test")
 
 kt_jvm_test(
     name = "FieldFilterTest",
     srcs = ["FieldFilterTest.kt"],
     test_class = "org.wfanet.virtualpeople.common.fieldfilter.FieldFilterTest",
     deps = [
+        "//imports/org/junit",
         "//src/main/kotlin/org/wfanet/virtualpeople/common/fieldfilter",
         "//src/main/proto/wfa/virtual_people/common/field_filter/test:test_kt_jvm_proto",
-        "@wfa_common_jvm//imports/java/org/junit",
-        "@wfa_common_jvm//imports/kotlin/kotlin/test",
+        "@wfa_rules_kotlin_jvm//imports/kotlin/test",
     ],
 )
 
@@ -17,10 +17,10 @@ kt_jvm_test(
     srcs = ["HasFilterTest.kt"],
     test_class = "org.wfanet.virtualpeople.common.fieldfilter.HasFilterTest",
     deps = [
+        "//imports/org/junit",
         "//src/main/kotlin/org/wfanet/virtualpeople/common/fieldfilter",
         "//src/main/proto/wfa/virtual_people/common/field_filter/test:test_kt_jvm_proto",
-        "@wfa_common_jvm//imports/java/org/junit",
-        "@wfa_common_jvm//imports/kotlin/kotlin/test",
+        "@wfa_rules_kotlin_jvm//imports/kotlin/test",
     ],
 )
 
@@ -29,10 +29,10 @@ kt_jvm_test(
     srcs = ["EqualFilterTest.kt"],
     test_class = "org.wfanet.virtualpeople.common.fieldfilter.EqualFilterTest",
     deps = [
+        "//imports/org/junit",
         "//src/main/kotlin/org/wfanet/virtualpeople/common/fieldfilter",
         "//src/main/proto/wfa/virtual_people/common/field_filter/test:test_kt_jvm_proto",
-        "@wfa_common_jvm//imports/java/org/junit",
-        "@wfa_common_jvm//imports/kotlin/kotlin/test",
+        "@wfa_rules_kotlin_jvm//imports/kotlin/test",
     ],
 )
 
@@ -41,10 +41,10 @@ kt_jvm_test(
     srcs = ["AnyInFilterTest.kt"],
     test_class = "org.wfanet.virtualpeople.common.fieldfilter.AnyInFilterTest",
     deps = [
+        "//imports/org/junit",
         "//src/main/kotlin/org/wfanet/virtualpeople/common/fieldfilter",
         "//src/main/proto/wfa/virtual_people/common/field_filter/test:test_kt_jvm_proto",
-        "@wfa_common_jvm//imports/java/org/junit",
-        "@wfa_common_jvm//imports/kotlin/kotlin/test",
+        "@wfa_rules_kotlin_jvm//imports/kotlin/test",
     ],
 )
 
@@ -53,10 +53,10 @@ kt_jvm_test(
     srcs = ["AndFilterTest.kt"],
     test_class = "org.wfanet.virtualpeople.common.fieldfilter.AndFilterTest",
     deps = [
+        "//imports/org/junit",
         "//src/main/kotlin/org/wfanet/virtualpeople/common/fieldfilter",
         "//src/main/proto/wfa/virtual_people/common/field_filter/test:test_kt_jvm_proto",
-        "@wfa_common_jvm//imports/java/org/junit",
-        "@wfa_common_jvm//imports/kotlin/kotlin/test",
+        "@wfa_rules_kotlin_jvm//imports/kotlin/test",
     ],
 )
 
@@ -65,10 +65,10 @@ kt_jvm_test(
     srcs = ["OrFilterTest.kt"],
     test_class = "org.wfanet.virtualpeople.common.fieldfilter.OrFilterTest",
     deps = [
+        "//imports/org/junit",
         "//src/main/kotlin/org/wfanet/virtualpeople/common/fieldfilter",
         "//src/main/proto/wfa/virtual_people/common/field_filter/test:test_kt_jvm_proto",
-        "@wfa_common_jvm//imports/java/org/junit",
-        "@wfa_common_jvm//imports/kotlin/kotlin/test",
+        "@wfa_rules_kotlin_jvm//imports/kotlin/test",
     ],
 )
 
@@ -77,10 +77,10 @@ kt_jvm_test(
     srcs = ["PartialFilterTest.kt"],
     test_class = "org.wfanet.virtualpeople.common.fieldfilter.PartialFilterTest",
     deps = [
+        "//imports/org/junit",
         "//src/main/kotlin/org/wfanet/virtualpeople/common/fieldfilter",
         "//src/main/proto/wfa/virtual_people/common/field_filter/test:test_kt_jvm_proto",
-        "@wfa_common_jvm//imports/java/org/junit",
-        "@wfa_common_jvm//imports/kotlin/kotlin/test",
+        "@wfa_rules_kotlin_jvm//imports/kotlin/test",
     ],
 )
 
@@ -89,10 +89,10 @@ kt_jvm_test(
     srcs = ["GtFilterTest.kt"],
     test_class = "org.wfanet.virtualpeople.common.fieldfilter.GtFilterTest",
     deps = [
+        "//imports/org/junit",
         "//src/main/kotlin/org/wfanet/virtualpeople/common/fieldfilter",
         "//src/main/proto/wfa/virtual_people/common/field_filter/test:test_kt_jvm_proto",
-        "@wfa_common_jvm//imports/java/org/junit",
-        "@wfa_common_jvm//imports/kotlin/kotlin/test",
+        "@wfa_rules_kotlin_jvm//imports/kotlin/test",
     ],
 )
 
@@ -101,10 +101,10 @@ kt_jvm_test(
     srcs = ["LtFilterTest.kt"],
     test_class = "org.wfanet.virtualpeople.common.fieldfilter.LtFilterTest",
     deps = [
+        "//imports/org/junit",
         "//src/main/kotlin/org/wfanet/virtualpeople/common/fieldfilter",
         "//src/main/proto/wfa/virtual_people/common/field_filter/test:test_kt_jvm_proto",
-        "@wfa_common_jvm//imports/java/org/junit",
-        "@wfa_common_jvm//imports/kotlin/kotlin/test",
+        "@wfa_rules_kotlin_jvm//imports/kotlin/test",
     ],
 )
 
@@ -113,13 +113,12 @@ kt_jvm_test(
     srcs = ["InFilterTest.kt"],
     test_class = "org.wfanet.virtualpeople.common.fieldfilter.InFilterTest",
     deps = [
+        "//imports/com/google/common/truth",
+        "//imports/com/google/common/truth/extensions/proto",
+        "//imports/org/junit",
         "//src/main/kotlin/org/wfanet/virtualpeople/common/fieldfilter",
         "//src/main/proto/wfa/virtual_people/common/field_filter/test:test_kt_jvm_proto",
-        "@wfa_common_jvm//imports/java/com/google/common/truth",
-        "@wfa_common_jvm//imports/java/com/google/common/truth/extensions/proto",
-        "@wfa_common_jvm//imports/java/com/google/protobuf/util",
-        "@wfa_common_jvm//imports/java/org/junit",
-        "@wfa_common_jvm//imports/kotlin/kotlin/test",
+        "@wfa_rules_kotlin_jvm//imports/kotlin/test",
     ],
 )
 
@@ -128,10 +127,10 @@ kt_jvm_test(
     srcs = ["NotFilterTest.kt"],
     test_class = "org.wfanet.virtualpeople.common.fieldfilter.NotFilterTest",
     deps = [
+        "//imports/org/junit",
         "//src/main/kotlin/org/wfanet/virtualpeople/common/fieldfilter",
         "//src/main/proto/wfa/virtual_people/common/field_filter/test:test_kt_jvm_proto",
-        "@wfa_common_jvm//imports/java/org/junit",
-        "@wfa_common_jvm//imports/kotlin/kotlin/test",
+        "@wfa_rules_kotlin_jvm//imports/kotlin/test",
     ],
 )
 
@@ -140,9 +139,9 @@ kt_jvm_test(
     srcs = ["TrueFilterTest.kt"],
     test_class = "org.wfanet.virtualpeople.common.fieldfilter.TrueFilterTest",
     deps = [
+        "//imports/org/junit",
         "//src/main/kotlin/org/wfanet/virtualpeople/common/fieldfilter",
         "//src/main/proto/wfa/virtual_people/common/field_filter/test:test_kt_jvm_proto",
-        "@wfa_common_jvm//imports/java/org/junit",
-        "@wfa_common_jvm//imports/kotlin/kotlin/test",
+        "@wfa_rules_kotlin_jvm//imports/kotlin/test",
     ],
 )

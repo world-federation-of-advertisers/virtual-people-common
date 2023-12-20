@@ -1,4 +1,4 @@
-load("@wfa_common_jvm//build/rules_kotlin:defs.bzl", "kt_jvm_library")
+load("@wfa_rules_kotlin_jvm//kotlin:defs.bzl", "kt_jvm_library")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -8,6 +8,6 @@ kt_jvm_library(
     deps = [
         "//src/main/kotlin/org/wfanet/virtualpeople/common/fieldfilter/utils",
         "//src/main/proto/wfa/virtual_people/common:field_filter_kt_jvm_proto",
-        "@wfa_common_jvm//imports/java/com/google/protobuf",
+        "@wfa_rules_kotlin_jvm//imports/com/google/protobuf",
     ],
 )
