@@ -1,3 +1,8 @@
+# Enable Bzlmod with WFA registry.
+common --enable_bzlmod
+common --registry=https://raw.githubusercontent.com/world-federation-of-advertisers/bazel-registry/main
+common --registry=https://bcr.bazel.build
+
 # Use clang as C++ compiler.
 build --repo_env='CC=clang'
 
@@ -7,5 +12,8 @@ build --cxxopt='-std=c++17'
 # Use JDK 11. See https://github.com/bazelbuild/bazel/issues/6245.
 build --java_runtime_version=remotejdk_11
 
-# Target Java 8.
-build --java_language_version=8
+# Target Java 9.
+build --java_language_version=9
+
+# TODO(world-federation-of-advertisers/virtual-people-common#64): Remove when fixed.
+test --compilation_mode=fastbuild
