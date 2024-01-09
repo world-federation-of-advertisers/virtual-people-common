@@ -1,0 +1,68 @@
+module(
+    name = "virtual-people-common",
+    repo_name = "wfa_virtual_people_common",
+)
+
+TRUTH_VERSION = "1.1.2"
+
+MAVEN_REPO_NAME = "vpc_maven"
+
+# Bazel Central Registry modules.
+bazel_dep(
+    name = "rules_proto",
+    version = "5.3.0-21.7",
+)
+bazel_dep(
+    name = "protobuf",
+    version = "21.7",
+    repo_name = "com_google_protobuf",
+)
+bazel_dep(
+    name = "rules_cc",
+    version = "0.0.9",
+)
+bazel_dep(
+    name = "abseil-cpp",
+    version = "20230802.0.bcr.1",
+    repo_name = "com_google_absl",
+)
+bazel_dep(
+    name = "googletest",
+    version = "1.14.0.bcr.1",
+    repo_name = "com_google_googletest",
+)
+bazel_dep(
+    name = "rules_java",
+    version = "7.2.0",
+)
+bazel_dep(
+    name = "rules_jvm_external",
+    version = "5.3",
+)
+
+# WFA registry modules.
+bazel_dep(
+    name = "common-cpp",
+    version = "0.11.0",
+    repo_name = "wfa_common_cpp",
+)
+bazel_dep(
+    name = "rules_kotlin_jvm",
+    version = "0.1.1",
+    repo_name = "wfa_rules_kotlin_jvm",
+)
+
+maven = use_extension("@rules_jvm_external//:extensions.bzl", "maven")
+maven.install(
+    name = MAVEN_REPO_NAME,
+    artifacts = [
+        "junit:junit:4.13.2",
+        "com.google.truth:truth:" + TRUTH_VERSION,
+        "com.google.truth.extensions:truth-java8-extension:" + TRUTH_VERSION,
+        "com.google.truth.extensions:truth-proto-extension:" + TRUTH_VERSION,
+        "com.google.truth.extensions:truth-liteproto-extension:" + TRUTH_VERSION,
+    ],
+    fetch_sources = True,  # For IDE integration.
+    strict_visibility = True,
+)
+use_repo(maven, MAVEN_REPO_NAME)

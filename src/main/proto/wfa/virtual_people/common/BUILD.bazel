@@ -1,7 +1,6 @@
 load("@rules_cc//cc:defs.bzl", "cc_proto_library")
 load("@rules_proto//proto:defs.bzl", "proto_library")
-load("@rules_java//java:defs.bzl", "java_proto_library")
-load("@wfa_common_jvm//build/kt_jvm_proto:defs.bzl", "kt_jvm_proto_library")
+load("@wfa_rules_kotlin_jvm//kotlin:defs.bzl", "kt_jvm_proto_library")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -25,15 +24,9 @@ cc_proto_library(
     deps = [":model_proto"],
 )
 
-java_proto_library(
-    name = "model_java_proto",
-    deps = [":model_proto"],
-)
-
 kt_jvm_proto_library(
     name = "model_kt_jvm_proto",
-    srcs = [":model_proto"],
-    deps = [":model_java_proto"],
+    deps = [":model_proto"],
 )
 
 proto_library(
@@ -53,15 +46,9 @@ cc_proto_library(
     deps = [":event_proto"],
 )
 
-java_proto_library(
-    name = "event_java_proto",
-    deps = [":event_proto"],
-)
-
 kt_jvm_proto_library(
     name = "event_kt_jvm_proto",
-    srcs = [":event_proto"],
-    deps = [":event_java_proto"],
+    deps = [":event_proto"],
 )
 
 proto_library(
@@ -78,15 +65,9 @@ cc_proto_library(
     deps = [":label_proto"],
 )
 
-java_proto_library(
-    name = "label_java_proto",
-    deps = [":label_proto"],
-)
-
 kt_jvm_proto_library(
     name = "label_kt_jvm_proto",
-    srcs = [":label_proto"],
-    deps = [":label_java_proto"],
+    deps = [":label_proto"],
 )
 
 proto_library(
@@ -100,15 +81,9 @@ cc_proto_library(
     deps = [":demographic_proto"],
 )
 
-java_proto_library(
-    name = "demographic_java_proto",
-    deps = [":demographic_proto"],
-)
-
 kt_jvm_proto_library(
     name = "demographic_kt_jvm_proto",
-    srcs = [":demographic_proto"],
-    deps = [":demographic_java_proto"],
+    deps = [":demographic_proto"],
 )
 
 proto_library(
@@ -122,15 +97,9 @@ cc_proto_library(
     deps = [":geo_location_proto"],
 )
 
-java_proto_library(
-    name = "geo_location_java_proto",
-    deps = [":geo_location_proto"],
-)
-
 kt_jvm_proto_library(
     name = "geo_location_kt_jvm_proto",
-    srcs = [":geo_location_proto"],
-    deps = [":geo_location_java_proto"],
+    deps = [":geo_location_proto"],
 )
 
 proto_library(
@@ -147,15 +116,9 @@ cc_proto_library(
     deps = [":panel_data_proto"],
 )
 
-java_proto_library(
-    name = "panel_data_java_proto",
-    deps = [":panel_data_proto"],
-)
-
 kt_jvm_proto_library(
     name = "panel_data_kt_jvm_proto",
-    srcs = [":panel_data_proto"],
-    deps = [":panel_data_java_proto"],
+    deps = [":panel_data_proto"],
 )
 
 proto_library(
@@ -169,15 +132,9 @@ cc_proto_library(
     deps = [":field_filter_proto"],
 )
 
-java_proto_library(
-    name = "field_filter_java_proto",
-    deps = [":field_filter_proto"],
-)
-
 kt_jvm_proto_library(
     name = "field_filter_kt_jvm_proto",
-    srcs = [":field_filter_proto"],
-    deps = [":field_filter_java_proto"],
+    deps = [":field_filter_proto"],
 )
 
 proto_library(
@@ -191,13 +148,7 @@ cc_proto_library(
     deps = [":config_proto"],
 )
 
-java_proto_library(
-    name = "config_java_proto",
-    deps = [":config_proto"],
-)
-
 kt_jvm_proto_library(
     name = "config_kt_jvm_proto",
-    srcs = [":config_proto"],
-    deps = [":config_java_proto"],
+    deps = [":config_proto"],
 )
