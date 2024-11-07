@@ -122,9 +122,8 @@ message LabelerInput {
   // Required. When this event occurs in microseconds since epoch.
   optional int64 timestamp_usec = 2;
 
-  // TODO(@wliue): Deprecate user_agent when all usages are migrated.
   // User agent string. Labeler uses this to compute device type.
-  optional string user_agent = 3;
+  optional string user_agent = 3 [deprecated = true];
 
   // Geo data.
   optional GeoLocation geo = 4;
