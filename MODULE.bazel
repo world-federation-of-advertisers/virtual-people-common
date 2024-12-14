@@ -3,66 +3,82 @@ module(
     repo_name = "wfa_virtual_people_common",
 )
 
-TRUTH_VERSION = "1.1.2"
-
-MAVEN_REPO_NAME = "vpc_maven"
+TRUTH_VERSION = "1.4.4"
 
 # Bazel Central Registry modules.
 bazel_dep(
-    name = "rules_proto",
-    version = "5.3.0-21.7",
+    name = "rules_cc",
+    version = "0.1.0",
 )
 bazel_dep(
     name = "protobuf",
-    version = "21.7",
+    version = "27.3",
     repo_name = "com_google_protobuf",
 )
 bazel_dep(
-    name = "rules_cc",
-    version = "0.0.9",
-)
-bazel_dep(
     name = "abseil-cpp",
-    version = "20230802.0.bcr.1",
+    version = "20240722.0.bcr.2",
     repo_name = "com_google_absl",
 )
 bazel_dep(
     name = "googletest",
-    version = "1.14.0.bcr.1",
+    version = "1.15.2",
     repo_name = "com_google_googletest",
 )
 bazel_dep(
     name = "rules_java",
-    version = "7.2.0",
+    version = "8.6.2",
 )
 bazel_dep(
     name = "rules_jvm_external",
-    version = "5.3",
+    version = "6.6",
 )
 
 # WFA registry modules.
 bazel_dep(
     name = "common-cpp",
-    version = "0.11.0",
+    version = "0.13.0",
     repo_name = "wfa_common_cpp",
 )
 bazel_dep(
     name = "rules_kotlin_jvm",
-    version = "0.1.1",
+    version = "0.5.0",
     repo_name = "wfa_rules_kotlin_jvm",
 )
 
 maven = use_extension("@rules_jvm_external//:extensions.bzl", "maven")
+maven.artifact(
+    testonly = True,
+    artifact = "truth",
+    group = "com.google.truth",
+    version = TRUTH_VERSION,
+)
+maven.artifact(
+    testonly = True,
+    artifact = "truth-java8-extension",
+    group = "com.google.truth.extensions",
+    version = TRUTH_VERSION,
+)
+maven.artifact(
+    testonly = True,
+    artifact = "truth-proto-extension",
+    group = "com.google.truth.extensions",
+    version = TRUTH_VERSION,
+)
+maven.artifact(
+    testonly = True,
+    artifact = "truth-liteproto-extension",
+    group = "com.google.truth.extensions",
+    version = TRUTH_VERSION,
+)
 maven.install(
-    name = MAVEN_REPO_NAME,
     artifacts = [
         "junit:junit:4.13.2",
-        "com.google.truth:truth:" + TRUTH_VERSION,
-        "com.google.truth.extensions:truth-java8-extension:" + TRUTH_VERSION,
-        "com.google.truth.extensions:truth-proto-extension:" + TRUTH_VERSION,
-        "com.google.truth.extensions:truth-liteproto-extension:" + TRUTH_VERSION,
     ],
-    fetch_sources = True,  # For IDE integration.
+    fail_if_repin_required = True,
+    fetch_sources = True,  # For IDE support.
+    lock_file = "//:maven_install.json",
+    resolver = "maven",
     strict_visibility = True,
 )
-use_repo(maven, MAVEN_REPO_NAME)
+use_repo(maven, "maven")
