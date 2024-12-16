@@ -4,8 +4,9 @@ package(default_visibility = ["//visibility:public"])
 
 java_library(
     name = "truth",
+    testonly = True,
     exports = [
-        "@vpc_maven//:com_google_truth_extensions_truth_java8_extension",
-        "@vpc_maven//:com_google_truth_truth",
+        "@maven//:com_google_truth_extensions_truth_java8_extension",
+        "@maven//:com_google_truth_truth",
     ],
 )
