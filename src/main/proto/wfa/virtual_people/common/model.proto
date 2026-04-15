@@ -388,4 +388,13 @@ message LabelerEvent {
 
   // Classic label for person attributes.
   optional PersonLabelAttributes label = 13;
+
+  // When true, leaf nodes emit pool identity (PoolAssignment) instead of
+  // assigning a VID. Used by the two-pass labeling pipeline: pass 1 identifies
+  // pools, the pipeline computes ranks, pass 2 assigns VIDs.
+  optional bool pool_identity_mode = 20;
+
+  // Pool assignments collected during pass-1 mode. Leaf nodes write here;
+  // the Labeler copies these to LabelerOutput.pool_assignments.
+  repeated PoolAssignment pool_assignments = 21;
 }
