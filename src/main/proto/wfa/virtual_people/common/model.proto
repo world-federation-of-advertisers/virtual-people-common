@@ -25,6 +25,17 @@ import "wfa/virtual_people/common/event.proto";
 import "wfa/virtual_people/common/field_filter.proto";
 import "wfa/virtual_people/common/label.proto";
 
+// Mode for handling events that fall outside the ranked sub-range.
+enum UnrankedMode {
+  UNRANKED_MODE_UNSPECIFIED = 0;
+  // Unranked events are assigned VIDs from a disjoint pool (no overlap with
+  // ranked VIDs).
+  DISJOINT = 1;
+  // Unranked events are assigned VIDs from the full pool (may overlap with
+  // ranked VIDs).
+  FULL_POOL = 2;
+}
+
 // The node of the VID model tree.
 message CompiledNode {
   optional string name = 1;
@@ -39,6 +50,7 @@ message CompiledNode {
     // StopNode and PopulationNode have no child node.
     StopNode stop_node = 4;
     PopulationNode population_node = 5;
+    RankedPopulationNode ranked_population_node = 6;
   }
 
   message DebugInfo {
@@ -69,6 +81,32 @@ message PopulationNode {
   repeated VirtualPersonPool pools = 1;
 
   optional string random_seed = 2;
+}
+
+// Like PopulationNode, but splits VID assignment into ranked (Feistel cipher,
+// collision-free) and unranked (hash-based) sub-ranges. The ranked sub-range
+// uses a format-preserving Feistel bijection for memoized, collision-free VID
+// assignment. Events outside the ranked sub-range fall back to hash-based
+// assignment controlled by unranked_mode.
+message RankedPopulationNode {
+  // The pools of VIDs to choose from. Reuses PopulationNode.VirtualPersonPool.
+  repeated PopulationNode.VirtualPersonPool pools = 1;
+
+  // Random seed for deterministic VID assignment.
+  string random_seed = 2;
+
+  // Number of VIDs in the ranked (Feistel) sub-range. Events with a rank
+  // in [0, ranked_size) get collision-free VID assignment.
+  uint64 ranked_size = 3;
+
+  // How to handle events outside the ranked sub-range.
+  UnrankedMode unranked_mode = 4;
+
+  // Quantum labels to assign to the virtual person.
+  IndependentQuantumLabels quantum_labels = 5;
+
+  // Classic label attributes to assign to the virtual person.
+  PersonLabelAttributes label = 6;
 }
 
 // BranchNode contains

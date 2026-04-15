@@ -110,6 +110,18 @@ message ProfileInfo {
   optional UserInfo proprietary_id_space_10_user_info = 14;
 }
 
+// Carries a pre-computed rank for a specific pool. The pipeline computes ranks
+// externally and injects them into LabelerInput so that RankedPopulationNode
+// can perform collision-free VID assignment via Feistel cipher.
+message RankAssignment {
+  // Identifies which pool this rank applies to (matches VirtualPersonPool
+  // ordering).
+  uint64 pool_offset = 1;
+
+  // The rank within [0, ranked_size) for the identified pool.
+  uint64 local_rank = 2;
+}
+
 // Represents input to the labeler.
 // Only contains attributes needed for labeling, including attributes
 // extracted from logs and enriched by profile data.
@@ -138,6 +150,11 @@ message LabelerInput {
   // Event information not intended to be used during labeling or in the
   // measurement system.
   optional TrafficInfo traffic_info = 7;
+
+  // Pre-computed rank assignments injected by the pipeline. Used by
+  // RankedPopulationNode to look up which pool and rank an event maps to
+  // for collision-free (Feistel) VID assignment.
+  repeated RankAssignment rank_assignments = 20;
 }
 
 // LogEvent contains all attributes in LabelerInput, as well as other
