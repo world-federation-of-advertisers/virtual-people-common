@@ -114,12 +114,13 @@ message ProfileInfo {
 // externally and injects them into LabelerInput so that RankedPopulationNode
 // can perform collision-free VID assignment via Feistel cipher.
 message RankAssignment {
-  // Identifies which pool this rank applies to (matches VirtualPersonPool
-  // ordering).
-  uint64 pool_offset = 1;
+  // Required. The population_offset of the VirtualPersonPool that this rank
+  // applies to. Must match a pool's population_offset in the
+  // RankedPopulationNode that the event routes to.
+  optional uint64 pool_offset = 1;
 
-  // The rank within [0, ranked_size) for the identified pool.
-  uint64 local_rank = 2;
+  // Required. The rank within [0, ranked_size) for the identified pool.
+  optional uint64 local_rank = 2;
 }
 
 // Represents input to the labeler.
