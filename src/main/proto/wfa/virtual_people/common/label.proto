@@ -73,14 +73,18 @@ message VirtualPersonActivity {
 // The labeler outputs pool identity without assigning a VID, allowing the
 // pipeline to compute ranks externally before pass-2 VID assignment.
 message PoolAssignment {
-  // The offset of the pool in the VID space.
-  uint64 pool_offset = 1;
+  // The population_offset of the VirtualPersonPool that this event was
+  // routed to. Matches the pool's population_offset in the
+  // RankedPopulationNode.
+  optional uint64 pool_offset = 1;
 
-  // Total size of the pool.
-  uint64 pool_size = 2;
+  // Total size of the pool. Mirrors the RankedPopulationNode's total pool
+  // size at the time of pass-1. The pipeline must use the same model for
+  // both passes.
+  optional uint64 pool_size = 2;
 
   // Number of VIDs in the ranked (Feistel) sub-range.
-  uint64 ranked_size = 3;
+  optional uint64 ranked_size = 3;
 }
 
 // LabelerOutput represents the output of a single event labeled by a model.
