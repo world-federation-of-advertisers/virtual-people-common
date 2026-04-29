@@ -110,16 +110,31 @@ message ProfileInfo {
   optional UserInfo proprietary_id_space_10_user_info = 14;
 }
 
-// Carries a pre-computed rank for a specific pool. The pipeline computes ranks
-// externally and injects them into LabelerInput so that RankedPopulationNode
-// can perform collision-free VID assignment via Feistel cipher.
+// Carries a pre-computed rank for a specific pool, injected by the pipeline
+// into LabelerInput before pass-2 labeling. RankedPopulationNode looks up the
+// RankAssignment whose pool_offset matches the node's first pool's
+// population_offset. If a match is found and local_rank < ranked_size, the
+// node uses Feistel bijection for collision-free VID assignment. If no match
+// is found, the node falls back to hash-based assignment.
+//
+// The pipeline is responsible for:
+// 1. Running pass-1 (LABELING_PASS_POOL_IDENTITY) to discover which pool
+//    each event routes to.
+// 2. Building per-pool rank tables (mapping accounts to sequential ranks).
+// 3. Populating rank_assignments on LabelerInput with the correct
+//    pool_offset and local_rank before pass-2.
+// 4. Using the same model version for both passes (pool routing is
+//    deterministic given the same model and input).
 message RankAssignment {
   // Required. The population_offset of the VirtualPersonPool that this rank
-  // applies to. Must match a pool's population_offset in the
-  // RankedPopulationNode that the event routes to.
+  // applies to. The labeler matches this against the pool's
+  // population_offset in the RankedPopulationNode the event routes to.
+  // If no RankAssignment matches, the event gets hash-based VID assignment.
   optional uint64 pool_offset = 1;
 
   // Required. The rank within [0, ranked_size) for the identified pool.
+  // Must be unique per account within a pool to guarantee collision-free
+  // VID assignment.
   optional uint64 local_rank = 2;
 }
 
