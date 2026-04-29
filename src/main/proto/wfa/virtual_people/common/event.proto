@@ -123,6 +123,16 @@ message RankAssignment {
   optional uint64 local_rank = 2;
 }
 
+// Controls the labeling pass for the two-pass memoized VID pipeline.
+enum LabelingPass {
+  // Default: full labeling — traverse the tree and assign a VID.
+  LABELING_PASS_UNSPECIFIED = 0;
+  // Pass 1: traverse the tree to leaf nodes but emit pool identity
+  // (PoolAssignment) instead of assigning a VID. The pipeline uses the
+  // pool assignments to build rank tables before pass 2.
+  LABELING_PASS_POOL_IDENTITY = 1;
+}
+
 // Represents input to the labeler.
 // Only contains attributes needed for labeling, including attributes
 // extracted from logs and enriched by profile data.
@@ -156,6 +166,10 @@ message LabelerInput {
   // RankedPopulationNode to look up which pool and rank an event maps to
   // for collision-free (Feistel) VID assignment.
   repeated RankAssignment rank_assignments = 8;
+
+  // Which labeling pass to perform. When set to LABELING_PASS_POOL_IDENTITY,
+  // RankedPopulationNode emits PoolAssignment instead of assigning a VID.
+  LabelingPass labeling_pass = 9;
 }
 
 // LogEvent contains all attributes in LabelerInput, as well as other
