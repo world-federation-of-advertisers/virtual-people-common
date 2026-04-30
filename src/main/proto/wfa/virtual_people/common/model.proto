@@ -384,8 +384,4 @@ message LabelerEvent {
 
   // Classic label for person attributes.
   optional PersonLabelAttributes label = 13;
-
-  // Pool assignments emitted by RankedPopulationNode during pass-1
-  // (LABELING_PASS_POOL_IDENTITY). Copied to LabelerOutput by the Labeler.
-  repeated PoolAssignment pool_assignments = 14;
 }
