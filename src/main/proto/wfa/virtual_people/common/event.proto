@@ -171,6 +171,11 @@ message LabelerInput {
   // RankedPopulationNode to look up which pool and rank an event maps to
   // for collision-free (Feistel) VID assignment.
   repeated RankAssignment rank_assignments = 8;
+
+  // When true, the labeler populates LabelerOutput.serialized_debug_trace with
+  // a text-format snapshot of the internal LabelerEvent after model
+  // application. Disabled by default to avoid serialization overhead.
+  bool enable_debug_trace = 9;
 }
 
 // LogEvent contains all attributes in LabelerInput, as well as other
