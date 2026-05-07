@@ -118,7 +118,7 @@ message ProfileInfo {
 // is found, the node falls back to hash-based assignment.
 //
 // The pipeline is responsible for:
-// 1. Running pass-1 (LABELING_PASS_POOL_IDENTITY) to discover which pool
+// 1. Running the labeler in pool-identity mode to discover which pool
 //    each event routes to.
 // 2. Building per-pool rank tables (mapping accounts to sequential ranks).
 // 3. Populating rank_assignments on LabelerInput with the correct
@@ -171,6 +171,11 @@ message LabelerInput {
   // RankedPopulationNode to look up which pool and rank an event maps to
   // for collision-free (Feistel) VID assignment.
   repeated RankAssignment rank_assignments = 8;
+
+  // When true, the labeler populates LabelerOutput.serialized_debug_trace with
+  // a text-format snapshot of the internal LabelerEvent after model
+  // application. Disabled by default to avoid serialization overhead.
+  bool enable_debug_trace = 9;
 }
 
 // LogEvent contains all attributes in LabelerInput, as well as other
