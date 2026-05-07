@@ -110,6 +110,34 @@ message ProfileInfo {
   optional UserInfo proprietary_id_space_10_user_info = 14;
 }
 
+// Carries a pre-computed rank for a specific pool, injected by the pipeline
+// into LabelerInput before pass-2 labeling. RankedPopulationNode looks up the
+// RankAssignment whose pool_offset matches the node's first pool's
+// population_offset. If a match is found and local_rank < ranked_size, the
+// node uses Feistel bijection for collision-free VID assignment. If no match
+// is found, the node falls back to hash-based assignment.
+//
+// The pipeline is responsible for:
+// 1. Running the labeler in pool-identity mode to discover which pool
+//    each event routes to.
+// 2. Building per-pool rank tables (mapping accounts to sequential ranks).
+// 3. Populating rank_assignments on LabelerInput with the correct
+//    pool_offset and local_rank before pass-2.
+// 4. Using the same model version for both passes (pool routing is
+//    deterministic given the same model and input).
+message RankAssignment {
+  // Required. The population_offset of the VirtualPersonPool that this rank
+  // applies to. The labeler matches this against the pool's
+  // population_offset in the RankedPopulationNode the event routes to.
+  // If no RankAssignment matches, the event gets hash-based VID assignment.
+  optional uint64 pool_offset = 1;
+
+  // Required. The rank within [0, ranked_size) for the identified pool.
+  // Must be unique per account within a pool to guarantee collision-free
+  // VID assignment.
+  optional uint64 local_rank = 2;
+}
+
 // Represents input to the labeler.
 // Only contains attributes needed for labeling, including attributes
 // extracted from logs and enriched by profile data.
@@ -138,6 +166,11 @@ message LabelerInput {
   // Event information not intended to be used during labeling or in the
   // measurement system.
   optional TrafficInfo traffic_info = 7;
+
+  // Pre-computed rank assignments injected by the pipeline. Used by
+  // RankedPopulationNode to look up which pool and rank an event maps to
+  // for collision-free (Feistel) VID assignment.
+  repeated RankAssignment rank_assignments = 8;
 
   // When true, the labeler populates LabelerOutput.serialized_debug_trace with
   // a text-format snapshot of the internal LabelerEvent after model
