@@ -8,7 +8,7 @@ TRUTH_VERSION = "1.4.4"
 # Bazel Central Registry modules.
 bazel_dep(
     name = "rules_cc",
-    version = "0.1.0",
+    version = "0.1.1",
 )
 bazel_dep(
     name = "protobuf",
