@@ -385,7 +385,11 @@ message LabelerEvent {
   // Classic label for person attributes.
   optional PersonLabelAttributes label = 13;
 
-  // Pool assignments emitted by RankedPopulationNode during pass-1
-  // (LABELING_PASS_POOL_IDENTITY). Copied to LabelerOutput by the Labeler.
+  // Pool assignments emitted by RankedPopulationNode during pass-1.
+  // Copied to LabelerOutput by the Labeler.
   repeated PoolAssignment pool_assignments = 14;
+
+  // When true, RankedPopulationNode emits PoolAssignment instead of
+  // assigning a VID. Set by the Labeler when running in pool-identity mode.
+  optional bool pool_identity_mode = 15;
 }
