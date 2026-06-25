@@ -68,11 +68,12 @@ message VirtualPersonActivity {
     PersonLabelAttributes label = 3;
   }
 
-  // Whether the memoized rank path was attempted for this activity but had to
-  // fall back to the hash path because no LabelerInput.rank_assignments entry
-  // matched the leaf's pool_offset. True only on memoized model lines: false
-  // when no rank_assignments were provided (caller did not attempt memoization)
-  // and false when memoization succeeded (Feistel VID assigned).
+  // Whether the memoized rank path was attempted for this activity but the
+  // leaf used the hash path: either no LabelerInput.rank_assignments entry
+  // matched the leaf's pool_offset, or a matching entry's local_rank fell
+  // outside [0, ranked_size). True only on memoized model lines: false when no
+  // rank_assignments were provided (caller did not attempt memoization) and
+  // false when memoization succeeded (Feistel VID assigned).
   //
   // The dominant cause of this flag firing is Phase-1 overflow: the subpool
   // reached ranked_size and this fingerprint was one of the unranked surplus,
