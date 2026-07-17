@@ -67,6 +67,22 @@ message VirtualPersonActivity {
     // Could be the result of the collapse of quantum_label.
     PersonLabelAttributes label = 3;
   }
+
+  // Whether the memoized rank path was attempted for this activity but the
+  // leaf used the hash path: either no LabelerInput.rank_assignments entry
+  // matched the leaf's pool_offset, or a matching entry's local_rank fell
+  // outside [0, ranked_size). True only on memoized model lines: false when no
+  // rank_assignments were provided (caller did not attempt memoization) and
+  // false when memoization succeeded (Feistel VID assigned).
+  //
+  // The dominant cause of this flag firing is Phase-1 overflow: the subpool
+  // reached ranked_size and this fingerprint was one of the unranked surplus,
+  // so the subpool has no rank for it (per the design's
+  // overflow-fps-fall-back-to-unranked-path contract). Consumers should
+  // aggregate this into a counter tagged by (data provider, model line, pool
+  // offset) to alarm on a rising memoized-fallback rate, which indicates a
+  // subpool's ranked_size should be raised.
+  bool memoized_rank_fallback = 4;
 }
 
 // Identifies a pool and its ranked sub-range, emitted during pass-1 mode.
