@@ -176,6 +176,13 @@ message LabelerInput {
   // a text-format snapshot of the internal LabelerEvent after model
   // application. Disabled by default to avoid serialization overhead.
   bool enable_debug_trace = 9;
+
+  // Ad placement or surface on which the event occurred, e.g. a
+  // publisher's feed, reels, or stories surface. Carried as an opaque
+  // string so it can hold any publisher's placement taxonomy without this
+  // proto enumerating them. The labeler may route on this via field
+  // filters. Populated from the raw event by the pipeline.
+  optional string placement = 10;
 }
 
 // LogEvent contains all attributes in LabelerInput, as well as other
