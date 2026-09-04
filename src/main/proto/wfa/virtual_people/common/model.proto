@@ -326,9 +326,6 @@ message Multiplicity {
 // are inferred properties of the virtual people being generated, and are used
 // internally in the model.
 message LabelerEvent {
-  reserved 16;
-  reserved "placement";
-
   // Original input event.
   optional LabelerInput labeler_input = 1;
 
