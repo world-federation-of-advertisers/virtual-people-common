@@ -326,6 +326,9 @@ message Multiplicity {
 // are inferred properties of the virtual people being generated, and are used
 // internally in the model.
 message LabelerEvent {
+  reserved 16;
+  reserved "placement";
+
   // Original input event.
   optional LabelerInput labeler_input = 1;
 
@@ -392,11 +395,4 @@ message LabelerEvent {
   // When true, RankedPopulationNode emits PoolAssignment instead of
   // assigning a VID. Set by the Labeler when running in pool-identity mode.
   optional bool pool_identity_mode = 15;
-
-  // Ad placement or surface on which the event occurred, e.g. a
-  // publisher's feed, reels, or stories surface. Carried as an opaque
-  // string so it can hold any publisher's placement taxonomy without this
-  // proto enumerating them. The labeler may route on this via field
-  // filters. Populated from LabelerInput.placement.
-  optional string placement = 16;
 }
